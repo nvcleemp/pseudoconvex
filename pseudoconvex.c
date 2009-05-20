@@ -8,6 +8,8 @@
 
 #include "pseudoconvex.h"
 
+#include <stdio.h>
+
 /*========== EXPORT ===========*/
 void exportPlanarGraphCode(){
 
@@ -15,6 +17,17 @@ void exportPlanarGraphCode(){
 
 void exportPlanarGraphTable(){
 
+}
+
+void exportInnerSpiral(INNERSPIRAL *is){
+	if(is->length==0){
+		fprintf(stderr, "patch without pentagons\n");
+		return;
+	}
+	int i;
+	for(i=0; i<is->length-1; i++)
+		fprintf(stderr, "%d, ", is->code[i]);
+	fprintf(stderr, "%d\n", is->code[is->length-1]);
 }
 
 /*========== CONSTRUCTION ==========*/

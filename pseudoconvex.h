@@ -20,6 +20,7 @@ typedef struct _innerspiral INNERSPIRAL;
 /*========== EXPORT ===========*/
 void exportPlanarGraphCode();
 void exportPlanarGraphTable();
+void exportInnerSpiral(INNERSPIRAL *is);
 
 
 /*========== CONSTRUCTION ==========*/
