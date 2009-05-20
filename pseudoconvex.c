@@ -181,6 +181,87 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, INNERSPIRAL *is){
 }
 
 void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, INNERSPIRAL *is){
+	if(k1 < 0 || k2 < 0 || k3 < 0 || k4 < 0)
+		return;
+	if((k1 == 0 && k2==0) || (k2 == 0 && k3==0) || (k3 == 0 && k4==0) || (k4 == 0 && k1==0))
+		return;
+	
+	if(k1==0){//TODO: this case is equal to the general case: look for more of these cases
+		//place a hexagon
+		is->code[is->position]+=1;
+		fillPatch_2PentagonsLeft(k2-1, k3, k4-1, 1, is);
+		is->code[is->position]-=1;
+
+		//place a pentagon
+		is->position++;
+		is->code[is->position]=0;
+		fillPatch_1PentagonLeft(0, k2-1, k3, k4-1, 0, is);
+		is->position--;
+	} else if(k2==0){
+		//add a side of hexagons
+		is->code[is->position]+=k1+1;
+		fillPatch_2PentagonsLeft(0, k3-1, k4-1, k1, is);
+		is->code[is->position]-=k1+1;
+		
+		//pentagon after i hexagons
+		int i;
+		for(i=0; i<k1; i++){
+			is->code[is->position]+=i;
+			is->position++;
+			is->code[is->position]=0;
+			fillPatch_1PentagonLeft(k1-1-i, k2, k3, k4-1, 1+i, is);
+			is->position--;
+			is->code[is->position]-=i;
+		}
+	} else if(k4==0){
+		//add a side of hexagons
+		is->code[is->position]+=k1+1;
+		fillPatch_2PentagonsLeft(k2-1, k3-1, k4, k1, is);
+		is->code[is->position]-=k1+1;
+
+		//pentagon after i hexagons
+		int i;
+		for(i=0; i<k1; i++){
+			is->code[is->position]+=i;
+			is->position++;
+			is->code[is->position]=0;
+			fillPatch_1PentagonLeft(k1-1-i, k2, k3-1, k4, i, is);
+			is->position--;
+			is->code[is->position]-=i;
+		}
+
+		//pentagon after k1 hexagons
+		is->code[is->position]+=k1;
+		is->position++;
+		is->code[is->position]=0;
+		fillPatch_1PentagonLeft(0, k2-1, k3-1, k4, k1-1, is);
+		is->position--;
+		is->code[is->position]-=k1;
+	} else {
+		//add a side of hexagons
+		is->code[is->position]+=k1+1;
+		fillPatch_2PentagonsLeft(k2-1, k3, k4-1, k1+1, is);
+		is->code[is->position]-=k1+1;
+		
+		//pentagon after i hexagons
+		int i;
+		for(i=0; i<k1; i++){
+			is->code[is->position]+=i;
+			is->position++;
+			is->code[is->position]=0;
+			fillPatch_1PentagonLeft(k1-1-i, k2, k3, k4-1, 1+i, is);
+			is->position--;
+			is->code[is->position]-=i;
+		}
+		
+		//pentagon after k1 hexagons
+		is->code[is->position]+=k1;
+		is->position++;
+		is->code[is->position]=0;
+		fillPatch_1PentagonLeft(0, k2-1, k3, k4-1, k1, is);
+		is->position--;
+		is->code[is->position]-=k1;
+	}
 }
 
 void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, INNERSPIRAL *is){
