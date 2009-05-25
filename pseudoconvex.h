@@ -18,8 +18,8 @@ struct _innerspiral {
 typedef struct _innerspiral INNERSPIRAL;
 
 /*========== EXPORT ===========*/
-void exportPlanarGraphCode();
-void exportPlanarGraphTable();
+void exportPlanarGraphCode(INNERSPIRAL *is);
+void exportPlanarGraphTable(INNERSPIRAL *is);
 void exportInnerSpiral(INNERSPIRAL *is);
 
 

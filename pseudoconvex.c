@@ -12,11 +12,11 @@
 #include <stdio.h>
 
 /*========== EXPORT ===========*/
-void exportPlanarGraphCode(){
+void exportPlanarGraphCode(INNERSPIRAL *is){
 
 }
 
-void exportPlanarGraphTable(){
+void exportPlanarGraphTable(INNERSPIRAL *is){
 
 }
 
