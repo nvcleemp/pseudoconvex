@@ -9,6 +9,7 @@
 #include "cone.h"
 #include "pseudoconvex.h"
 #include "pseudoconvexuser.h"
+#include "twopentagons.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -233,10 +234,17 @@ int main(int argc, char *argv[]) {
 	INNERSPIRAL *is = getNewSpiral(pentagons);
 	is->code[0] = hexagonsToAdd;
 	
+	//start the algorithm
 	if(pentagons==1){
 		processStructure(is);
+	} else if(pentagons==2){
+		if(onlyCount)
+			structureCounter = getTwoPentagonsConesCount(sside, symmetric, mirror);
+		else
+			getTwoPentagonsCones(sside, symmetric, mirror, is);
 	}
 	
+	//print the results
 	fprintf(stderr, "Found %d canonical cones satisfying the given parameters.\n", structureCounter);
 
 	return 0;
