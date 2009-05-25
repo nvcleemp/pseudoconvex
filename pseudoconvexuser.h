@@ -9,6 +9,8 @@
 #ifndef _PSEUDOCONVEXUSER_H //if not defined
 #define _PSEUDOCONVEXUSER_H
 
-void exportStructure(INNERSPIRAL *is);
+/* This method gets called each time a valid structure is found.
+ */
+void processStructure(INNERSPIRAL *is);
 
 #endif // end if not defined, and end the header file

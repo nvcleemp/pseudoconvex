@@ -36,7 +36,7 @@ int symmetricMinimaIPR[5] = {0,1,2,4,9};
 int nearsymmetricMinima[3] = {0,1,2};
 int nearsymmetricMinimaIPR[3] = {1,2,4};
 
-void exportStructure(INNERSPIRAL *is){
+void processStructure(INNERSPIRAL *is){
 	structureCounter++;
 	if(onlyCount) return;
 	switch(outputType) {
@@ -217,6 +217,27 @@ int main(int argc, char *argv[]) {
 		fprintf(stderr, "Generating all symmetric cones with side length %d and %d pentagons and surrounding the patches with %d hexagon layers.\n", sside, pentagons, hexagonLayers);
 	else
 		fprintf(stderr, "Generating all nearsymmetric cones with side length %d and %d pentagons and surrounding the patches with %d hexagon layers.\n", sside, pentagons, hexagonLayers);
+	
+	//determine the amount of hexagons to add for the given number of layers
+	int hexagonsToAdd = 0;
+	if(onlyCount) hexagonLayers = 0;
+	{
+		int i;
+		for(i = 0; i<hexagonLayers; i++){
+			hexagonsToAdd += (sside + 1 - symmetric + hexagonLayers - i)*(6-pentagons);
+		}
+		if(!symmetric) hexagonsToAdd -= hexagonLayers;
+	}
+	
+	//create the innerspiral and add the initial hexagons
+	INNERSPIRAL *is = getNewSpiral(pentagons);
+	is->code[0] = hexagonsToAdd;
+	
+	if(pentagons==1){
+		processStructure(is);
+	}
+	
+	fprintf(stderr, "Found %d canonical cones satisfying the given parameters.\n", structureCounter);
 
 	return 0;
 }
