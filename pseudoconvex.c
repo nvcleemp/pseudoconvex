@@ -10,6 +10,15 @@
 #include "pseudoconvexuser.h"
 
 #include <stdio.h>
+#include <stdlib.h>
+
+/*========== DATA STRUCTURES ===========*/
+
+INNERSPIRAL *getNewSpiral(int numberOfPentagons){
+	INNERSPIRAL *is = (INNERSPIRAL *)malloc(sizeof(INNERSPIRAL));
+	is->code = malloc(sizeof(int)*numberOfPentagons);
+	return is;
+}
 
 /*========== EXPORT ===========*/
 void exportPlanarGraphCode(INNERSPIRAL *is){

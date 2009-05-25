@@ -20,6 +20,8 @@ struct _innerspiral {
 
 typedef struct _innerspiral INNERSPIRAL;
 
+INNERSPIRAL *getNewSpiral(int numberOfPentagons);
+
 /*========== EXPORT ===========*/
 void exportPlanarGraphCode(INNERSPIRAL *is);
 void exportPlanarGraphTable(INNERSPIRAL *is);
