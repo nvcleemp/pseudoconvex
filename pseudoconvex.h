@@ -6,6 +6,9 @@
  *
  */
 
+#ifndef _PSEUDOCONVEX_H //if not defined
+#define _PSEUDOCONVEX_H
+
 /*========== DATA STRUCTURES ===========*/
 
 struct _innerspiral {
@@ -30,3 +33,5 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, INNERSPIRAL *is);
 void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, INNERSPIRAL *is);
 void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, INNERSPIRAL *is);
 void fillPatch_0PentagonsLeft(int k1, int k2, int k3, int k4, int k5, int k6, INNERSPIRAL *is);
+
+#endif // end if not defined, and end the header file
