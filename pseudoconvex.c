@@ -17,6 +17,8 @@
 INNERSPIRAL *getNewSpiral(int numberOfPentagons){
 	INNERSPIRAL *is = (INNERSPIRAL *)malloc(sizeof(INNERSPIRAL));
 	is->code = malloc(sizeof(int)*numberOfPentagons);
+	is->length = numberOfPentagons;
+	is->position = 0;
 	return is;
 }
 
