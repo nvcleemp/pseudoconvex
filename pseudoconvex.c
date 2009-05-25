@@ -7,6 +7,7 @@
  */
 
 #include "pseudoconvex.h"
+#include "pseudoconvexuser.h"
 
 #include <stdio.h>
 
