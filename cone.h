@@ -10,6 +10,7 @@
 #define _CONE_H
 
 #include "pseudoconvex.h"
+#include "util.h"
 
 void start5PentagonsCone(int sside, boolean mirror, INNERSPIRAL *is);
 void start4PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *is);
