@@ -54,6 +54,10 @@ void processStructure(INNERSPIRAL *is){
 	}
 }
 
+boolean validateStructure(INNERSPIRAL *is){
+	return 1;
+}
+
 void start5PentagonsCone(int sside, boolean mirror, INNERSPIRAL *is){
 	int upperbound = (mirror ? sside-1 : HALFFLOOR(sside)+1);
 
