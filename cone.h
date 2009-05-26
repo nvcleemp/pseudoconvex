@@ -11,9 +11,6 @@
 
 #include "pseudoconvex.h"
 
-//define boolean
-typedef int boolean;
-
 void start5PentagonsCone(int sside, boolean mirror, INNERSPIRAL *is);
 void start4PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *is);
 void start3PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *is);

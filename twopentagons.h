@@ -9,7 +9,7 @@
 #ifndef _TWOPENTAGONS_H //if not defined
 #define _TWOPENTAGONS_H
 
-#include "cone.h"
+#include "util.h"
 #include "pseudoconvex.h"
 
 void getTwoPentagonsCones(int sside, boolean symmetric, boolean mirror, INNERSPIRAL *is);
