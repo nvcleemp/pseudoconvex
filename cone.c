@@ -53,6 +53,63 @@ void processStructure(INNERSPIRAL *is){
 	}
 }
 
+void start5PentagonsCone(int sside, boolean mirror, INNERSPIRAL *is){
+	int upperbound = (mirror ? sside-1 : HALFFLOOR(sside)+1);
+
+	//pentagon after i hexagons
+	int i;
+	for(i=0; i<upperbound; i++){
+		is->code[is->position]+=i;
+		is->position++;
+		is->code[is->position]=0;
+		fillPatch_4PentagonsLeft(sside-2-i, 1+i, is);
+		is->position--;
+		is->code[is->position]-=i;
+	}
+
+	if(mirror){
+		//pentagon after sside-1 hexagons
+		is->code[is->position]+=sside-1;
+		is->position++;
+		is->code[is->position]=0;
+		fillPatch_4PentagonsLeft(0, sside-2, is);
+		is->position--;
+		is->code[is->position]-=sside-1;
+	}
+}
+
+void start4PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *is){
+	int lside = (symmetric ? sside : sside + 1);
+	int upperbound = (mirror ? sside : HALFFLOOR(sside)+1);
+
+	//pentagon after i hexagons
+	int i;
+	for(i=0; i<upperbound; i++){
+		is->code[is->position]+=i;
+		is->position++;
+		is->code[is->position]=0;
+		fillPatch_3PentagonsLeft(sside-1-i, lside-1, 1+i, is);
+		is->position--;
+		is->code[is->position]-=i;
+	}
+}
+
+void start3PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *is){
+	int lside = (symmetric ? sside : sside + 1);
+	int upperbound = (mirror ? sside : HALFFLOOR(sside)+1);
+	
+	//pentagon after i hexagons
+	int i;
+	for(i=0; i<upperbound; i++){
+		is->code[is->position]+=i;
+		is->position++;
+		is->code[is->position]=0;
+		fillPatch_2PentagonsLeft(sside-1-i, lside, lside-1, 1+i, is);
+		is->position--;
+		is->code[is->position]-=i;
+	}
+}
+
 /*
 print a usage message. name is the name of the current program.
 */
