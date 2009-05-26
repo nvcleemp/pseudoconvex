@@ -286,7 +286,9 @@ void fillPatch_0PentagonsLeft(int k1, int k2, int k3, int k4, int k5, int k6, IN
 	int x = 2*k1 + k2 - k3 - 2*k4 - k5 + k6;
 	int y = k1 + 2*k2 + k3 - k4 - 2*k5 - k6;
 	if(x==0 && y==0){
-		//export structure
+		if(validateStructure(is)){
+			processStructure(is);
+		}		
 	}
 }
 

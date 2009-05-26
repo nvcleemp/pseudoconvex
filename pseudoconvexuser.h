@@ -9,6 +9,10 @@
 #ifndef _PSEUDOCONVEXUSER_H //if not defined
 #define _PSEUDOCONVEXUSER_H
 
+/* This method gets called each time a completed structure is found and right before processStructure is called.
+ */
+boolean validateStructure(INNERSPIRAL *is);
+
 /* This method gets called each time a valid structure is found.
  */
 void processStructure(INNERSPIRAL *is);
