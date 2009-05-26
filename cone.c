@@ -294,7 +294,7 @@ int main(int argc, char *argv[]) {
 	
 	//start the algorithm
 	if(pentagons==1){
-		processStructure(is);
+		if(sside==0) processStructure(is);
 	} else if(pentagons==2){
 		if(onlyCount)
 			structureCounter = getTwoPentagonsConesCount(sside, symmetric, mirror);
