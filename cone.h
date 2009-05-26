@@ -9,6 +9,8 @@
 #ifndef _CONE_H //if not defined
 #define _CONE_H
 
+#include "pseudoconvex.h"
+
 //define boolean
 typedef int boolean;
 

@@ -10,6 +10,7 @@
 #include "pseudoconvex.h"
 #include "pseudoconvexuser.h"
 #include "twopentagons.h"
+#include "util.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -299,6 +300,12 @@ int main(int argc, char *argv[]) {
 			structureCounter = getTwoPentagonsConesCount(sside, symmetric, mirror);
 		else
 			getTwoPentagonsCones(sside, symmetric, mirror, is);
+	} else if(pentagons==3){
+		start3PentagonsCone(sside, symmetric, mirror, is);
+	} else if(pentagons==4){
+		start4PentagonsCone(sside, symmetric, mirror, is);
+	} else {
+		start5PentagonsCone(sside, mirror, is);
 	}
 	
 	//print the results
