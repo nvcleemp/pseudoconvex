@@ -22,6 +22,32 @@ INNERSPIRAL *getNewSpiral(int numberOfPentagons){
 	return is;
 }
 
+FRAGMENT *addNewFragment(FRAGMENT *currentFragment){
+	if(currentFragment==NULL){
+		FRAGMENT *fragment = (FRAGMENT *)malloc(sizeof(FRAGMENT));
+		fragment->prev = fragment->next = NULL;
+		return fragment;
+	} else {
+		if(currentFragment->next==NULL){
+			FRAGMENT *fragment = (FRAGMENT *)malloc(sizeof(FRAGMENT));
+			fragment->next = NULL;
+			fragment->prev = currentFragment;
+			return fragment;
+		} else {
+			return currentFragment->next;
+		}
+	}
+}
+
+void freeFragment(FRAGMENT *fragment){
+	if(fragment==NULL){
+		return;
+	} else {
+		freeFragment(fragment->next);
+		free(fragment);
+	}
+}
+
 /*========== EXPORT ===========*/
 void exportPlanarGraphCode(INNERSPIRAL *is){
 

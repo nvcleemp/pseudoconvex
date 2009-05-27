@@ -9,6 +9,8 @@
 #ifndef _PSEUDOCONVEX_H //if not defined
 #define _PSEUDOCONVEX_H
 
+#include "util.h"
+
 /*========== DATA STRUCTURES ===========*/
 
 struct _innerspiral {
@@ -20,7 +22,21 @@ struct _innerspiral {
 
 typedef struct _innerspiral INNERSPIRAL;
 
+/* data structure for an extended inner spiral fragment (implemented as a doubly-linked-list) */
+struct frag {
+	int faces;                     /* The number of faces in this fragment */
+	boolean endsWithPentagon;      /* Is the last face in this fragment a pentagon */
+	boolean pentagonAtBreakEdge;   /* lies that pentagon at a break-edge */
+	
+	struct frag *next;             /* The next fragment in the spiral */
+	struct frag *prev;             /* The previous fragment in the spiral */
+};
+
+typedef struct frag FRAGMENT;
+
 INNERSPIRAL *getNewSpiral(int numberOfPentagons);
+FRAGMENT *addNewFragment(FRAGMENT *currentFragment);
+void freeFragment(FRAGMENT *fragment);
 
 /*========== EXPORT ===========*/
 void exportPlanarGraphCode(INNERSPIRAL *is);
