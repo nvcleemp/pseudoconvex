@@ -287,17 +287,24 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, INNERSPIRAL
 	if(k1==0 && k2==0 && k3==0 && k4==0 && k5==0){
 		fillPatch_0PentagonsLeft(0, 0, 0, 0, 0, 0, is);
 	} else if(k1==0 && k2==0){
-		//add a hexagon
-		is->code[is->position]++;
-		fillPatch_1PentagonLeft(k2, k3-1, k4, k5-1, k1, is);
-		is->code[is->position]--;
+		//only one possible filling in case the following is true
+		if(k3==k5 && k4==0){
+			is->code[is->position]+=k3;
+			if(validateStructure(is)){
+				processStructure(is);
+			}			
+			is->code[is->position]-=k3;
+		}
 	} else if(k1==0 && k5==0){
-		//add a hexagon
-		is->code[is->position]++;
-		fillPatch_1PentagonLeft(k2-1, k3, k4-1, k5, k1, is);
-		is->code[is->position]--;
+		//only one possible filling in case the following is true
+		if(k2==k4 && k3==0){
+			is->code[is->position]+=k2;
+			if(validateStructure(is)){
+				processStructure(is);
+			}			
+			is->code[is->position]-=k2;
+		}
 	} else if(k4==0 && k5==0){
-		//TODO: use same optimalisation for first two cases
 		//only one possible filling in case the following is true
 		if(k1==k3 && k2==0){
 			is->code[is->position]+=k1;
