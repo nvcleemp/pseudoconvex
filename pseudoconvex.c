@@ -281,8 +281,6 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, INNERSPIRAL *is){
 void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, INNERSPIRAL *is){
 	if(k1 < 0 || k2 < 0 || k3 < 0 || k4 < 0)
 		return;
-	//if((k1 == 0 && k2==0) || (k2 == 0 && k3==0) || (k3 == 0 && k4==0) || (k4 == 0 && k1==0))
-	//	return;
 	
 	if(k1==0 && k2==0 && k3==0 && k4==0 && k5==0){
 		fillPatch_0PentagonsLeft(0, 0, 0, 0, 0, 0, is);
