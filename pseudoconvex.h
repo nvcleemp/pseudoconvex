@@ -36,9 +36,24 @@ struct frag {
 
 typedef struct frag FRAGMENT;
 
+/* data structure for a shell (implemented as a doubly-linked-list) */
+struct _shell {
+	int size;
+	FRAGMENT *start;
+	
+	boolean isActive;
+	
+	struct _shell *next;
+	struct _shell *prev;
+};
+
+typedef struct _shell SHELL;
+
 INNERSPIRAL *getNewSpiral(int numberOfPentagons);
 FRAGMENT *addNewFragment(FRAGMENT *currentFragment);
 void freeFragment(FRAGMENT *fragment);
+SHELL *addNewShell(SHELL *currentShell);
+void freeShell(SHELL *shell);
 
 /*========== EXPORT ===========*/
 void exportPlanarGraphCode(INNERSPIRAL *is);

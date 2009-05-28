@@ -51,6 +51,41 @@ void freeFragment(FRAGMENT *fragment){
 	}
 }
 
+SHELL *addNewShell(SHELL *currentShell, int size, FRAGMENT *start){
+	if(currentShell==NULL){
+		SHELL *shell = (SHELL *)malloc(sizeof(SHELL));
+		shell->prev = shell->next = NULL;
+		shell->size = size;
+		shell->start = start;
+		shell->isActive = 1;
+		return shell;
+	} else  if(currentShell->next==NULL){
+		SHELL *shell = (SHELL *)malloc(sizeof(SHELL));
+		shell->next = NULL;
+		shell->prev = currentShell;
+		currentShell->next = shell;
+		shell->size = size;
+		shell->start = start;
+		shell->isActive = 1;
+		return shell;
+	} else {
+		SHELL *shell = currentShell->next;
+		shell->size = size;
+		shell->start = start;
+		shell->isActive = 1;
+		return shell;
+	}
+}
+
+void freeShell(SHELL *shell){
+	if(shell==NULL){
+		return;
+	} else {
+		freeShell(shell->next);
+		free(shell);
+	}
+}
+
 /*========== EXPORT ===========*/
 void exportPlanarGraphCode(INNERSPIRAL *is){
 
