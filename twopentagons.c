@@ -31,7 +31,7 @@ void getTwoPentagonsCones(int sside, boolean symmetric, boolean mirror, INNERSPI
 		}
 		is->code[1] = 2*sside;
 		for(i=0;i<upperbound;i++){
-			processStructure(is);
+			processStructure(is, NULL);
 			is->code[0]++;
 		}
 	} else {
@@ -44,7 +44,7 @@ void getTwoPentagonsCones(int sside, boolean symmetric, boolean mirror, INNERSPI
 		}
 		is->code[1] = 2*sside + 1;
 		for(i=lowerbound;i<=upperbound;i++){
-			processStructure(is);
+			processStructure(is, NULL);
 			is->code[0]++;
 		}
 	}

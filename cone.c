@@ -38,12 +38,15 @@ int symmetricMinimaIPR[5] = {0,1,2,4,9};
 int nearsymmetricMinima[3] = {0,1,2};
 int nearsymmetricMinimaIPR[3] = {1,2,4};
 
-void processStructure(INNERSPIRAL *is){
+void processStructure(INNERSPIRAL *is, FRAGMENT *xis){
 	structureCounter++;
 	if(onlyCount) return;
 	switch(outputType) {
 		case 's':
 			exportInnerSpiral(is);
+			break;
+		case 'x':
+			exportExtendedInnerSpiral(xis);
 			break;
 		case 'p':
 			exportPlanarGraphCode(is);
@@ -59,6 +62,7 @@ boolean validateStructure(INNERSPIRAL *is){
 }
 
 void start5PentagonsCone(int sside, boolean mirror, INNERSPIRAL *is){
+	FRAGMENT *current = addNewFragment(NULL);
 	int upperbound = (mirror ? sside-1 : HALFFLOOR(sside)+1);
 
 	//pentagon after i hexagons
@@ -67,7 +71,12 @@ void start5PentagonsCone(int sside, boolean mirror, INNERSPIRAL *is){
 		is->code[is->position]+=i;
 		is->position++;
 		is->code[is->position]=0;
-		fillPatch_4PentagonsLeft(sside-2-i, 1+i, is);
+		
+		current->faces = i+1;
+		current->endsWithPentagon = 1;
+		current->pentagonAtBreakEdge = (i==0);
+		
+		fillPatch_4PentagonsLeft(sside-2-i, 1+i, is, addNewFragment(current), current);
 		is->position--;
 		is->code[is->position]-=i;
 	}
@@ -77,13 +86,19 @@ void start5PentagonsCone(int sside, boolean mirror, INNERSPIRAL *is){
 		is->code[is->position]+=sside-1;
 		is->position++;
 		is->code[is->position]=0;
-		fillPatch_4PentagonsLeft(0, sside-2, is);
+		
+		current->faces = sside-1;
+		current->endsWithPentagon = 1;
+		current->pentagonAtBreakEdge = 0;
+		
+		fillPatch_4PentagonsLeft(0, sside-2, is, addNewFragment(current), current);
 		is->position--;
 		is->code[is->position]-=sside-1;
 	}
 }
 
 void start4PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *is){
+	FRAGMENT *current = addNewFragment(NULL);
 	int lside = (symmetric ? sside : sside + 1);
 	int upperbound = (mirror ? sside : HALFFLOOR(sside)+1);
 
@@ -93,13 +108,19 @@ void start4PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *
 		is->code[is->position]+=i;
 		is->position++;
 		is->code[is->position]=0;
-		fillPatch_3PentagonsLeft(sside-1-i, lside-1, 1+i, is);
+		
+		current->faces = i+1;
+		current->endsWithPentagon = 1;
+		current->pentagonAtBreakEdge = (i==0);
+		
+		fillPatch_3PentagonsLeft(sside-1-i, lside-1, 1+i, is, addNewFragment(current), current);
 		is->position--;
 		is->code[is->position]-=i;
 	}
 }
 
 void start3PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *is){
+	FRAGMENT *current = addNewFragment(NULL);
 	int lside = (symmetric ? sside : sside + 1);
 	int upperbound = (mirror ? sside : HALFFLOOR(sside)+1);
 	
@@ -109,7 +130,12 @@ void start3PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *
 		is->code[is->position]+=i;
 		is->position++;
 		is->code[is->position]=0;
-		fillPatch_2PentagonsLeft(sside-1-i, lside, lside-1, 1+i, is);
+		
+		current->faces = i+1;
+		current->endsWithPentagon = 1;
+		current->pentagonAtBreakEdge = (i==0);
+		
+		fillPatch_2PentagonsLeft(sside-1-i, lside, lside-1, 1+i, is, addNewFragment(current), current);
 		is->position--;
 		is->code[is->position]-=i;
 	}
@@ -194,6 +220,7 @@ int main(int argc, char *argv[]) {
 					case 'p':
 					case 's':
 					case 't':
+					case 'x':
 						break;
 					default:
 						usage(name);
@@ -298,7 +325,7 @@ int main(int argc, char *argv[]) {
 	
 	//start the algorithm
 	if(pentagons==1){
-		if(sside==0) processStructure(is);
+		if(sside==0) processStructure(is, NULL);
 	} else if(pentagons==2){
 		if(onlyCount)
 			structureCounter = getTwoPentagonsConesCount(sside, symmetric, mirror);

@@ -17,6 +17,6 @@ boolean validateStructure(INNERSPIRAL *is);
 
 /* This method gets called each time a valid structure is found.
  */
-void processStructure(INNERSPIRAL *is);
+void processStructure(INNERSPIRAL *is, FRAGMENT *xis);
 
 #endif // end if not defined, and end the header file
