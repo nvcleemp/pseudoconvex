@@ -52,7 +52,7 @@ typedef struct _shell SHELL;
 INNERSPIRAL *getNewSpiral(int numberOfPentagons);
 FRAGMENT *addNewFragment(FRAGMENT *currentFragment);
 void freeFragment(FRAGMENT *fragment);
-SHELL *addNewShell(SHELL *currentShell);
+SHELL *addNewShell(SHELL *currentShell, int size, FRAGMENT *start);
 void freeShell(SHELL *shell);
 
 /*========== EXPORT ===========*/
