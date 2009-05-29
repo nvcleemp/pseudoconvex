@@ -60,14 +60,14 @@ void exportPlanarGraphCode(INNERSPIRAL *is);
 void exportPlanarGraphTable(INNERSPIRAL *is);
 void exportInnerSpiral(INNERSPIRAL *is);
 void exportExtendedInnerSpiral(FRAGMENT *xis);
-
+void exportShells(SHELL *shell);
 
 /*========== CONSTRUCTION ==========*/
-void fillPatch_5PentagonsLeft(int k, INNERSPIRAL *is, FRAGMENT *current, FRAGMENT *start);
-void fillPatch_4PentagonsLeft(int k1, int k2, INNERSPIRAL *is, FRAGMENT *current, FRAGMENT *start);
-void fillPatch_3PentagonsLeft(int k1, int k2, int k3, INNERSPIRAL *is, FRAGMENT *current, FRAGMENT *start);
-void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, INNERSPIRAL *is, FRAGMENT *current, FRAGMENT *start);
-void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, INNERSPIRAL *is, FRAGMENT *current, FRAGMENT *start);
-void fillPatch_0PentagonsLeft(int k1, int k2, int k3, int k4, int k5, int k6, INNERSPIRAL *is, FRAGMENT *current, FRAGMENT *start);
+void fillPatch_5PentagonsLeft(int k, INNERSPIRAL *is, FRAGMENT *current, FRAGMENT *start, int shellCounter, SHELL *currentShell);
+void fillPatch_4PentagonsLeft(int k1, int k2, INNERSPIRAL *is, FRAGMENT *current, FRAGMENT *start, int shellCounter, SHELL *currentShell);
+void fillPatch_3PentagonsLeft(int k1, int k2, int k3, INNERSPIRAL *is, FRAGMENT *current, FRAGMENT *start, int shellCounter, SHELL *currentShell);
+void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, INNERSPIRAL *is, FRAGMENT *current, FRAGMENT *start, int shellCounter, SHELL *currentShell);
+void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, INNERSPIRAL *is, FRAGMENT *current, FRAGMENT *start, int shellCounter, SHELL *currentShell);
+void fillPatch_0PentagonsLeft(int k1, int k2, int k3, int k4, int k5, int k6, INNERSPIRAL *is, FRAGMENT *current, FRAGMENT *start, int shellCounter, SHELL *currentShell);
 
 #endif // end if not defined, and end the header file

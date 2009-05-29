@@ -38,15 +38,18 @@ int symmetricMinimaIPR[5] = {0,1,2,4,9};
 int nearsymmetricMinima[3] = {0,1,2};
 int nearsymmetricMinimaIPR[3] = {1,2,4};
 
-void processStructure(INNERSPIRAL *is, FRAGMENT *xis){
+void processStructure(INNERSPIRAL *is, FRAGMENT *xis, SHELL *shell){
 	structureCounter++;
 	if(onlyCount) return;
 	switch(outputType) {
-		case 's':
+		case 'i':
 			exportInnerSpiral(is);
 			break;
 		case 'x':
 			exportExtendedInnerSpiral(xis);
+			break;
+		case 's':
+			exportShells(shell);
 			break;
 		case 'p':
 			exportPlanarGraphCode(is);
@@ -63,6 +66,7 @@ boolean validateStructure(INNERSPIRAL *is){
 
 void start5PentagonsCone(int sside, boolean mirror, INNERSPIRAL *is){
 	FRAGMENT *current = addNewFragment(NULL);
+	SHELL *shell = addNewShell(NULL, sside, current);
 	int upperbound = (mirror ? sside-1 : HALFFLOOR(sside)+1);
 
 	//pentagon after i hexagons
@@ -76,7 +80,7 @@ void start5PentagonsCone(int sside, boolean mirror, INNERSPIRAL *is){
 		current->endsWithPentagon = 1;
 		current->pentagonAtBreakEdge = (i==0);
 		
-		fillPatch_4PentagonsLeft(sside-2-i, 1+i, is, addNewFragment(current), current);
+		fillPatch_4PentagonsLeft(sside-2-i, 1+i, is, addNewFragment(current), current, sside-i-1, shell);
 		is->position--;
 		is->code[is->position]-=i;
 	}
@@ -91,7 +95,7 @@ void start5PentagonsCone(int sside, boolean mirror, INNERSPIRAL *is){
 		current->endsWithPentagon = 1;
 		current->pentagonAtBreakEdge = 0;
 		
-		fillPatch_4PentagonsLeft(0, sside-2, is, addNewFragment(current), current);
+		fillPatch_4PentagonsLeft(0, sside-2, is, addNewFragment(current), current, 0, shell);
 		is->position--;
 		is->code[is->position]-=sside-1;
 	}
@@ -99,6 +103,7 @@ void start5PentagonsCone(int sside, boolean mirror, INNERSPIRAL *is){
 
 void start4PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *is){
 	FRAGMENT *current = addNewFragment(NULL);
+	SHELL *shell = addNewShell(NULL, 2*sside+(symmetric ? 0 : 1), current);
 	int lside = (symmetric ? sside : sside + 1);
 	int upperbound = (mirror ? sside : HALFFLOOR(sside)+1);
 
@@ -113,7 +118,7 @@ void start4PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *
 		current->endsWithPentagon = 1;
 		current->pentagonAtBreakEdge = (i==0);
 		
-		fillPatch_3PentagonsLeft(sside-1-i, lside-1, 1+i, is, addNewFragment(current), current);
+		fillPatch_3PentagonsLeft(sside-1-i, lside-1, 1+i, is, addNewFragment(current), current, 2*sside+(symmetric ? 0 : 1) -i-1, shell);
 		is->position--;
 		is->code[is->position]-=i;
 	}
@@ -121,6 +126,7 @@ void start4PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *
 
 void start3PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *is){
 	FRAGMENT *current = addNewFragment(NULL);
+	SHELL *shell = addNewShell(NULL, 3*sside + (symmetric ? 0 : 2), current);
 	int lside = (symmetric ? sside : sside + 1);
 	int upperbound = (mirror ? sside : HALFFLOOR(sside)+1);
 	
@@ -135,7 +141,7 @@ void start3PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *
 		current->endsWithPentagon = 1;
 		current->pentagonAtBreakEdge = (i==0);
 		
-		fillPatch_2PentagonsLeft(sside-1-i, lside, lside-1, 1+i, is, addNewFragment(current), current);
+		fillPatch_2PentagonsLeft(sside-1-i, lside, lside-1, 1+i, is, addNewFragment(current), current, 3*sside + (symmetric ? 0 : 2) - i-1, shell);
 		is->position--;
 		is->code[is->position]-=i;
 	}
@@ -163,7 +169,7 @@ void help(char *name) {
 	fprintf(stderr, "  -e c        : Specifies the export format where c is one of\n");
 	fprintf(stderr, "                p    planar code (default)\n");
 	fprintf(stderr, "                t    adjacency lists in tabular format\n");
-	fprintf(stderr, "                s    inner spirals\n");
+	fprintf(stderr, "                i    inner spirals\n");
 }
 
 /**
@@ -217,6 +223,7 @@ int main(int argc, char *argv[]) {
 			case 'e':
 				outputType = optarg[0];
 				switch(outputType) {
+					case 'i':
 					case 'p':
 					case 's':
 					case 't':
@@ -325,7 +332,7 @@ int main(int argc, char *argv[]) {
 	
 	//start the algorithm
 	if(pentagons==1){
-		if(sside==0) processStructure(is, NULL);
+		if(sside==0) processStructure(is, NULL, NULL);
 	} else if(pentagons==2){
 		if(onlyCount)
 			structureCounter = getTwoPentagonsConesCount(sside, symmetric, mirror);
