@@ -521,39 +521,31 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, INNERSPIRAL
 	}
 	
 	if(k1==0 && k2==0 && k3==0 && k4==0 && k5==0){
-		//TODO: immediately process structure here
 		PENTFRAG(current, 1, 0)//TODO: at break edge
 		if(currentShell->size == 0) currentShell->size = 1;
 		fillPatch_0PentagonsLeft(0, 0, 0, 0, 0, 0, is, addNewFragment(current), start, shellCounter-1, currentShell);
 	} else if(k1==0 && k2==0){
 		//only one possible filling in case the following is true
 		if(k3==k5 && k4==0){
-			is->code[is->position]+=k3;
-			PENTFRAG(current, k3+1, 0)//TODO: at break edge
-			if(validateStructure(is)){
-				current->isEnd = 1;
-				processStructure(is, start, currentShell);
-				current->isEnd = 0;
-			}			
-			is->code[is->position]-=k3;
+			is->code[is->position]+=1;
+			HEXFRAG(current, 1)
+			fillPatch_1PentagonLeft(0, k3-1, 0, k5-1, 0, is, addNewFragment(current), start, shellCounter-1, currentShell);
+			is->code[is->position]-=1;
 		}
 	} else if(k1==0 && k5==0){
 		//only one possible filling in case the following is true
 		if(k2==k4 && k3==0){
-			is->code[is->position]+=k2;
-			PENTFRAG(current, k2+1, 0)//TODO: at break edge
-			if(validateStructure(is)){
-				current->isEnd = 1;
-				processStructure(is, start, currentShell);
-				current->isEnd = 0;
-			}			
-			is->code[is->position]-=k2;
+			is->code[is->position]+=1;
+			HEXFRAG(current, 1)
+			fillPatch_1PentagonLeft(k2-1, 0, k4-1, 0, 0, is, addNewFragment(current), start, shellCounter-1, currentShell);
+			is->code[is->position]-=1;
 		}
 	} else if(k4==0 && k5==0){
 		//only one possible filling in case the following is true
 		if(k1==k3 && k2==0){
 			is->code[is->position]+=k1;
 			PENTFRAG(current, k1+1, 0)//TODO: at break edge
+			//TODO: make sure that shells are closed at this point
 			if(validateStructure(is)){
 				current->isEnd = 1;
 				processStructure(is, start, currentShell);
@@ -565,6 +557,7 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, INNERSPIRAL
 		//only one possible filling in case the following is true
 		if(k1==0 && k2==k5){
 			PENTFRAG(current, 1, 0)//TODO: at break edge
+			//TODO: make sure that shells are closed at this point
 			if(validateStructure(is)){
 				current->isEnd = 1;
 				processStructure(is, start, currentShell);
