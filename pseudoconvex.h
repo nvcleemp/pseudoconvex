@@ -41,6 +41,9 @@ struct _shell {
 	int size;
 	FRAGMENT *start;
 	
+	FRAGMENT **allPossibleStarts;
+	int nrOfPossibleStarts;
+	
 	boolean isActive;
 	
 	struct _shell *next;
@@ -52,7 +55,7 @@ typedef struct _shell SHELL;
 INNERSPIRAL *getNewSpiral(int numberOfPentagons);
 FRAGMENT *addNewFragment(FRAGMENT *currentFragment);
 void freeFragment(FRAGMENT *fragment);
-SHELL *addNewShell(SHELL *currentShell, int size, FRAGMENT *start);
+SHELL *addNewShell(SHELL *currentShell, int size, FRAGMENT *start, int possibleStarts);
 void freeShell(SHELL *shell);
 
 /*========== EXPORT ===========*/

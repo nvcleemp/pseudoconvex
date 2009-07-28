@@ -51,12 +51,15 @@ void freeFragment(FRAGMENT *fragment){
 	}
 }
 
-SHELL *addNewShell(SHELL *currentShell, int size, FRAGMENT *start){
+SHELL *addNewShell(SHELL *currentShell, int size, FRAGMENT *start, int possibleStarts){
 	if(currentShell==NULL){
 		SHELL *shell = (SHELL *)malloc(sizeof(SHELL));
 		shell->prev = shell->next = NULL;
 		shell->size = size;
 		shell->start = start;
+		shell->allPossibleStarts = (FRAGMENT **)malloc(sizeof(FRAGMENT *)*possibleStarts);
+		shell->allPossibleStarts[0] = start;
+		shell->nrOfPossibleStarts = possibleStarts;
 		shell->isActive = 1;
 		return shell;
 	} else  if(currentShell->next==NULL){
@@ -66,12 +69,23 @@ SHELL *addNewShell(SHELL *currentShell, int size, FRAGMENT *start){
 		currentShell->next = shell;
 		shell->size = size;
 		shell->start = start;
+		shell->allPossibleStarts = (FRAGMENT **)malloc(sizeof(FRAGMENT *)*possibleStarts);
+		shell->allPossibleStarts[0] = start;
+		shell->nrOfPossibleStarts = possibleStarts;
 		shell->isActive = 1;
 		return shell;
 	} else {
 		SHELL *shell = currentShell->next;
 		shell->size = size;
 		shell->start = start;
+		if(shell->nrOfPossibleStarts != possibleStarts){
+			free(shell->allPossibleStarts);
+			shell->allPossibleStarts = (FRAGMENT **)malloc(sizeof(FRAGMENT *)*possibleStarts);
+			shell->allPossibleStarts[0] = start;
+			shell->nrOfPossibleStarts = possibleStarts;
+		} else {
+			shell->allPossibleStarts[0] = start;
+		}
 		shell->isActive = 1;
 		return shell;
 	}
@@ -172,7 +186,7 @@ void fillPatch_5PentagonsLeft(int k, INNERSPIRAL *is, FRAGMENT *current, FRAGMEN
 		
 	//shell handling
 	if(shellCounter==0){
-		currentShell = addNewShell(currentShell, shellCounter = k, current);
+		currentShell = addNewShell(currentShell, shellCounter = k, current, currentShell->nrOfPossibleStarts);
 	}
 	
 	//add a side of hexagons
@@ -218,7 +232,7 @@ void fillPatch_4PentagonsLeft(int k1, int k2, INNERSPIRAL *is, FRAGMENT *current
 	
 	//shell handling
 	if(shellCounter==0){
-		currentShell = addNewShell(currentShell, shellCounter = k1+k2, current);
+		currentShell = addNewShell(currentShell, shellCounter = k1+k2, current, currentShell->nrOfPossibleStarts);
 	}
 	
 	if(k1==0){
@@ -301,7 +315,7 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, INNERSPIRAL *is, FRAGMENT 
 		
 	//shell handling
 	if(shellCounter==0){
-		currentShell = addNewShell(currentShell, shellCounter = k1+k2+k3, current);
+		currentShell = addNewShell(currentShell, shellCounter = k1+k2+k3, current, currentShell->nrOfPossibleStarts);
 	}
 	
 	if(k1==0){
@@ -414,7 +428,7 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, INNERSPIRAL *is, F
 		
 	//shell handling
 	if(shellCounter==0){
-		currentShell = addNewShell(currentShell, shellCounter = k1+k2+k3+k4, current);
+		currentShell = addNewShell(currentShell, shellCounter = k1+k2+k3+k4, current, currentShell->nrOfPossibleStarts);
 	}
 	
 	if(k2==0){
@@ -517,7 +531,7 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, INNERSPIRAL
 		
 	//shell handling
 	if(shellCounter==0){
-		currentShell = addNewShell(currentShell, shellCounter = k1+k2+k3+k4+k5, current);
+		currentShell = addNewShell(currentShell, shellCounter = k1+k2+k3+k4+k5, current, currentShell->nrOfPossibleStarts);
 	}
 	
 	if(k1==0 && k2==0 && k3==0 && k4==0 && k5==0){
@@ -673,7 +687,7 @@ void fillPatch_0PentagonsLeft(int k1, int k2, int k3, int k4, int k5, int k6, IN
 		
 	//shell handling
 	if(shellCounter==0){
-		currentShell = addNewShell(currentShell, shellCounter = k1+k2+k3+k4+k5+k6, current);
+		currentShell = addNewShell(currentShell, shellCounter = k1+k2+k3+k4+k5+k6, current, currentShell->nrOfPossibleStarts);
 	}
 	
 	if(x==0 && y==0){

@@ -66,7 +66,7 @@ boolean validateStructure(INNERSPIRAL *is){
 
 void start5PentagonsCone(int sside, boolean mirror, INNERSPIRAL *is){
 	FRAGMENT *current = addNewFragment(NULL);
-	SHELL *shell = addNewShell(NULL, sside, current);
+	SHELL *shell = addNewShell(NULL, sside, current, 1);
 	int upperbound = (mirror ? sside-1 : HALFFLOOR(sside)+1);
 
 	//pentagon after i hexagons
@@ -103,7 +103,7 @@ void start5PentagonsCone(int sside, boolean mirror, INNERSPIRAL *is){
 
 void start4PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *is){
 	FRAGMENT *current = addNewFragment(NULL);
-	SHELL *shell = addNewShell(NULL, 2*sside+(symmetric ? 0 : 1), current);
+	SHELL *shell = addNewShell(NULL, 2*sside+(symmetric ? 0 : 1), current, 2);
 	int lside = (symmetric ? sside : sside + 1);
 	int upperbound = (mirror ? sside : HALFFLOOR(sside)+1);
 
@@ -126,7 +126,7 @@ void start4PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *
 
 void start3PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *is){
 	FRAGMENT *current = addNewFragment(NULL);
-	SHELL *shell = addNewShell(NULL, 3*sside + (symmetric ? 0 : 2), current);
+	SHELL *shell = addNewShell(NULL, 3*sside + (symmetric ? 0 : 2), current, 3);
 	int lside = (symmetric ? sside : sside + 1);
 	int upperbound = (mirror ? sside : HALFFLOOR(sside)+1);
 	
