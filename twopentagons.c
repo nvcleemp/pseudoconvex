@@ -23,6 +23,15 @@ void getTwoPentagonsCones(int sside, boolean symmetric, boolean mirror, INNERSPI
 
 	int i;
 
+	PATCH *patch = (PATCH *)malloc(sizeof(PATCH));
+	patch->numberOfPentagons = 2;
+	patch->boundary = (int *)malloc(4*sizeof(int));
+	patch->boundary[0] = sside;
+	for(i=1;i<4;i++) patch->boundary[i] = sside + 1 - symmetric;
+	patch->innerspiral = is;
+	patch->firstFragment = NULL;
+	patch->outershell = NULL;
+	
 	if(symmetric){
 		//sside patches with spiral code i, 2*sside (i=0,...,sside-1)
 		int upperbound = sside;
@@ -31,7 +40,7 @@ void getTwoPentagonsCones(int sside, boolean symmetric, boolean mirror, INNERSPI
 		}
 		is->code[1] = 2*sside;
 		for(i=0;i<upperbound;i++){
-			processStructure(is, NULL, NULL);
+			processStructure(patch, NULL);
 			is->code[0]++;
 		}
 	} else {
@@ -44,7 +53,7 @@ void getTwoPentagonsCones(int sside, boolean symmetric, boolean mirror, INNERSPI
 		}
 		is->code[1] = 2*sside + 1;
 		for(i=lowerbound;i<=upperbound;i++){
-			processStructure(is, NULL, NULL);
+			processStructure(patch, NULL);
 			is->code[0]++;
 		}
 	}

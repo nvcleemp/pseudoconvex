@@ -38,29 +38,29 @@ int symmetricMinimaIPR[5] = {0,1,2,4,9};
 int nearsymmetricMinima[3] = {0,1,2};
 int nearsymmetricMinimaIPR[3] = {1,2,4};
 
-void processStructure(INNERSPIRAL *is, FRAGMENT *xis, SHELL *shell){
+void processStructure(PATCH *patch, SHELL *shell){
 	structureCounter++;
 	if(onlyCount) return;
 	switch(outputType) {
 		case 'i':
-			exportInnerSpiral(is);
+			exportInnerSpiral(patch->innerspiral);
 			break;
 		case 'x':
-			exportExtendedInnerSpiral(xis);
+			exportExtendedInnerSpiral(patch->firstFragment);
 			break;
 		case 's':
 			exportShells(shell);
 			break;
 		case 'p':
-			exportPlanarGraphCode(is);
+			exportPlanarGraphCode(patch->innerspiral);
 			break;
 		case 't':
-			exportPlanarGraphCode(is);
+			exportPlanarGraphCode(patch->innerspiral);
 			break;
 	}
 }
 
-boolean validateStructure(INNERSPIRAL *is){
+boolean validateStructure(PATCH *patch){
 	return 1;
 }
 
@@ -356,7 +356,17 @@ int main(int argc, char *argv[]) {
 	
 	//start the algorithm
 	if(pentagons==1){
-		if(sside==0) processStructure(is, NULL, NULL);
+		if(sside==0) {
+			PATCH *patch = (PATCH *)malloc(sizeof(PATCH));
+			patch->numberOfPentagons = 3;
+			patch->boundary = (int *)malloc(3*sizeof(int));
+			int i;
+			for(i=0;i<5;i++) patch->boundary[i] = 0;
+			patch->innerspiral = is;
+			patch->firstFragment = NULL;
+			patch->outershell = NULL;
+			processStructure(patch, NULL);
+		}
 	} else if(pentagons==2){
 		if(onlyCount)
 			structureCounter = getTwoPentagonsConesCount(sside, symmetric, mirror);

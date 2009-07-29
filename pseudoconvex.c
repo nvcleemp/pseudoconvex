@@ -556,9 +556,9 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 			is->code[is->position]+=k1;
 			PENTFRAG(current, k1+1, 0)//TODO: at break edge
 			//TODO: make sure that shells are closed at this point
-			if(validateStructure(is)){
+			if(validateStructure(patch)){
 				current->isEnd = 1;
-				processStructure(is, patch->firstFragment, currentShell);
+				processStructure(patch, currentShell);
 				current->isEnd = 0;
 			}			
 			is->code[is->position]-=k1;
@@ -568,9 +568,9 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 		if(k1==0 && k2==k5){
 			PENTFRAG(current, 1, 0)//TODO: at break edge
 			//TODO: make sure that shells are closed at this point
-			if(validateStructure(is)){
+			if(validateStructure(patch)){
 				current->isEnd = 1;
-				processStructure(is, patch->firstFragment, currentShell);
+				processStructure(patch, currentShell);
 				current->isEnd = 0;
 			}
 		}
@@ -578,9 +578,9 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 		//only one possible filling in case the following is true
 		if(k5==0 && k1==k4){
 			PENTFRAG(current, 1, 0)//TODO: at break edge
-			if(validateStructure(is)){
+			if(validateStructure(patch)){
 				current->isEnd = 1;
-				processStructure(is, patch->firstFragment, currentShell);
+				processStructure(patch, currentShell);
 				current->isEnd = 0;
 			}
 		}
@@ -686,12 +686,10 @@ void fillPatch_0PentagonsLeft(int k1, int k2, int k3, int k4, int k5, int k6, PA
 		currentShell = addNewShell(currentShell, shellCounter = k1+k2+k3+k4+k5+k6, current);
 	}
 	
-	INNERSPIRAL *is = patch->innerspiral;
-	
 	if(x==0 && y==0){
-		if(validateStructure(is)){
+		if(validateStructure(patch)){
 			current->prev->isEnd = 1;
-			processStructure(is, patch->firstFragment, currentShell);
+			processStructure(patch, currentShell);
 			current->prev->isEnd = 0;
 		}		
 	}
