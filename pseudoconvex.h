@@ -49,6 +49,18 @@ struct _shell {
 
 typedef struct _shell SHELL;
 
+/* data structure for a pseudoconvex patch */
+
+struct _patch {
+	int numberOfPentagons;
+	int *boundary;
+	INNERSPIRAL *innerspiral;
+	FRAGMENT *firstFragment;
+	SHELL *outershell;
+};
+
+typedef struct _patch PATCH;
+
 INNERSPIRAL *getNewSpiral(int numberOfPentagons);
 FRAGMENT *addNewFragment(FRAGMENT *currentFragment);
 void freeFragment(FRAGMENT *fragment);
@@ -63,11 +75,11 @@ void exportExtendedInnerSpiral(FRAGMENT *xis);
 void exportShells(SHELL *shell);
 
 /*========== CONSTRUCTION ==========*/
-void fillPatch_5PentagonsLeft(int k, INNERSPIRAL *is, FRAGMENT *current, FRAGMENT *start, int shellCounter, SHELL *currentShell);
-void fillPatch_4PentagonsLeft(int k1, int k2, INNERSPIRAL *is, FRAGMENT *current, FRAGMENT *start, int shellCounter, SHELL *currentShell);
-void fillPatch_3PentagonsLeft(int k1, int k2, int k3, INNERSPIRAL *is, FRAGMENT *current, FRAGMENT *start, int shellCounter, SHELL *currentShell);
-void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, INNERSPIRAL *is, FRAGMENT *current, FRAGMENT *start, int shellCounter, SHELL *currentShell);
-void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, INNERSPIRAL *is, FRAGMENT *current, FRAGMENT *start, int shellCounter, SHELL *currentShell);
-void fillPatch_0PentagonsLeft(int k1, int k2, int k3, int k4, int k5, int k6, INNERSPIRAL *is, FRAGMENT *current, FRAGMENT *start, int shellCounter, SHELL *currentShell);
+void fillPatch_5PentagonsLeft(int k, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell);
+void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell);
+void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell);
+void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell);
+void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell);
+void fillPatch_0PentagonsLeft(int k1, int k2, int k3, int k4, int k5, int k6, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell);
 
 #endif // end if not defined, and end the header file

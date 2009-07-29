@@ -68,6 +68,13 @@ void start5PentagonsCone(int sside, boolean mirror, INNERSPIRAL *is){
 	FRAGMENT *current = addNewFragment(NULL);
 	SHELL *shell = addNewShell(NULL, sside, current);
 	int upperbound = (mirror ? sside-1 : HALFFLOOR(sside)+1);
+    PATCH *patch = (PATCH *)malloc(sizeof(PATCH));
+	patch->numberOfPentagons = 5;
+	patch->boundary = (int *)malloc(sizeof(int));
+	patch->boundary[0] = sside;
+	patch->innerspiral = is;
+	patch->firstFragment = current;
+	patch->outershell = shell;
 
 	//pentagon after i hexagons
 	int i;
