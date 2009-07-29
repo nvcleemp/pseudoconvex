@@ -345,9 +345,8 @@ int main(int argc, char *argv[]) {
 	{
 		int i;
 		for(i = 0; i<hexagonLayers; i++){
-			hexagonsToAdd += (sside + 1 - symmetric + hexagonLayers - i)*(6-pentagons);
+			hexagonsToAdd += (sside + 1 - symmetric + hexagonLayers - i)*(6-pentagons) - (1 - symmetric);
 		}
-		if(!symmetric) hexagonsToAdd -= hexagonLayers;
 	}
 	
 	//create the innerspiral and add the initial hexagons
