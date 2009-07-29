@@ -13,10 +13,10 @@
 
 /* This method gets called each time a completed structure is found and right before processStructure is called.
  */
-boolean validateStructure(PATCH *patch);
+boolean validateStructure(INNERSPIRAL *is);
 
 /* This method gets called each time a valid structure is found.
  */
-void processStructure(PATCH *patch, SHELL *shell);
+void processStructure(INNERSPIRAL *is, FRAGMENT *xis, SHELL *shell);
 
 #endif // end if not defined, and end the header file
