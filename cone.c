@@ -87,7 +87,7 @@ void start5PentagonsCone(int sside, boolean mirror, INNERSPIRAL *is){
 		current->endsWithPentagon = 1;
 		current->pentagonAtBreakEdge = (i==0);
 		
-		fillPatch_4PentagonsLeft(sside-2-i, 1+i, is, addNewFragment(current), current, sside-i-1, shell);
+		fillPatch_4PentagonsLeft(sside-2-i, 1+i, patch, addNewFragment(current), sside-i-1, shell);
 		is->position--;
 		is->code[is->position]-=i;
 	}
@@ -102,7 +102,7 @@ void start5PentagonsCone(int sside, boolean mirror, INNERSPIRAL *is){
 		current->endsWithPentagon = 1;
 		current->pentagonAtBreakEdge = 0;
 		
-		fillPatch_4PentagonsLeft(0, sside-2, is, addNewFragment(current), current, 0, shell);
+		fillPatch_4PentagonsLeft(0, sside-2, patch, addNewFragment(current), 0, shell);
 		is->position--;
 		is->code[is->position]-=sside-1;
 	}
@@ -113,6 +113,14 @@ void start4PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *
 	SHELL *shell = addNewShell(NULL, 2*sside+(symmetric ? 0 : 1), current);
 	int lside = (symmetric ? sside : sside + 1);
 	int upperbound = (mirror ? sside : HALFFLOOR(sside)+1);
+    PATCH *patch = (PATCH *)malloc(sizeof(PATCH));
+	patch->numberOfPentagons = 4;
+	patch->boundary = (int *)malloc(2*sizeof(int));
+	patch->boundary[0] = sside;
+	patch->boundary[1] = sside+1-symmetric;
+	patch->innerspiral = is;
+	patch->firstFragment = current;
+	patch->outershell = shell;
 
 	//pentagon after i hexagons
 	int i;
@@ -125,7 +133,7 @@ void start4PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *
 		current->endsWithPentagon = 1;
 		current->pentagonAtBreakEdge = (i==0);
 		
-		fillPatch_3PentagonsLeft(sside-1-i, lside-1, 1+i, is, addNewFragment(current), current, 2*sside+(symmetric ? 0 : 1) -i-1, shell);
+		fillPatch_3PentagonsLeft(sside-1-i, lside-1, 1+i, patch, addNewFragment(current), 2*sside+(symmetric ? 0 : 1) -i-1, shell);
 		is->position--;
 		is->code[is->position]-=i;
 	}
@@ -136,6 +144,15 @@ void start3PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *
 	SHELL *shell = addNewShell(NULL, 3*sside + (symmetric ? 0 : 2), current);
 	int lside = (symmetric ? sside : sside + 1);
 	int upperbound = (mirror ? sside : HALFFLOOR(sside)+1);
+    PATCH *patch = (PATCH *)malloc(sizeof(PATCH));
+	patch->numberOfPentagons = 3;
+	patch->boundary = (int *)malloc(3*sizeof(int));
+	patch->boundary[0] = sside;
+	patch->boundary[1] = sside+1-symmetric;
+	patch->boundary[2] = sside+1-symmetric;
+	patch->innerspiral = is;
+	patch->firstFragment = current;
+	patch->outershell = shell;
 	
 	//pentagon after i hexagons
 	int i;
@@ -148,7 +165,7 @@ void start3PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *
 		current->endsWithPentagon = 1;
 		current->pentagonAtBreakEdge = (i==0);
 		
-		fillPatch_2PentagonsLeft(sside-1-i, lside, lside-1, 1+i, is, addNewFragment(current), current, 3*sside + (symmetric ? 0 : 2) - i-1, shell);
+		fillPatch_2PentagonsLeft(sside-1-i, lside, lside-1, 1+i, patch, addNewFragment(current), 3*sside + (symmetric ? 0 : 2) - i-1, shell);
 		is->position--;
 		is->code[is->position]-=i;
 	}
