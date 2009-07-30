@@ -12,7 +12,7 @@
 #include "util.h"
 #include "pseudoconvex.h"
 
-void getTwoPentagonsCones(int sside, boolean symmetric, boolean mirror, INNERSPIRAL *is);
+void getTwoPentagonsCones(PATCH *patch, int sside, boolean symmetric, boolean mirror, FRAGMENT *currentFragment, SHELL *currentShell);
 int getTwoPentagonsConesCount(int sside, boolean symmetric, boolean mirror);
 
 #endif // end if not defined, and end the header file

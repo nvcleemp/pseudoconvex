@@ -12,8 +12,8 @@
 #include "pseudoconvex.h"
 #include "util.h"
 
-void start5PentagonsCone(int sside, boolean mirror, INNERSPIRAL *is);
-void start4PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *is);
-void start3PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *is);
+void start5PentagonsCone(PATCH *patch, int sside, boolean mirror, FRAGMENT *currentFragment, SHELL *currentShell);
+void start4PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror, FRAGMENT *currentFragment, SHELL *currentShell);
+void start3PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror, FRAGMENT *currentFragment, SHELL *currentShell);
 
 #endif // end if not defined, and end the header file

@@ -64,17 +64,12 @@ boolean validateStructure(PATCH *patch){
 	return 1;
 }
 
-void start5PentagonsCone(int sside, boolean mirror, INNERSPIRAL *is){
-	FRAGMENT *current = addNewFragment(NULL);
-	SHELL *shell = addNewShell(NULL, sside, current);
+void start5PentagonsCone(PATCH *patch, int sside, boolean mirror, FRAGMENT *currentFragment, SHELL *currentShell){
+	FRAGMENT *current = addNewFragment(currentFragment);
+	SHELL *shell = addNewShell(currentShell, sside, current);
 	int upperbound = (mirror ? sside-1 : HALFFLOOR(sside)+1);
-    PATCH *patch = (PATCH *)malloc(sizeof(PATCH));
-	patch->numberOfPentagons = 5;
-	patch->boundary = (int *)malloc(sizeof(int));
-	patch->boundary[0] = sside;
-	patch->innerspiral = is;
-	patch->firstFragment = current;
 	patch->outershell = shell;
+	INNERSPIRAL *is = patch->innerspiral;
 
 	//pentagon after i hexagons
 	int i;
@@ -108,19 +103,13 @@ void start5PentagonsCone(int sside, boolean mirror, INNERSPIRAL *is){
 	}
 }
 
-void start4PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *is){
-	FRAGMENT *current = addNewFragment(NULL);
-	SHELL *shell = addNewShell(NULL, 2*sside+(symmetric ? 0 : 1), current);
+void start4PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror, FRAGMENT *currentFragment, SHELL *currentShell){
+	FRAGMENT *current = addNewFragment(currentFragment);
+	SHELL *shell = addNewShell(currentShell, 2*sside+(symmetric ? 0 : 1), current);
 	int lside = (symmetric ? sside : sside + 1);
 	int upperbound = (mirror ? sside : HALFFLOOR(sside)+1);
-    PATCH *patch = (PATCH *)malloc(sizeof(PATCH));
-	patch->numberOfPentagons = 4;
-	patch->boundary = (int *)malloc(2*sizeof(int));
-	patch->boundary[0] = sside;
-	patch->boundary[1] = sside+1-symmetric;
-	patch->innerspiral = is;
-	patch->firstFragment = current;
 	patch->outershell = shell;
+	INNERSPIRAL *is = patch->innerspiral;
 
 	//pentagon after i hexagons
 	int i;
@@ -139,20 +128,13 @@ void start4PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *
 	}
 }
 
-void start3PentagonsCone(int sside, int symmetric, boolean mirror, INNERSPIRAL *is){
-	FRAGMENT *current = addNewFragment(NULL);
-	SHELL *shell = addNewShell(NULL, 3*sside + (symmetric ? 0 : 2), current);
+void start3PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror, FRAGMENT *currentFragment, SHELL *currentShell){
+	FRAGMENT *current = addNewFragment(currentFragment);
+	SHELL *shell = addNewShell(currentShell, 3*sside + (symmetric ? 0 : 2), current);
 	int lside = (symmetric ? sside : sside + 1);
 	int upperbound = (mirror ? sside : HALFFLOOR(sside)+1);
-    PATCH *patch = (PATCH *)malloc(sizeof(PATCH));
-	patch->numberOfPentagons = 3;
-	patch->boundary = (int *)malloc(3*sizeof(int));
-	patch->boundary[0] = sside;
-	patch->boundary[1] = sside+1-symmetric;
-	patch->boundary[2] = sside+1-symmetric;
-	patch->innerspiral = is;
-	patch->firstFragment = current;
 	patch->outershell = shell;
+	INNERSPIRAL *is = patch->innerspiral;
 	
 	//pentagon after i hexagons
 	int i;
@@ -339,44 +321,66 @@ int main(int argc, char *argv[]) {
 	else
 		fprintf(stderr, "Generating all nearsymmetric cones with side length %d and %d pentagons and surrounding the patches with %d hexagon layers.\n", sside, pentagons, hexagonLayers);
 	
+	//create the data structure for the pseudoconvex patch
+	PATCH *patch = (PATCH *)malloc(sizeof(PATCH));
+	patch->numberOfPentagons = pentagons;
+	patch->boundary = (int *)malloc((6-pentagons)*sizeof(int));
+	patch->boundary[0] = sside;
+	{
+		int i;
+		for(i=1;i<(6-pentagons);i++) patch->boundary[i] = sside + 1 - symmetric;
+	}
+
+	patch->outershell = NULL;
+			
 	//determine the amount of hexagons to add for the given number of layers
 	int hexagonsToAdd = 0;
+	FRAGMENT *currentFragment;
+	SHELL *currentShell;
 	if(onlyCount) hexagonLayers = 0;
 	{
 		int i;
 		for(i = 0; i<hexagonLayers; i++){
 			hexagonsToAdd += (sside + 1 - symmetric + hexagonLayers - i)*(6-pentagons) - (1 - symmetric);
+			if(i==0){
+				patch->firstFragment = createLayersFragment(NULL, (sside + 1 - symmetric + hexagonLayers - i)*(6-pentagons) - (1 - symmetric));
+				currentFragment = patch->firstFragment;
+				patch->outershell = addNewShell(NULL, currentFragment->faces, currentFragment);
+				currentShell = patch->outershell;
+			} else {
+				currentFragment = createLayersFragment(currentFragment, (sside + 1 - symmetric + hexagonLayers - i)*(6-pentagons) - (1 - symmetric));
+				currentShell = addNewShell(currentShell, currentFragment->faces, currentFragment);
+			}
 		}
 	}
+	
+
 	
 	//create the innerspiral and add the initial hexagons
 	INNERSPIRAL *is = getNewSpiral(pentagons);
 	is->code[0] = hexagonsToAdd;
+	patch->innerspiral = is;
 	
 	//start the algorithm
 	if(pentagons==1){
 		if(sside==0) {
-			PATCH *patch = (PATCH *)malloc(sizeof(PATCH));
-			patch->numberOfPentagons = 3;
-			patch->boundary = (int *)malloc(3*sizeof(int));
-			int i;
-			for(i=0;i<5;i++) patch->boundary[i] = 0;
-			patch->innerspiral = is;
-			patch->firstFragment = NULL;
-			patch->outershell = NULL;
-			processStructure(patch, NULL);
+			FRAGMENT *frag = addNewFragment(currentFragment);
+			frag->faces = 1;
+			frag->endsWithPentagon = 1;
+
+			processStructure(patch, addNewShell(currentShell, 1, frag));
 		}
 	} else if(pentagons==2){
 		if(onlyCount)
 			structureCounter = getTwoPentagonsConesCount(sside, symmetric, mirror);
 		else
-			getTwoPentagonsCones(sside, symmetric, mirror, is);
+			getTwoPentagonsCones(patch, sside, symmetric, mirror, currentFragment, currentShell);
 	} else if(pentagons==3){
-		start3PentagonsCone(sside, symmetric, mirror, is);
+		start3PentagonsCone(patch, sside, symmetric, mirror, currentFragment, currentShell);
 	} else if(pentagons==4){
-		start4PentagonsCone(sside, symmetric, mirror, is);
+		start4PentagonsCone(patch, sside, symmetric, mirror, currentFragment, currentShell);
 	} else {
-		start5PentagonsCone(sside, mirror, is);
+		start5PentagonsCone(patch, sside, mirror, currentFragment, currentShell);
 	}
 	
 	//print the results

@@ -27,6 +27,7 @@ FRAGMENT *addNewFragment(FRAGMENT *currentFragment){
 		FRAGMENT *fragment = (FRAGMENT *)malloc(sizeof(FRAGMENT));
 		fragment->prev = fragment->next = NULL;
 		fragment->isEnd = 0;
+		fragment->isLayersFragment = 0;
 		return fragment;
 	} else {
 		if(currentFragment->next==NULL){
@@ -35,11 +36,20 @@ FRAGMENT *addNewFragment(FRAGMENT *currentFragment){
 			fragment->prev = currentFragment;
 			currentFragment->next = fragment;
 			fragment->isEnd = 0;
+			fragment->isLayersFragment = 0;
 			return fragment;
 		} else {
 			return currentFragment->next;
 		}
 	}
+}
+
+FRAGMENT *createLayersFragment(FRAGMENT *currentFragment, int faces){
+	FRAGMENT *fragment = addNewFragment(currentFragment);
+	fragment->isLayersFragment = 1;
+	fragment->faces = faces;
+	fragment->endsWithPentagon = 0;
+	return fragment;
 }
 
 void freeFragment(FRAGMENT *fragment){
@@ -107,7 +117,10 @@ void exportInnerSpiral(INNERSPIRAL *is){
 }
 
 void exportExtendedInnerSpiral(FRAGMENT *xis){
-	fprintf(stderr, "(%d)", xis->faces - (xis->endsWithPentagon ? 1 : 0));
+	if(xis->isLayersFragment)
+		fprintf(stderr, "|%d|", xis->faces - (xis->endsWithPentagon ? 1 : 0));
+	else
+		fprintf(stderr, "(%d)", xis->faces - (xis->endsWithPentagon ? 1 : 0));
 	if(xis->endsWithPentagon) fprintf(stderr, "(P) ");
 	if(xis->next==NULL || xis->isEnd)
 		fprintf(stderr, "\n");
@@ -123,17 +136,21 @@ void exportShells(SHELL *shell){
 		current = current->prev;
 	
 	while(current!=shell){
-		fprintf(stderr, "[%d:", current->size);
-		int faces = current->size;
-		FRAGMENT *fragment = current->start;
-		while(faces>0){
-			faces -= fragment->faces;
-			fprintf(stderr, "(%d)", fragment->faces - (fragment->endsWithPentagon ? 1 : 0));
-			if(fragment->endsWithPentagon) fprintf(stderr, "(P) ");
-			fragment = fragment->next;
+		if(current->start->isLayersFragment){
+			fprintf(stderr, "[%d]", current->size);
+		} else {
+			fprintf(stderr, "[%d:", current->size);
+			int faces = current->size;
+			FRAGMENT *fragment = current->start;
+			while(faces>0){
+				faces -= fragment->faces;
+				fprintf(stderr, "(%d)", fragment->faces - (fragment->endsWithPentagon ? 1 : 0));
+				if(fragment->endsWithPentagon) fprintf(stderr, "(P) ");
+				fragment = fragment->next;
+			}
+			if(faces<0) fprintf(stderr, "\n\nERROR\n\n");
+			fprintf(stderr, "]");
 		}
-		if(faces<0) fprintf(stderr, "\n\nERROR\n\n");
-		fprintf(stderr, "]");
 		current = current->next;
 	}
 	//export last shell

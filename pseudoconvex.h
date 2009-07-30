@@ -29,6 +29,7 @@ struct frag {
 	boolean pentagonAtBreakEdge;   /* lies that pentagon at a break-edge from the previous shell */
 	
 	boolean isEnd;
+	boolean isLayersFragment;
 	
 	struct frag *next;             /* The next fragment in the spiral */
 	struct frag *prev;             /* The previous fragment in the spiral */
@@ -63,6 +64,7 @@ typedef struct _patch PATCH;
 
 INNERSPIRAL *getNewSpiral(int numberOfPentagons);
 FRAGMENT *addNewFragment(FRAGMENT *currentFragment);
+FRAGMENT *createLayersFragment(FRAGMENT *currentFragment, int faces);
 void freeFragment(FRAGMENT *fragment);
 SHELL *addNewShell(SHELL *currentShell, int size, FRAGMENT *start);
 void freeShell(SHELL *shell);
