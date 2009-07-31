@@ -61,12 +61,31 @@ void processStructure(PATCH *patch, SHELL *shell){
 }
 
 boolean validateStructure(PATCH *patch){
+	int i;
+	int symmetric;
+	if(symmetric){
+		//first check all other break-edges in clockwise direction
+		for(i=1; i<6-patch->numberOfPentagons; i++){
+		
+		}
+		if(!mirror){
+			//check all break-edges in counterclockwise direction
+			
+		}
+	} else if(!mirror){
+		//only one other spiral needs to be investigated
+		
+	} //there are no ther cases: a nearsymmetric patch is always canonical if mirror images are considered nonisomorphic
 	return 1;
 }
 
 void start5PentagonsCone(PATCH *patch, int sside, boolean mirror, FRAGMENT *currentFragment, SHELL *currentShell){
 	FRAGMENT *current = addNewFragment(currentFragment);
 	SHELL *shell = addNewShell(currentShell, sside, current);
+	if(patch->firstFragment==NULL){
+		patch->firstFragment = current;
+		patch->outershell = shell;
+	}
 	int upperbound = (mirror ? sside-1 : HALFFLOOR(sside)+1);
 	patch->outershell = shell;
 	INNERSPIRAL *is = patch->innerspiral;
@@ -105,7 +124,12 @@ void start5PentagonsCone(PATCH *patch, int sside, boolean mirror, FRAGMENT *curr
 
 void start4PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror, FRAGMENT *currentFragment, SHELL *currentShell){
 	FRAGMENT *current = addNewFragment(currentFragment);
+	current->endsWithPentagon = 1;
 	SHELL *shell = addNewShell(currentShell, 2*sside+(symmetric ? 0 : 1), current);
+	if(patch->firstFragment==NULL){
+		patch->firstFragment = current;
+		patch->outershell = shell;
+	}
 	int lside = (symmetric ? sside : sside + 1);
 	int upperbound = (mirror ? sside : HALFFLOOR(sside)+1);
 	patch->outershell = shell;
@@ -117,11 +141,9 @@ void start4PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror,
 		is->code[is->position]+=i;
 		is->position++;
 		is->code[is->position]=0;
-		
+
 		current->faces = i+1;
-		current->endsWithPentagon = 1;
 		current->pentagonAtBreakEdge = (i==0);
-		
 		fillPatch_3PentagonsLeft(sside-1-i, lside-1, 1+i, patch, addNewFragment(current), 2*sside+(symmetric ? 0 : 1) -i-1, shell);
 		is->position--;
 		is->code[is->position]-=i;
@@ -131,6 +153,10 @@ void start4PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror,
 void start3PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror, FRAGMENT *currentFragment, SHELL *currentShell){
 	FRAGMENT *current = addNewFragment(currentFragment);
 	SHELL *shell = addNewShell(currentShell, 3*sside + (symmetric ? 0 : 2), current);
+	if(patch->firstFragment==NULL){
+		patch->firstFragment = current;
+		patch->outershell = shell;
+	}
 	int lside = (symmetric ? sside : sside + 1);
 	int upperbound = (mirror ? sside : HALFFLOOR(sside)+1);
 	patch->outershell = shell;
@@ -335,8 +361,8 @@ int main(int argc, char *argv[]) {
 			
 	//determine the amount of hexagons to add for the given number of layers
 	int hexagonsToAdd = 0;
-	FRAGMENT *currentFragment;
-	SHELL *currentShell;
+	FRAGMENT *currentFragment = NULL;
+	SHELL *currentShell = NULL;
 	if(onlyCount) hexagonLayers = 0;
 	{
 		int i;
@@ -353,7 +379,6 @@ int main(int argc, char *argv[]) {
 			}
 		}
 	}
-	
 
 	
 	//create the innerspiral and add the initial hexagons
@@ -384,7 +409,8 @@ int main(int argc, char *argv[]) {
 	}
 	
 	//print the results
-	fprintf(stderr, "Found %d canonical cones satisfying the given parameters.\n", structureCounter);
+	//fprintf(stderr, "Found %d canonical cones satisfying the given parameters.\n", structureCounter);
+	fprintf(stderr, "Found %d cones satisfying the given parameters.\n", structureCounter);
 
 	return 0;
 }
