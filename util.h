@@ -18,4 +18,6 @@ typedef int boolean;
 
 #define DEBUGDUMP(var, format) fprintf(stderr, "%s:%u %s=" format "\n", __FILE__, __LINE__, #var, var);
 
+#define DEBUGASSERT(assertion) if(!(assertion)) fprintf(stderr, "%s:%u Assertion failed: %s\n", __FILE__, __LINE__, #assertion);
+
 #endif // end if not defined, and end the header file
