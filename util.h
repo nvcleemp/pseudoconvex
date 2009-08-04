@@ -14,4 +14,8 @@
 //define boolean
 typedef int boolean;
 
+#define DEBUGMSG(msg) fprintf(stderr, "%s:%u %s\n", __FILE__, __LINE__, msg);
+
+#define DEBUGDUMP(var, format) fprintf(stderr, "%s:%u %s=" format "\n", __FILE__, __LINE__, #var, var);
+
 #endif // end if not defined, and end the header file
