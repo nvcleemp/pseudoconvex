@@ -26,7 +26,6 @@ typedef struct _innerspiral INNERSPIRAL;
 struct frag {
 	int faces;                     /* The number of faces in this fragment */
 	boolean endsWithPentagon;      /* Is the last face in this fragment a pentagon */
-	boolean pentagonAtBreakEdge;   /* lies that pentagon at a break-edge from the previous shell */
 	
 	boolean isEnd;
 	boolean isLayersFragment;
