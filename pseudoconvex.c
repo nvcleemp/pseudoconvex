@@ -68,6 +68,7 @@ SHELL *addNewShell(SHELL *currentShell, int size, FRAGMENT *start){
 		shell->size = size;
 		shell->start = start;
 		shell->isActive = 1;
+		shell->nrOfPentagons = 0;
 		return shell;
 	} else  if(currentShell->next==NULL){
 		SHELL *shell = (SHELL *)malloc(sizeof(SHELL));
@@ -77,12 +78,14 @@ SHELL *addNewShell(SHELL *currentShell, int size, FRAGMENT *start){
 		shell->size = size;
 		shell->start = start;
 		shell->isActive = 1;
+		shell->nrOfPentagons = 0;
 		return shell;
 	} else {
 		SHELL *shell = currentShell->next;
 		shell->size = size;
 		shell->start = start;
 		shell->isActive = 1;
+		shell->nrOfPentagons = 0;
 		return shell;
 	}
 }
@@ -174,9 +177,10 @@ void exportShells(SHELL *shell){
 	(frag)->faces = (size); \
 	(frag)->endsWithPentagon = 0;
   
-#define PENTFRAG(frag, size) \
+#define PENTFRAG(frag, size, shell) \
 	(frag)->faces = (size); \
-	(frag)->endsWithPentagon = 1;
+	(frag)->endsWithPentagon = 1; \
+	(shell)->nrOfPentagons++;
 
 boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int nrOfBreakEdges, int* boundarySides){
 	int i, j; //counter variables
@@ -512,9 +516,10 @@ void fillPatch_5PentagonsLeft(int k, PATCH *patch, FRAGMENT *current, int shellC
 		is->position++;
 		is->code[is->position]=0;
 	
-		PENTFRAG(current, i+1)
+		PENTFRAG(current, i+1, currentShell)
 	
 		fillPatch_4PentagonsLeft(k-2-i, 1+i, patch, addNewFragment(current), shellCounter-i-1, currentShell);
+		currentShell->nrOfPentagons--;
 		is->position--;
 		is->code[is->position]-=i;
 	}
@@ -524,9 +529,10 @@ void fillPatch_5PentagonsLeft(int k, PATCH *patch, FRAGMENT *current, int shellC
 	is->position++;
 	is->code[is->position]=0;
 	
-	PENTFRAG(current, k)
+	PENTFRAG(current, k, currentShell)
 		
 	fillPatch_4PentagonsLeft(0, k-2, patch, addNewFragment(current), shellCounter-k, currentShell);
+	currentShell->nrOfPentagons--;
 	is->position--;
 	is->code[is->position]-=k-1;
 }
@@ -571,9 +577,10 @@ void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, i
 			is->position++;
 			is->code[is->position]=0;
 
-			PENTFRAG(current, i+1)
+			PENTFRAG(current, i+1, currentShell)
 
 			fillPatch_3PentagonsLeft(k1-2-i, 0, i, patch, addNewFragment(current), shellCounter-i-1, currentShell);
+			currentShell->nrOfPentagons--;
 			is->position--;
 			is->code[is->position]-=i;
 		}
@@ -593,9 +600,10 @@ void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, i
 			is->position++;
 			is->code[is->position]=0;
 
-			PENTFRAG(current, i+1)
+			PENTFRAG(current, i+1, currentShell)
 
 			fillPatch_3PentagonsLeft(k1-1-i, k2-1, 1+i, patch, addNewFragment(current), shellCounter-i-1, currentShell);
+			currentShell->nrOfPentagons--;
 			is->position--;
 			is->code[is->position]-=i;
 		}
@@ -605,9 +613,10 @@ void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, i
 		is->position++;
 		is->code[is->position]=0;
 
-		PENTFRAG(current, k1+1)
+		PENTFRAG(current, k1+1, currentShell)
 
 		fillPatch_3PentagonsLeft(0, k2-2, k1, patch, addNewFragment(current), shellCounter-k1-1, currentShell);
+		currentShell->nrOfPentagons--;
 		is->position--;
 		is->code[is->position]-=k1;
 	}
@@ -659,9 +668,10 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
 			is->position++;
 			is->code[is->position]=0;
 
-			PENTFRAG(current, i+1)
+			PENTFRAG(current, i+1, currentShell)
 
 			fillPatch_2PentagonsLeft(k1-1-i, k2, k3-1, 1+i, patch, addNewFragment(current), shellCounter-i-1, currentShell);
+			currentShell->nrOfPentagons--;
 			is->position--;
 			is->code[is->position]-=i;
 		}
@@ -681,9 +691,10 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
 			is->position++;
 			is->code[is->position]=0;
 
-			PENTFRAG(current, i+1)
+			PENTFRAG(current, i+1, currentShell)
 
 			fillPatch_2PentagonsLeft(k1-1-i, k2-1, k3, i, patch, addNewFragment(current), shellCounter-i-1, currentShell);
+			currentShell->nrOfPentagons--;
 			is->position--;
 			is->code[is->position]-=i;
 		}
@@ -693,9 +704,10 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
 		is->position++;
 		is->code[is->position]=0;
 
-		PENTFRAG(current, k1+1)
+		PENTFRAG(current, k1+1, currentShell)
 
 		fillPatch_2PentagonsLeft(0, k2-2, k3, k1-1, patch, addNewFragment(current), shellCounter-k1-1, currentShell);
+		currentShell->nrOfPentagons--;
 		is->position--;
 		is->code[is->position]-=k1;
 	} else {
@@ -714,9 +726,10 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
 			is->position++;
 			is->code[is->position]=0;
 
-			PENTFRAG(current, i+1)
+			PENTFRAG(current, i+1, currentShell)
 
 			fillPatch_2PentagonsLeft(k1-1-i, k2, k3-1, 1+i, patch, addNewFragment(current), shellCounter-i-1, currentShell);
+			currentShell->nrOfPentagons--;
 			is->position--;
 			is->code[is->position]-=i;
 		}
@@ -726,9 +739,10 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
 		is->position++;
 		is->code[is->position]=0;
 
-		PENTFRAG(current, k1+1)
+		PENTFRAG(current, k1+1, currentShell)
 
 		fillPatch_2PentagonsLeft(0, k2-1, k3-1, k1, patch, addNewFragment(current), shellCounter-k1-1, currentShell);
+		currentShell->nrOfPentagons--;
 		is->position--;
 		is->code[is->position]-=k1;
 	}
@@ -770,9 +784,10 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
 			is->position++;
 			is->code[is->position]=0;
 
-			PENTFRAG(current, i+1)
+			PENTFRAG(current, i+1, currentShell)
 
 			fillPatch_1PentagonLeft(k1-1-i, k2, k3, k4-1, 1+i, patch, addNewFragment(current), shellCounter-i-1, currentShell);
+			currentShell->nrOfPentagons--;
 			is->position--;
 			is->code[is->position]-=i;
 		}
@@ -792,9 +807,10 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
 			is->position++;
 			is->code[is->position]=0;
 
-			PENTFRAG(current, i+1)
+			PENTFRAG(current, i+1, currentShell)
 
 			fillPatch_1PentagonLeft(k1-1-i, k2, k3-1, k4, i, patch, addNewFragment(current), shellCounter-i-1, currentShell);
+			currentShell->nrOfPentagons--;
 			is->position--;
 			is->code[is->position]-=i;
 		}
@@ -804,7 +820,7 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
 		is->position++;
 		is->code[is->position]=0;
 
-		PENTFRAG(current, k1+1)
+		PENTFRAG(current, k1+1, currentShell)
 
 		fillPatch_1PentagonLeft(0, k2-1, k3-1, k4, k1-1, patch, addNewFragment(current), shellCounter-k1-1, currentShell);
 		is->position--;
@@ -825,9 +841,10 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
 			is->position++;
 			is->code[is->position]=0;
 
-			PENTFRAG(current, i+1)
+			PENTFRAG(current, i+1, currentShell)
 
 			fillPatch_1PentagonLeft(k1-1-i, k2, k3, k4-1, 1+i, patch, addNewFragment(current), shellCounter-i-1, currentShell);
+			currentShell->nrOfPentagons--;
 			is->position--;
 			is->code[is->position]-=i;
 		}
@@ -837,9 +854,10 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
 		is->position++;
 		is->code[is->position]=0;
 
-		PENTFRAG(current, k1+1)
+		PENTFRAG(current, k1+1, currentShell)
 
 		fillPatch_1PentagonLeft(0, k2-1, k3, k4-1, k1, patch, addNewFragment(current), shellCounter-k1-1, currentShell);
+		currentShell->nrOfPentagons--;
 		is->position--;
 		is->code[is->position]-=k1;
 	}
@@ -865,9 +883,10 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 	INNERSPIRAL *is = patch->innerspiral;
 	
 	if(k1==0 && k2==0 && k3==0 && k4==0 && k5==0){
-		PENTFRAG(current, 1)
+		PENTFRAG(current, 1, currentShell)
 		if(currentShell->size == 0) currentShell->size = 1;
 		fillPatch_0PentagonsLeft(0, 0, 0, 0, 0, 0, patch, addNewFragment(current), shellCounter-1, currentShell);
+		currentShell->nrOfPentagons--;
 	} else if(k1==0 && k2==0){
 		//only one possible filling in case the following is true
 		if(k3==k5 && k4==0){
@@ -888,35 +907,38 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 		//only one possible filling in case the following is true
 		if(k1==k3 && k2==0){
 			is->code[is->position]+=k1;
-			PENTFRAG(current, k1+1)
+			PENTFRAG(current, k1+1, currentShell)
 			//TODO: make sure that shells are closed at this point
 			if(validateStructure(patch)){
 				current->isEnd = 1;
 				processStructure(patch, currentShell);
 				current->isEnd = 0;
 			}			
+			currentShell->nrOfPentagons--;
 			is->code[is->position]-=k1;
 		}
 	} else if(k3==0 && k4==0){
 		//only one possible filling in case the following is true
 		if(k1==0 && k2==k5){
-			PENTFRAG(current, 1)
+			PENTFRAG(current, 1, currentShell)
 			//TODO: make sure that shells are closed at this point
 			if(validateStructure(patch)){
 				current->isEnd = 1;
 				processStructure(patch, currentShell);
 				current->isEnd = 0;
 			}
+			currentShell->nrOfPentagons--;
 		}
 	} else if(k2==0 && k3==0){
 		//only one possible filling in case the following is true
 		if(k5==0 && k1==k4){
-			PENTFRAG(current, 1)
+			PENTFRAG(current, 1, currentShell)
 			if(validateStructure(patch)){
 				current->isEnd = 1;
 				processStructure(patch, currentShell);
 				current->isEnd = 0;
 			}
+			currentShell->nrOfPentagons--;
 		}
 	} else if(k2==0){
 		//add a side of hexagons
@@ -934,9 +956,10 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 			is->position++;
 			is->code[is->position]=0;
 			
-			PENTFRAG(current, i+1)
+			PENTFRAG(current, i+1, currentShell)
 			
 			fillPatch_0PentagonsLeft(k1-1-i, k2, k3, k4, k5-1, 1+i, patch, addNewFragment(current), shellCounter-i-1, currentShell);
+			currentShell->nrOfPentagons--;
 			is->position--;
 			is->code[is->position]-=i;
 		}
@@ -956,9 +979,10 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 			is->position++;
 			is->code[is->position]=0;
 			
-			PENTFRAG(current, i+1)
+			PENTFRAG(current, i+1, currentShell)
 			
 			fillPatch_0PentagonsLeft(k1-1-i, k2, k3, k4-1, k5, i, patch, addNewFragment(current), shellCounter-i-1, currentShell);
+			currentShell->nrOfPentagons--;
 			is->position--;
 			is->code[is->position]-=i;
 		}
@@ -967,8 +991,9 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 		is->code[is->position]+=k1;
 		is->position++;
 		is->code[is->position]=0;
-		PENTFRAG(current, k1+1)
+		PENTFRAG(current, k1+1, currentShell)
 		fillPatch_0PentagonsLeft(0, k2-1, k3, k4-1, k5, k1-1, patch, addNewFragment(current), shellCounter-k1-1, currentShell);
+		currentShell->nrOfPentagons--;
 		is->position--;
 		is->code[is->position]-=k1;
 	} else {
@@ -987,9 +1012,10 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 			is->position++;
 			is->code[is->position]=0;
 			
-			PENTFRAG(current, i+1)
+			PENTFRAG(current, i+1, currentShell)
 			
 			fillPatch_0PentagonsLeft(k1-1-i, k2, k3, k4, k5-1, 1+i, patch, addNewFragment(current), shellCounter-i-1, currentShell);
+			currentShell->nrOfPentagons--;
 			is->position--;
 			is->code[is->position]-=i;
 		}
@@ -999,9 +1025,10 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 		is->position++;
 		is->code[is->position]=0;
 		
-		PENTFRAG(current, k1+1)
+		PENTFRAG(current, k1+1, currentShell)
 		
 		fillPatch_0PentagonsLeft(0, k2-1, k3, k4, k5-1, k1, patch, addNewFragment(current), shellCounter-k1-1, currentShell);
+		currentShell->nrOfPentagons--;
 		is->position--;
 		is->code[is->position]-=k1;
 	}
