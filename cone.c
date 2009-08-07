@@ -89,6 +89,12 @@ void start5PentagonsCone(PATCH *patch, int sside, boolean mirror, FRAGMENT *curr
 	int upperbound = (mirror ? sside-1 : HALFFLOOR(sside)+1);
 	patch->outershell = shell;
 	INNERSPIRAL *is = patch->innerspiral;
+	shell->nrOfBreakEdges = 1;
+	shell->breakEdge2FaceNumber[0]=0;
+	shell->nrOfPossibleStartingPoints = 0;
+	shell->nrOfPossibleMirrorStartingPoints = 1;
+	shell->mirrorStartingPoint2BreakEdge[0]=0;
+	shell->mirrorStartingPoint2FaceNumber[0]=0;
 
 	//pentagon after i hexagons
 	int i;
@@ -99,6 +105,8 @@ void start5PentagonsCone(PATCH *patch, int sside, boolean mirror, FRAGMENT *curr
 		
 		current->faces = i+1;
 		current->endsWithPentagon = 1;
+		
+		shell->nrOfPentagons = 1;
 		
 		fillPatch_4PentagonsLeft(sside-2-i, 1+i, patch, addNewFragment(current), sside-i-1, shell);
 		is->position--;

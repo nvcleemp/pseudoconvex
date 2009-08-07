@@ -497,6 +497,10 @@ void fillPatch_5PentagonsLeft(int k, PATCH *patch, FRAGMENT *current, int shellC
 	//shell handling
 	if(shellCounter==0){
 		currentShell = addNewShell(currentShell, shellCounter = k, current);
+		int sides[1];
+		sides[0]=k;
+		if(!checkShellCanonicity(patch, currentShell->prev, currentShell, 1, sides))
+			return;
 	}
 	
 	INNERSPIRAL *is = patch->innerspiral;
@@ -549,6 +553,11 @@ void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, i
 	//shell handling
 	if(shellCounter==0){
 		currentShell = addNewShell(currentShell, shellCounter = k1+k2, current);
+		int sides[2];
+		sides[0]=k1;
+		sides[1]=k2;
+		if(!checkShellCanonicity(patch, currentShell->prev, currentShell, 2, sides))
+			return;
 	}
 	
 	INNERSPIRAL *is = patch->innerspiral;
@@ -640,6 +649,12 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
 	//shell handling
 	if(shellCounter==0){
 		currentShell = addNewShell(currentShell, shellCounter = k1+k2+k3, current);
+		int sides[3];
+		sides[0]=k1;
+		sides[1]=k2;
+		sides[2]=k3;
+		if(!checkShellCanonicity(patch, currentShell->prev, currentShell, 3, sides))
+			return;
 	}
 	
 	INNERSPIRAL *is = patch->innerspiral;
@@ -764,6 +779,13 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
 	//shell handling
 	if(shellCounter==0){
 		currentShell = addNewShell(currentShell, shellCounter = k1+k2+k3+k4, current);
+		int sides[4];
+		sides[0]=k1;
+		sides[1]=k2;
+		sides[2]=k3;
+		sides[3]=k4;
+		if(!checkShellCanonicity(patch, currentShell->prev, currentShell, 4, sides))
+			return;
 	}
 	
 	INNERSPIRAL *is = patch->innerspiral;
@@ -878,6 +900,14 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 	//shell handling
 	if(shellCounter==0){
 		currentShell = addNewShell(currentShell, shellCounter = k1+k2+k3+k4+k5, current);
+		int sides[5];
+		sides[0]=k1;
+		sides[1]=k2;
+		sides[2]=k3;
+		sides[3]=k4;
+		sides[4]=k5;
+		if(!checkShellCanonicity(patch, currentShell->prev, currentShell, 5, sides))
+			return;
 	}
 	
 	INNERSPIRAL *is = patch->innerspiral;
@@ -1051,6 +1081,15 @@ void fillPatch_0PentagonsLeft(int k1, int k2, int k3, int k4, int k5, int k6, PA
 	//shell handling
 	if(shellCounter==0){
 		currentShell = addNewShell(currentShell, shellCounter = k1+k2+k3+k4+k5+k6, current);
+		int sides[6];
+		sides[0]=k1;
+		sides[1]=k2;
+		sides[2]=k3;
+		sides[3]=k4;
+		sides[4]=k5;
+		sides[5]=k6;
+		if(!checkShellCanonicity(patch, currentShell->prev, currentShell, 6, sides))
+			return;
 	}
 	
 	if(x==0 && y==0){
