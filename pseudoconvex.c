@@ -197,12 +197,14 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 		//a shell without pentagons is always canonical
 		nextShell->nrOfPossibleStartingPoints = shell->nrOfPossibleStartingPoints;
 		#ifdef _DEBUG
-		if(nextShell->nrOfPossibleStartingPoints>nrOfBreakEdges)  DEBUGMSG("Error in checkShellCanonicity: more starting points than break-edges")
+		if(nextShell->nrOfPossibleStartingPoints>nrOfBreakEdges)
+                    DEBUGMSG("Error in checkShellCanonicity: more starting points than break-edges")
 		#endif
 		for(i=0; i<shell->nrOfPossibleStartingPoints; i++){
 			nextShell->startingPoint2BreakEdge[i] = shell->startingPoint2BreakEdge[i];
 			#ifdef _DEBUG
-			if(nextShell->startingPoint2BreakEdge[i]>nrOfBreakEdges) DEBUGMSG("Error in checkShellCanonicity: reference to non-existing break-edge")
+			if(nextShell->startingPoint2BreakEdge[i]>nrOfBreakEdges)
+                            DEBUGMSG("Error in checkShellCanonicity: reference to non-existing break-edge")
 			#endif
 			nextShell->startingPoint2FaceNumber[i] = 0;
 			for(j=0; j<nextShell->startingPoint2BreakEdge[i]; j++){
@@ -211,12 +213,14 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 		}
 		nextShell->nrOfPossibleMirrorStartingPoints = shell->nrOfPossibleMirrorStartingPoints;
 		#ifdef _DEBUG
-		if(nextShell->nrOfPossibleMirrorStartingPoints>nrOfBreakEdges) DEBUGMSG("Error in checkShellCanonicity: more mirror starting points than break-edges");
+		if(nextShell->nrOfPossibleMirrorStartingPoints>nrOfBreakEdges)
+                    DEBUGMSG("Error in checkShellCanonicity: more mirror starting points than break-edges");
 		#endif
 		for(i=0; i<shell->nrOfPossibleMirrorStartingPoints; i++){
 			nextShell->startingPoint2BreakEdge[i] = shell->startingPoint2BreakEdge[i];
 			#ifdef _DEBUG
-			if(nextShell->startingPoint2BreakEdge[i]>nrOfBreakEdges) DEBUGMSG("Error in checkShellCanonicity: reference to non-existing break-edge");
+			if(nextShell->startingPoint2BreakEdge[i]>nrOfBreakEdges)
+                            DEBUGMSG("Error in checkShellCanonicity: reference to non-existing break-edge");
 			#endif
 			nextShell->startingPoint2FaceNumber[i] = 0;
 			for(j=0; j<nextShell->startingPoint2BreakEdge[i]; j++){
@@ -248,7 +252,8 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 	}	
 	
 	//Start with checking all alternate starting points in clockwise direction
-	boolean newPossibleStartingPoints[shell->nrOfPossibleStartingPoints]; //stores which starting points are still possible for the next shell
+	boolean newPossibleStartingPoints[shell->nrOfPossibleStartingPoints];
+            //stores which starting points are still possible for the next shell
 	int newNrOfStartingPoints = 0; //nr of starting points for the next shell
 	int startAt = 0;
 	for(i=0; i<shell->nrOfPossibleStartingPoints; i++){
@@ -320,7 +325,8 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 	}
 
 	//Continue with checking all starting points in counterclockwise direction
-	boolean newPossibleMirrorStartingPoints[shell->nrOfPossibleMirrorStartingPoints]; //stores which starting points are still possible for the next shell
+	boolean newPossibleMirrorStartingPoints[shell->nrOfPossibleMirrorStartingPoints];
+            //stores which starting points are still possible for the next shell
 	int newNrOfMirrorStartingPoints = 0; //nr of starting points for the next shell
 	startAt = 0;
 	for(i=0; i<shell->nrOfPossibleMirrorStartingPoints; i++){
@@ -449,9 +455,10 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 	int oldBreakEdge2NewBreakEdge[shell->nrOfBreakEdges];
 	oldBreakEdge2NewBreakEdge[0]=0;
 	for(i=1; i<shell->nrOfBreakEdges; i++){
-		while(currentPentagonPosition<shell->breakEdge2FaceNumber[i] && currentPentagonCounter<shell->nrOfPentagons){
-			extraBreakEdges++;
-			currentPentagonPosition = code[currentPentagonCounter++];
+		while(currentPentagonPosition<shell->breakEdge2FaceNumber[i] &&
+                        currentPentagonCounter<shell->nrOfPentagons){
+                    extraBreakEdges++;
+                    currentPentagonPosition = code[currentPentagonCounter++];
 		}
 		oldBreakEdge2NewBreakEdge[i]=i+extraBreakEdges;
 	}
@@ -460,7 +467,8 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 	j=0;
 	for(i=0; i<shell->nrOfPossibleStartingPoints; i++){
 		if(newPossibleStartingPoints[i]){
-			nextShell->startingPoint2BreakEdge[j++] = oldBreakEdge2NewBreakEdge[shell->startingPoint2BreakEdge[i]];
+			nextShell->startingPoint2BreakEdge[j++] =
+                                oldBreakEdge2NewBreakEdge[shell->startingPoint2BreakEdge[i]];
 			#ifdef _DEBUG
 			DEBUGASSERT(j<newNrOfStartingPoints)
 			#endif
@@ -469,7 +477,8 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 	j=0;
 	for(i=0; i<shell->nrOfPossibleMirrorStartingPoints; i++){
 		if(newPossibleMirrorStartingPoints[i]){
-			nextShell->mirrorStartingPoint2BreakEdge[j++] = oldBreakEdge2NewBreakEdge[shell->mirrorStartingPoint2BreakEdge[i]];
+			nextShell->mirrorStartingPoint2BreakEdge[j++] =
+                                oldBreakEdge2NewBreakEdge[shell->mirrorStartingPoint2BreakEdge[i]];
 			#ifdef _DEBUG
 			DEBUGASSERT(j<newNrOfMirrorStartingPoints)
 			#endif
@@ -478,10 +487,12 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 
 	//Finally we also calculate the maps startingPoint2FaceNumber and mirrorStartingPoint2FaceNumber
 	for(i=0; i<shell->nrOfPossibleStartingPoints; i++){
-		nextShell->startingPoint2FaceNumber[i] = nextShell->breakEdge2FaceNumber[nextShell->startingPoint2BreakEdge[i]];
+		nextShell->startingPoint2FaceNumber[i] =
+                        nextShell->breakEdge2FaceNumber[nextShell->startingPoint2BreakEdge[i]];
 	}
 	for(i=0; i<shell->nrOfPossibleMirrorStartingPoints; i++){
-		nextShell->mirrorStartingPoint2FaceNumber[i] = nextShell->breakEdge2FaceNumber[nextShell->mirrorStartingPoint2BreakEdge[i]];
+		nextShell->mirrorStartingPoint2FaceNumber[i] =
+                        nextShell->breakEdge2FaceNumber[nextShell->mirrorStartingPoint2BreakEdge[i]];
 	}
 	return 1;
 }
