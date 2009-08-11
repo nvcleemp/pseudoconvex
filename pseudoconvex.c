@@ -236,8 +236,6 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 	}
 	//in all other cases we need to check if the current shell is canonical
 	
-	FRAGMENT *lastFragment = nextShell->start->prev; //store the last fragment of the shell
-	
 	//First construct the code corresponding with the current shell
 	int code[shell->nrOfPentagons];
 	FRAGMENT *frag = shell->start;
