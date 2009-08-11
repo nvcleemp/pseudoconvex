@@ -249,7 +249,21 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 		}
 		code[i]+=frag->faces - 1; //-1 because we don't count the pentagon
 		i++;
-	}	
+        }
+
+        //a shell is canonical if the shell code is as large as possible
+        //larger shell code means an early pentagon
+        int shellCode[shell->size];
+
+        for (i = 0; i < shell->size; i++) {
+            shellCode[i] = 0;
+        }
+
+        int prevPentagon=0;
+        for (i = 0; i < shell->nrOfPentagons; i++) {
+            shellCode[code[i] + prevPentagon] = 1;
+            prevPentagon += code[i];
+        }
 	
 	//Start with checking all alternate starting points in clockwise direction
 	boolean newPossibleStartingPoints[shell->nrOfPossibleStartingPoints];
@@ -257,71 +271,27 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 	int newNrOfStartingPoints = 0; //nr of starting points for the next shell
 	int startAt = 0;
 	for(i=0; i<shell->nrOfPossibleStartingPoints; i++){
-		startAt += shell->startingPoint2FaceNumber[i];
-		int counter = 0;
-		frag = shell->start;
-		while(counter<startAt){
-			counter += frag->faces;
-			frag = frag->next;
-		}
-		#ifdef _DEBUG
-		DEBUGASSERT(counter<=startAt)
-		#endif
-		//we don't need an array for the alternate code
-		//just store the current value and position
-		int alternateCodePosition;
-		int alternateCodeValue;
-		//at this point the variable frag contains the start fragment from this starting point
-		//except that the last face of the previous fragment needs to be added to the beginning
-		//of this fragment.
-		if(frag->prev->endsWithPentagon){
-			//it is possible that the last fragment ended with a pentagon
-			if(code[0]!=0){
-				//we found a starting points which gives a smaller code
-				//i.e. the shell is not canonical
-				return 0;
-			} else {
-				//we already had a pentagon so we start at the second position in the code
-				//with 0 hexagons
-				alternateCodePosition=1;
-				alternateCodeValue=0;
-			}
-		} else {
-			//the last fragment ended with a hexagon so we start at the first position in the code
-			//with 1 hexagon
-			alternateCodePosition=0;
-			alternateCodeValue=1;
-		}
-		for(; alternateCodePosition<shell->nrOfPentagons; alternateCodePosition++){
-			while(!frag->endsWithPentagon){
-				alternateCodeValue += frag->faces;
-				if(frag == lastFragment){
-					frag = shell->start; //don't leave the shell
-				} else {
-					frag = frag->next;
-				}
-			}
-			alternateCodeValue += frag->faces - 1; //-1 because we don't count the pentagon
-			if(alternateCodeValue<code[alternateCodePosition]){
-				//we found a starting points which gives a smaller code
-				//i.e. the shell is not canonical
-				return 0;
-			} else if(alternateCodeValue<code[alternateCodePosition]){
-				//we found a starting points which gives a larger code
-				//i.e. we can disable this starting point for the next shell
-				//and jump out of the for
-				newPossibleStartingPoints[i]=0;
-				break;
-			} // else {we can't decide at this point}
-			alternateCodeValue = 0;
-			//reset value: can't be done at the beginning of the loop because the first time
-			//the value needs to be remembered from outside the loop
-		}
-		if(alternateCodePosition==shell->nrOfPentagons){
-			//we found neither a smaller nor a larger code
-			newPossibleStartingPoints[i]=1;
-			newNrOfStartingPoints++;
-		}
+            startAt += shell->startingPoint2FaceNumber[i];
+
+            int j;
+            for (j = 0; j < shell->size; j++) {
+                if(code[j]<code[(j+startAt)%shell->size]){
+                    //we found a starting points which gives a larger shell code
+                    //i.e. the shell is not canonical
+                    return 0;
+                } else if(code[j]>code[(j+startAt)%shell->size]){
+                    //we found a starting points which gives a smaller shell code
+                    //i.e. we can disable this starting point for the next shell
+                    //and jump out of the for
+                    newPossibleStartingPoints[i]=0;
+                    break;
+                }
+            }
+            if(j==shell->size){
+                //we found neither a smaller nor a larger code
+                newPossibleStartingPoints[i]=1;
+                newNrOfStartingPoints++;
+            }
 	}
 
 	//Continue with checking all starting points in counterclockwise direction
@@ -331,113 +301,25 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 	startAt = 0;
 	for(i=0; i<shell->nrOfPossibleMirrorStartingPoints; i++){
 		startAt += shell->mirrorStartingPoint2FaceNumber[i];
-		int counter = 0;
-		frag = shell->start;
-		while(counter<startAt){
-			counter += frag->faces;
-			frag = frag->next;
-		}
-		#ifdef _DEBUG
-		DEBUGASSERT(counter<=startAt)
-		#endif
-		//we don't need an array for the alternate code
-		//just store the current value and position
-		int alternateCodePosition;
-		int alternateCodeValue = 0;
-		//at this point the variable frag contains the start fragment from this starting point
-		//except that the last face of the previous fragment needs to be added to the beginning
-		//of this fragment.
-		//Because we are now looking at the counterclockwise direction the counterclockwise sequence
-		//will start with the last face of the previous fragment.
-		//The only exception is the starting point at break edge 0. For this the counterclockwise
-		//sequence will start with the first face of this fragment.
-		if(shell->mirrorStartingPoint2FaceNumber[i]==0){
-			if(frag->endsWithPentagon && frag->faces == 1){
-				//it is possible that this fragment consists of a pentagon
-				if(code[0]!=0){
-					//we found a starting points which gives a smaller code
-					//i.e. the shell is not canonical
-					return 0;
-				} else {
-					//we already had a pentagon so we start at the second position in the code
-					//with 0 hexagons
-					alternateCodePosition=1;
-					alternateCodeValue=0;
-				}			
-			} else {
-				//this fragment started with a hexagon so we start at the first position in the code
-				//with 1 hexagon
-				alternateCodePosition=0;
-				alternateCodeValue=1;
-			}
-			frag = lastFragment; //we need to jump to the end of the shell
-
-			//and now preceed in the normal fashion
-			for(; alternateCodePosition<shell->nrOfPentagons; alternateCodePosition++){
-				while(!frag->endsWithPentagon){
-					alternateCodeValue += frag->faces;
-					frag = frag->prev; //this time we're walking counterclockwise
-				}
-				// the fragment now ends with a pentagon
-				//because we're walking counterclockwise this is at the beginning
-				//from our viewpoint and therefore we don't add the faces to code
-				if(alternateCodeValue<code[alternateCodePosition]){
-					//we found a starting points which gives a smaller code
-					//i.e. the shell is not canonical
-					return 0;
-				} else if(alternateCodeValue<code[alternateCodePosition]){
-					//we found a starting points which gives a larger code
-					//i.e. we can disable this starting point for the next shell
-					//and jump out of the for
-					newPossibleMirrorStartingPoints[i]=0;
-					break;
-				} // else {we can't decide at this point}
-				alternateCodeValue = frag->faces - 1; //-1 because we don't count the pentagon
-				//set value: can't be done at the beginning of the loop because we need this value
-				//of the last fragment and the first case is special
-			}
-			if(alternateCodePosition==shell->nrOfPentagons){
-				//we found neither a smaller nor a larger code
-				newPossibleMirrorStartingPoints[i]=1;
-				newNrOfMirrorStartingPoints++;
-			}
-		} else {
-			frag = frag->prev; //we start with the 'next' fragment in counterclockwise direction
-
-			//and now preceed in the normal fashion
-			for(; alternateCodePosition<shell->nrOfPentagons; alternateCodePosition++){
-				while(!frag->endsWithPentagon){
-					alternateCodeValue += frag->faces;
-					if(frag==shell->start){
-						frag = lastFragment; //don't leave the shell
-					} else {
-						frag = frag->prev; //this time we're walking counterclockwise
-					}
-				}
-				// the fragment now ends with a pentagon
-				//because we're walking counterclockwise this is at the beginning
-				//from our viewpoint and therefore we don't add the faces to code
-				if(alternateCodeValue<code[alternateCodePosition]){
-					//we found a starting points which gives a smaller code
-					//i.e. the shell is not canonical
-					return 0;
-				} else if(alternateCodeValue<code[alternateCodePosition]){
-					//we found a starting points which gives a larger code
-					//i.e. we can disable this starting point for the next shell
-					//and jump out of the for
-					newPossibleMirrorStartingPoints[i]=0;
-					break;
-				} // else {we can't decide at this point}
-				alternateCodeValue = frag->faces - 1; //-1 because we don't count the pentagon
-				//set value: can't be done at the beginning of the loop because we need this value
-				//of the last fragment and the first case is special
-			}
-			if(alternateCodePosition==shell->nrOfPentagons){
-				//we found neither a smaller nor a larger code
-				newPossibleMirrorStartingPoints[i]=1;
-				newNrOfMirrorStartingPoints++;
-			}
-		}
+            int j;
+            for (j = 0; j < shell->size; j++) {
+                if(code[j]<code[(-j + startAt + shell->size)%shell->size]){
+                    //we found a starting points which gives a larger shell code
+                    //i.e. the shell is not canonical
+                    return 0;
+                } else if(code[j]>code[(-j + startAt + shell->size)%shell->size]){
+                    //we found a starting points which gives a smaller shell code
+                    //i.e. we can disable this starting point for the next shell
+                    //and jump out of the for
+                    newPossibleMirrorStartingPoints[i]=0;
+                    break;
+                }
+            }
+            if(j==shell->size){
+                //we found neither a smaller nor a larger code
+                newPossibleMirrorStartingPoints[i]=1;
+                newNrOfMirrorStartingPoints++;
+            }
 	}
 
 
