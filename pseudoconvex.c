@@ -262,7 +262,7 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
             shellCode[code[i] + prevPentagon] = 1;
             prevPentagon += code[i];
         }
-	
+
 	//Start with checking all alternate starting points in clockwise direction
 	boolean newPossibleStartingPoints[shell->nrOfPossibleStartingPoints];
             //stores which starting points are still possible for the next shell
@@ -273,11 +273,11 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 
             int j;
             for (j = 0; j < shell->size; j++) {
-                if(code[j]<code[(j+startAt)%shell->size]){
+                if(shellCode[j]<shellCode[(j+startAt)%shell->size]){
                     //we found a starting points which gives a larger shell code
                     //i.e. the shell is not canonical
                     return 0;
-                } else if(code[j]>code[(j+startAt)%shell->size]){
+                } else if(shellCode[j]>shellCode[(j+startAt)%shell->size]){
                     //we found a starting points which gives a smaller shell code
                     //i.e. we can disable this starting point for the next shell
                     //and jump out of the for
@@ -301,11 +301,11 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 		startAt += shell->mirrorStartingPoint2FaceNumber[i];
             int j;
             for (j = 0; j < shell->size; j++) {
-                if(code[j]<code[(-j + startAt + shell->size)%shell->size]){
+                if(shellCode[j]<shellCode[(-j + startAt + shell->size)%shell->size]){
                     //we found a starting points which gives a larger shell code
                     //i.e. the shell is not canonical
                     return 0;
-                } else if(code[j]>code[(-j + startAt + shell->size)%shell->size]){
+                } else if(shellCode[j]>shellCode[(-j + startAt + shell->size)%shell->size]){
                     //we found a starting points which gives a smaller shell code
                     //i.e. we can disable this starting point for the next shell
                     //and jump out of the for
