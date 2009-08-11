@@ -92,7 +92,7 @@ void start5PentagonsCone(PATCH *patch, int sside, boolean mirror, FRAGMENT *curr
 	shell->nrOfBreakEdges = 1;
 	shell->breakEdge2FaceNumber[0]=0;
 	shell->nrOfPossibleStartingPoints = 0;
-	shell->nrOfPossibleMirrorStartingPoints = 1;
+	shell->nrOfPossibleMirrorStartingPoints = mirror ? 0 : 1;
 	shell->mirrorStartingPoint2BreakEdge[0]=0;
 	shell->mirrorStartingPoint2FaceNumber[0]=0;
 
