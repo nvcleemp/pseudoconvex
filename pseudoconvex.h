@@ -69,6 +69,8 @@ struct _shell {
 	int mirrorStartingPoint2FaceNumber[5];
 	
 	int nrOfPentagons; //the number of pentagons that belong to this shell
+
+        boolean nonCyclicShell;
 };
 
 typedef struct _shell SHELL;

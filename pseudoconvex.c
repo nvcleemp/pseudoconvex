@@ -69,6 +69,7 @@ SHELL *addNewShell(SHELL *currentShell, int size, FRAGMENT *start){
 		shell->start = start;
 		shell->isActive = 1;
 		shell->nrOfPentagons = 0;
+                shell->nonCyclicShell = 0;
 		return shell;
 	} else  if(currentShell->next==NULL){
 		SHELL *shell = (SHELL *)malloc(sizeof(SHELL));
@@ -79,6 +80,7 @@ SHELL *addNewShell(SHELL *currentShell, int size, FRAGMENT *start){
 		shell->start = start;
 		shell->isActive = 1;
 		shell->nrOfPentagons = 0;
+                shell->nonCyclicShell = 0;
 		return shell;
 	} else {
 		SHELL *shell = currentShell->next;
@@ -86,6 +88,7 @@ SHELL *addNewShell(SHELL *currentShell, int size, FRAGMENT *start){
 		shell->start = start;
 		shell->isActive = 1;
 		shell->nrOfPentagons = 0;
+                shell->nonCyclicShell = 0;
 		return shell;
 	}
 }
@@ -760,19 +763,29 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 	DEBUGDUMP(k5, "%d")
 	DEBUGMSG("=======")
 	if(k1 < 0 || k2 < 0 || k3 < 0 || k4 < 0)
-		return;
+            return;
 		
 	//shell handling
 	if(shellCounter==0){
+            if((k1 == k4 && k2 + k3 + k5==0) ||
+                    (k2 == k5 && k1 + k3 + k4 == 0) ||
+                    (k3 == k1 && k2 + k4 + k5 == 0) ||
+                    (k4 == k2 && k1 + k3 + k5 == 0) ||
+                    (k5 == k3 && k1 + k2 + k4 == 0)){
+                //in this case the shell is no longer cyclic
+                currentShell = addNewShell(currentShell, shellCounter = (k1+k2+k3+k4+k5)/2+1, current);
+                currentShell->nonCyclicShell = 1;
+            } else {
 		currentShell = addNewShell(currentShell, shellCounter = k1+k2+k3+k4+k5, current);
-		int sides[5];
-		sides[0]=k1;
-		sides[1]=k2;
-		sides[2]=k3;
-		sides[3]=k4;
-		sides[4]=k5;
-		if(!checkShellCanonicity(patch, currentShell->prev, currentShell, 5, sides))
-			return;
+            }
+            int sides[5];
+            sides[0]=k1;
+            sides[1]=k2;
+            sides[2]=k3;
+            sides[3]=k4;
+            sides[4]=k5;
+            if(!checkShellCanonicity(patch, currentShell->prev, currentShell, 5, sides))
+                return;
 	}
 	
 	INNERSPIRAL *is = patch->innerspiral;
@@ -965,16 +978,27 @@ void fillPatch_0PentagonsLeft(int k1, int k2, int k3, int k4, int k5, int k6, PA
 		
 	//shell handling
 	if(shellCounter==0){
-		currentShell = addNewShell(currentShell, shellCounter = k1+k2+k3+k4+k5+k6, current);
-		int sides[6];
-		sides[0]=k1;
-		sides[1]=k2;
-		sides[2]=k3;
-		sides[3]=k4;
-		sides[4]=k5;
-		sides[5]=k6;
-		if(!checkShellCanonicity(patch, currentShell->prev, currentShell, 6, sides))
-			return;
+            if((k1 == k4 && k2 + k3 + k5 + k6==0) ||
+                    (k2 == k5 && k1 + k3 + k4 + k6 == 0) ||
+                    (k3 == k6 && k1 + k2 + k4 + k5 == 0) ||
+                    (k4 == k1 && k2 + k3 + k5 + k6 == 0) ||
+                    (k5 == k2 && k1 + k3 + k4 + k6 == 0) ||
+                    (k6 == k3 && k1 + k2 + k4 + k5 == 0)){
+                //in this case the shell is no longer cyclic
+                currentShell = addNewShell(currentShell, shellCounter = (k1+k2+k3+k4+k5+k6)/2+1, current);
+                currentShell->nonCyclicShell = 1;
+            } else {
+                currentShell = addNewShell(currentShell, shellCounter = k1+k2+k3+k4+k5+k6, current);
+            }
+            int sides[6];
+            sides[0]=k1;
+            sides[1]=k2;
+            sides[2]=k3;
+            sides[3]=k4;
+            sides[4]=k5;
+            sides[5]=k6;
+            if(!checkShellCanonicity(patch, currentShell->prev, currentShell, 6, sides))
+                return;
 	}
 	
 	if(x==0 && y==0){
