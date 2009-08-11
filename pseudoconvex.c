@@ -260,7 +260,7 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
         int prevPentagon=0;
         for (i = 0; i < shell->nrOfPentagons; i++) {
             shellCode[code[i] + prevPentagon] = 1;
-            prevPentagon += code[i];
+            prevPentagon += code[i] + 1; // +1 because we also count the pentagon
         }
 
 	//Start with checking all alternate starting points in clockwise direction
