@@ -246,7 +246,7 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 			frag = frag->next;
 		}
 		code[i]+=frag->faces - 1; //-1 because we don't count the pentagon
-		i++;
+                frag = frag->next;
         }
 
         //a shell is canonical if the shell code is as large as possible
