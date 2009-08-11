@@ -196,32 +196,20 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 	if(shell->nrOfPentagons==0){
 		//a shell without pentagons is always canonical
 		nextShell->nrOfPossibleStartingPoints = shell->nrOfPossibleStartingPoints;
-		#ifdef _DEBUG
-		if(nextShell->nrOfPossibleStartingPoints>nrOfBreakEdges)
-                    DEBUGMSG("Error in checkShellCanonicity: more starting points than break-edges")
-		#endif
+		DEBUGCONDITIONALMSG(nextShell->nrOfPossibleStartingPoints>nrOfBreakEdges, "Error in checkShellCanonicity: more starting points than break-edges")
 		for(i=0; i<shell->nrOfPossibleStartingPoints; i++){
 			nextShell->startingPoint2BreakEdge[i] = shell->startingPoint2BreakEdge[i];
-			#ifdef _DEBUG
-			if(nextShell->startingPoint2BreakEdge[i]>nrOfBreakEdges)
-                            DEBUGMSG("Error in checkShellCanonicity: reference to non-existing break-edge")
-			#endif
+			DEBUGCONDITIONALMSG(nextShell->startingPoint2BreakEdge[i]>nrOfBreakEdges, "Error in checkShellCanonicity: reference to non-existing break-edge")
 			nextShell->startingPoint2FaceNumber[i] = 0;
 			for(j=0; j<nextShell->startingPoint2BreakEdge[i]; j++){
 				nextShell->startingPoint2FaceNumber[i] += boundarySides[j];
 			}
 		}
 		nextShell->nrOfPossibleMirrorStartingPoints = shell->nrOfPossibleMirrorStartingPoints;
-		#ifdef _DEBUG
-		if(nextShell->nrOfPossibleMirrorStartingPoints>nrOfBreakEdges)
-                    DEBUGMSG("Error in checkShellCanonicity: more mirror starting points than break-edges");
-		#endif
+		DEBUGCONDITIONALMSG(nextShell->nrOfPossibleMirrorStartingPoints>nrOfBreakEdges, "Error in checkShellCanonicity: more mirror starting points than break-edges")
 		for(i=0; i<shell->nrOfPossibleMirrorStartingPoints; i++){
 			nextShell->startingPoint2BreakEdge[i] = shell->startingPoint2BreakEdge[i];
-			#ifdef _DEBUG
-			if(nextShell->startingPoint2BreakEdge[i]>nrOfBreakEdges)
-                            DEBUGMSG("Error in checkShellCanonicity: reference to non-existing break-edge");
-			#endif
+			DEBUGCONDITIONALMSG(nextShell->startingPoint2BreakEdge[i]>nrOfBreakEdges, "Error in checkShellCanonicity: reference to non-existing break-edge")
 			nextShell->startingPoint2FaceNumber[i] = 0;
 			for(j=0; j<nextShell->startingPoint2BreakEdge[i]; j++){
 				nextShell->startingPoint2FaceNumber[i] += boundarySides[j];
@@ -349,9 +337,7 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 		if(newPossibleStartingPoints[i]){
 			nextShell->startingPoint2BreakEdge[j++] =
                                 oldBreakEdge2NewBreakEdge[shell->startingPoint2BreakEdge[i]];
-			#ifdef _DEBUG
 			DEBUGASSERT(j<newNrOfStartingPoints)
-			#endif
 		}
 	}
 	j=0;
@@ -359,9 +345,7 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 		if(newPossibleMirrorStartingPoints[i]){
 			nextShell->mirrorStartingPoint2BreakEdge[j++] =
                                 oldBreakEdge2NewBreakEdge[shell->mirrorStartingPoint2BreakEdge[i]];
-			#ifdef _DEBUG
 			DEBUGASSERT(j<newNrOfMirrorStartingPoints)
-			#endif
 		}
 	}
 
@@ -378,10 +362,8 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 }
 
 void fillPatch_5PentagonsLeft(int k, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell){
-#ifdef _DEBUG
 	DEBUGDUMP(k, "%d")
 	DEBUGMSG("=======")
-#endif
 	if(k<=0)
 		return;
 		
@@ -433,11 +415,9 @@ void fillPatch_5PentagonsLeft(int k, PATCH *patch, FRAGMENT *current, int shellC
 }
 
 void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell){
-#ifdef _DEBUG
 	DEBUGDUMP(k1, "%d")
 	DEBUGDUMP(k2, "%d")
 	DEBUGMSG("=======")
-#endif
 	if(k1<0 || k2<0 || (k1==0 && k2==0))
 		return;
 	
@@ -523,12 +503,10 @@ void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, i
 }
 
 void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell){
-#ifdef _DEBUG
 	DEBUGDUMP(k1, "%d")
 	DEBUGDUMP(k2, "%d")
 	DEBUGDUMP(k3, "%d")
 	DEBUGMSG("=======")
-#endif
 	if(k1 < 0 || k2 < 0 || k3 < 0)
 		return;
 	int zeroes = 0;
@@ -655,13 +633,11 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
 }
 
 void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell){
-#ifdef _DEBUG
 	DEBUGDUMP(k1, "%d")
 	DEBUGDUMP(k2, "%d")
 	DEBUGDUMP(k3, "%d")
 	DEBUGDUMP(k4, "%d")
 	DEBUGMSG("=======")
-#endif
 	if(k1 < 0 || k2 < 0 || k3 < 0 || k4 < 0)
 		return;
 	if((k1 == 0 && k2==0) || (k2 == 0 && k3==0) || (k3 == 0 && k4==0) || (k4 == 0 && k1==0))
@@ -777,14 +753,12 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
 }
 
 void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell){
-#ifdef _DEBUG
 	DEBUGDUMP(k1, "%d")
 	DEBUGDUMP(k2, "%d")
 	DEBUGDUMP(k3, "%d")
 	DEBUGDUMP(k4, "%d")
 	DEBUGDUMP(k5, "%d")
 	DEBUGMSG("=======")
-#endif
 	if(k1 < 0 || k2 < 0 || k3 < 0 || k4 < 0)
 		return;
 		
@@ -978,7 +952,6 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 }
 
 void fillPatch_0PentagonsLeft(int k1, int k2, int k3, int k4, int k5, int k6, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell){
-#ifdef _DEBUG
 	DEBUGDUMP(k1, "%d")
 	DEBUGDUMP(k2, "%d")
 	DEBUGDUMP(k3, "%d")
@@ -986,7 +959,6 @@ void fillPatch_0PentagonsLeft(int k1, int k2, int k3, int k4, int k5, int k6, PA
 	DEBUGDUMP(k5, "%d")
 	DEBUGDUMP(k6, "%d")
 	DEBUGMSG("=======")
-#endif
 	//check to see if the boundary is closed in the hexagonal lattice
 	int x = 2*k1 + k2 - k3 - 2*k4 - k5 + k6;
 	int y = k1 + 2*k2 + k3 - k4 - 2*k5 - k6;

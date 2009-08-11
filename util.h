@@ -14,7 +14,13 @@
 //define boolean
 typedef int boolean;
 
+//#define _DEBUG
+
+#ifdef _DEBUG
+
 #define DEBUGMSG(msg) fprintf(stderr, "%s:%u %s\n", __FILE__, __LINE__, msg);
+
+#define DEBUGCONDITIONALMSG(condition, msg) if(condition) fprintf(stderr, "%s:%u %s\n", __FILE__, __LINE__, msg);
 
 #define DEBUGDUMP(var, format) fprintf(stderr, "%s:%u %s=" format "\n", __FILE__, __LINE__, #var, var);
 
@@ -28,5 +34,19 @@ typedef int boolean;
                                           }
 
 #define DEBUGASSERT(assertion) if(!(assertion)) fprintf(stderr, "%s:%u Assertion failed: %s\n", __FILE__, __LINE__, #assertion);
+
+#else
+
+#define DEBUGMSG(msg)
+
+#define DEBUGCONDITIONALMSG(condition, msg)
+
+#define DEBUGDUMP(var, format)
+
+#define DEBUGARRAYDUMP(var, size, format)
+
+#define DEBUGASSERT(assertion)
+
+#endif
 
 #endif // end if not defined, and end the header file
