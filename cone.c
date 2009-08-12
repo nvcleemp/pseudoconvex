@@ -43,19 +43,19 @@ void processStructure(PATCH *patch, SHELL *shell){
 	if(onlyCount) return;
 	switch(outputType) {
 		case 'i':
-			exportInnerSpiral(patch->innerspiral);
+			exportInnerSpiral(patch);
 			break;
 		case 'x':
-			exportExtendedInnerSpiral(patch->firstFragment);
+			exportExtendedInnerSpiral(patch);
 			break;
 		case 's':
 			exportShells(shell);
 			break;
 		case 'p':
-			exportPlanarGraphCode(patch->innerspiral);
+			exportPlanarGraphCode(patch);
 			break;
 		case 't':
-			exportPlanarGraphCode(patch->innerspiral);
+			exportPlanarGraphCode(patch);
 			break;
 	}
 }

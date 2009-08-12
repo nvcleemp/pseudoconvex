@@ -103,35 +103,40 @@ void freeShell(SHELL *shell){
 }
 
 /*========== EXPORT ===========*/
-void exportPlanarGraphCode(INNERSPIRAL *is){
+void exportPlanarGraphCode(PATCH *patch){
 
 }
 
-void exportPlanarGraphTable(INNERSPIRAL *is){
+void exportPlanarGraphTable(PATCH *patch ){
 
 }
 
-void exportInnerSpiral(INNERSPIRAL *is){
-	if(is->length==0){
-		fprintf(stderr, "patch without pentagons\n");
-		return;
-	}
-	int i;
-	for(i=0; i<is->length-1; i++)
-		fprintf(stderr, "%d, ", is->code[i]);
-	fprintf(stderr, "%d\n", is->code[is->length-1]);
+void exportInnerSpiral(PATCH *patch){
+    INNERSPIRAL* is = patch->innerspiral;
+    if(is->length==0){
+        fprintf(stderr, "patch without pentagons\n");
+        return;
+    }
+    int i;
+    for(i=0; i<is->length-1; i++)
+        fprintf(stderr, "%d, ", is->code[i]);
+    fprintf(stderr, "%d\n", is->code[is->length-1]);
 }
 
-void exportExtendedInnerSpiral(FRAGMENT *xis){
-	if(xis->isLayersFragment)
-		fprintf(stderr, "|%d|", xis->faces - (xis->endsWithPentagon ? 1 : 0));
-	else
-		fprintf(stderr, "(%d)", xis->faces - (xis->endsWithPentagon ? 1 : 0));
-	if(xis->endsWithPentagon) fprintf(stderr, "(P) ");
-	if(xis->next==NULL || xis->isEnd)
-		fprintf(stderr, "\n");
-	else
-		exportExtendedInnerSpiral(xis->next);
+void exportExtendedInnerSpiral_impl(FRAGMENT* xis){
+    if(xis->isLayersFragment)
+        fprintf(stderr, "|%d|", xis->faces - (xis->endsWithPentagon ? 1 : 0));
+    else
+        fprintf(stderr, "(%d)", xis->faces - (xis->endsWithPentagon ? 1 : 0));
+    if(xis->endsWithPentagon) fprintf(stderr, "(P) ");
+    if(xis->next==NULL || xis->isEnd)
+        fprintf(stderr, "\n");
+    else
+        exportExtendedInnerSpiral_impl(xis->next);
+}
+
+void exportExtendedInnerSpiral(PATCH *patch){
+    exportExtendedInnerSpiral_impl(patch->firstFragment);
 }
 
 void exportShells(SHELL *shell){

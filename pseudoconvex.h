@@ -95,10 +95,10 @@ SHELL *addNewShell(SHELL *currentShell, int size, FRAGMENT *start);
 void freeShell(SHELL *shell);
 
 /*========== EXPORT ===========*/
-void exportPlanarGraphCode(INNERSPIRAL *is);
-void exportPlanarGraphTable(INNERSPIRAL *is);
-void exportInnerSpiral(INNERSPIRAL *is);
-void exportExtendedInnerSpiral(FRAGMENT *xis);
+void exportPlanarGraphCode(PATCH *patch);
+void exportPlanarGraphTable(PATCH *patch);
+void exportInnerSpiral(PATCH *patch);
+void exportExtendedInnerSpiral(PATCH *patch);
 void exportShells(SHELL *shell);
 
 /*========== CANONICITY ============*/
