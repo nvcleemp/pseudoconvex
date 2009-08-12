@@ -272,7 +272,7 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 	int newNrOfStartingPoints = 0; //nr of starting points for the next shell
 	int startAt = 0;
 	for(i=0; i<shell->nrOfPossibleStartingPoints; i++){
-            startAt += shell->startingPoint2FaceNumber[i];
+            startAt = shell->startingPoint2FaceNumber[i];
 
             int j;
             for (j = 0; j < shell->size; j++) {
@@ -301,7 +301,7 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 	int newNrOfMirrorStartingPoints = 0; //nr of starting points for the next shell
 	startAt = 0;
 	for(i=0; i<shell->nrOfPossibleMirrorStartingPoints; i++){
-		startAt += shell->mirrorStartingPoint2FaceNumber[i];
+		startAt = shell->mirrorStartingPoint2FaceNumber[i];
             int j;
             for (j = 0; j < shell->size; j++) {
                 if(shellCode[j]<shellCode[(-j + startAt + shell->size)%shell->size]){
