@@ -145,7 +145,7 @@ void exportShells(SHELL *shell){
 		if(current->start->isLayersFragment){
 			fprintf(stderr, "[%d]", current->size);
 		} else {
-			fprintf(stderr, "[%d:", current->size);
+                        fprintf(stderr, "[%d:", current->size);
 			int faces = current->size;
 			FRAGMENT *fragment = current->start;
 			while(faces>0){
@@ -978,12 +978,13 @@ void fillPatch_0PentagonsLeft(int k1, int k2, int k3, int k4, int k5, int k6, PA
 		
 	//shell handling
 	if(shellCounter==0){
-            if((k1 == k4 && k2 + k3 + k5 + k6==0) ||
+            if(!(k1 + k2 + k3 + k4 + k5 + k6 == 0) &&
+                    ((k1 == k4 && k2 + k3 + k5 + k6==0) ||
                     (k2 == k5 && k1 + k3 + k4 + k6 == 0) ||
                     (k3 == k6 && k1 + k2 + k4 + k5 == 0) ||
                     (k4 == k1 && k2 + k3 + k5 + k6 == 0) ||
                     (k5 == k2 && k1 + k3 + k4 + k6 == 0) ||
-                    (k6 == k3 && k1 + k2 + k4 + k5 == 0)){
+                    (k6 == k3 && k1 + k2 + k4 + k5 == 0))){
                 //in this case the shell is no longer cyclic
                 currentShell = addNewShell(currentShell, shellCounter = (k1+k2+k3+k4+k5+k6)/2+1, current);
                 currentShell->nonCyclicShell = 1;
