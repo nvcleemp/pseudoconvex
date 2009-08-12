@@ -416,6 +416,7 @@ int main(int argc, char *argv[]) {
 			}
 		}
 	}
+        patch->numberOfLayers = hexagonLayers;
 
 	
 	//create the innerspiral and add the initial hexagons

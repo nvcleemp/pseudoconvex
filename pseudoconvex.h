@@ -83,6 +83,7 @@ struct _patch {
 	INNERSPIRAL *innerspiral;
 	FRAGMENT *firstFragment;
 	SHELL *outershell;
+        int numberOfLayers;
 };
 
 typedef struct _patch PATCH;

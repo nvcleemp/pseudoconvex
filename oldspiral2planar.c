@@ -14,7 +14,7 @@ void exportSpiralCode_impl(PATCH *patch, boolean humanReadable){
         symmetric = patch->boundary[0] - patch->boundary[1] + 1;
     }
     int vertexCounter = 0;
-    EDGE *start = createBoundary(patch->boundary[0], symmetric, pentagons, &vertexCounter);
+    EDGE *start = createBoundary(patch->boundary[0] + patch->numberOfLayers, symmetric, pentagons, &vertexCounter);
     int code[pentagons];
     int i;
     code[0] = patch->innerspiral->code[0] + 1;
