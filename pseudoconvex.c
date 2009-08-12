@@ -145,33 +145,40 @@ void exportShells(SHELL *shell){
 		if(current->start->isLayersFragment){
 			fprintf(stderr, "[%d]", current->size);
 		} else {
+                    if(current->nonCyclicShell)
+			fprintf(stderr, "[* %d:", current->size);
+                    else
                         fprintf(stderr, "[%d:", current->size);
-			int faces = current->size;
-			FRAGMENT *fragment = current->start;
-			while(faces>0){
-				faces -= fragment->faces;
-				fprintf(stderr, "(%d)", fragment->faces - (fragment->endsWithPentagon ? 1 : 0));
-				if(fragment->endsWithPentagon) fprintf(stderr, "(P) ");
-				fragment = fragment->next;
-			}
-			if(faces<0) fprintf(stderr, "\n\nERROR\n\n");
-			fprintf(stderr, "]");
+                    int faces = current->size;
+                    FRAGMENT *fragment = current->start;
+                    while(faces>0){
+                            faces -= fragment->faces;
+                            fprintf(stderr, "(%d)", fragment->faces - (fragment->endsWithPentagon ? 1 : 0));
+                            if(fragment->endsWithPentagon) fprintf(stderr, "(P) ");
+                            fragment = fragment->next;
+                    }
+                    if(faces<0) fprintf(stderr, "\n\nERROR\n\n");
+                    fprintf(stderr, "]");
 		}
 		current = current->next;
 	}
 	//export last shell
-	fprintf(stderr, "[%d:", current->size);
-	int faces = current->size;
-	FRAGMENT *fragment = current->start;
-	while(faces>0 && fragment!=NULL && (fragment->prev==NULL || !fragment->prev->isEnd)){
-		faces -= fragment->faces;
-		fprintf(stderr, "(%d)", fragment->faces - (fragment->endsWithPentagon ? 1 : 0));
-		if(fragment->endsWithPentagon) fprintf(stderr, "(P) ");
-		fragment = fragment->next;
-	}
-	if(faces<0) fprintf(stderr, "\n\nERROR\n\n");
-	
-	fprintf(stderr, "]\n");
+        if(current->size>0){
+            fprintf(stderr, "[%d:", current->size);
+            int faces = current->size;
+            FRAGMENT *fragment = current->start;
+            while(faces>0 && fragment!=NULL && (fragment->prev==NULL || !fragment->prev->isEnd)){
+                    faces -= fragment->faces;
+                    fprintf(stderr, "(%d)", fragment->faces - (fragment->endsWithPentagon ? 1 : 0));
+                    if(fragment->endsWithPentagon) fprintf(stderr, "(P) ");
+                    fragment = fragment->next;
+            }
+            if(faces<0) fprintf(stderr, "\n\nERROR\n\n");
+
+            fprintf(stderr, "]\n");
+        } else {
+            fprintf(stderr, "\n");
+        }
 }
 
 /*========== CONSTRUCTION ==========*/
