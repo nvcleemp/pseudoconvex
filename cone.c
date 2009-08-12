@@ -142,7 +142,17 @@ void start4PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror,
 	int upperbound = (mirror ? sside : HALFFLOOR(sside)+1);
 	patch->outershell = shell;
 	INNERSPIRAL *is = patch->innerspiral;
-
+	shell->nrOfBreakEdges = 2;
+	shell->breakEdge2FaceNumber[0]=0;
+	shell->breakEdge2FaceNumber[1]=sside;
+	shell->nrOfPossibleStartingPoints = 1;
+        shell->startingPoint2BreakEdge[0] = 1;
+        shell->startingPoint2FaceNumber[0] = sside;
+	shell->nrOfPossibleMirrorStartingPoints = mirror ? 0 : 2;
+	shell->mirrorStartingPoint2BreakEdge[0]=0;
+	shell->mirrorStartingPoint2FaceNumber[0]=0;
+	shell->mirrorStartingPoint2BreakEdge[1]=1;
+	shell->mirrorStartingPoint2FaceNumber[1]=sside;
 	//pentagon after i hexagons
 	int i;
 	for(i=0; i<upperbound; i++){
@@ -171,6 +181,22 @@ void start3PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror,
 	int upperbound = (mirror ? sside : HALFFLOOR(sside)+1);
 	patch->outershell = shell;
 	INNERSPIRAL *is = patch->innerspiral;
+	shell->nrOfBreakEdges = 3;
+	shell->breakEdge2FaceNumber[0]=0;
+	shell->breakEdge2FaceNumber[1]=sside;
+	shell->breakEdge2FaceNumber[2]= 2*sside + (symmetric ? 0 : 1);
+	shell->nrOfPossibleStartingPoints = 2;
+        shell->startingPoint2BreakEdge[0] = 1;
+        shell->startingPoint2FaceNumber[0] = sside;
+        shell->startingPoint2BreakEdge[1] = 2;
+        shell->startingPoint2FaceNumber[1] = 2*sside + (symmetric ? 0 : 1);
+	shell->nrOfPossibleMirrorStartingPoints = mirror ? 0 : 3;
+	shell->mirrorStartingPoint2BreakEdge[0]=0;
+	shell->mirrorStartingPoint2FaceNumber[0]=0;
+	shell->mirrorStartingPoint2BreakEdge[1]=1;
+	shell->mirrorStartingPoint2FaceNumber[1]=sside;
+	shell->mirrorStartingPoint2BreakEdge[2]=2;
+	shell->mirrorStartingPoint2FaceNumber[2]=2*sside + (symmetric ? 0 : 1);
 	
 	//pentagon after i hexagons
 	int i;
