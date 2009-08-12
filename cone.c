@@ -55,7 +55,7 @@ void processStructure(PATCH *patch, SHELL *shell){
 			exportPlanarGraphCode(patch);
 			break;
 		case 't':
-			exportPlanarGraphCode(patch);
+			exportPlanarGraphTable(patch);
 			break;
 	}
 }

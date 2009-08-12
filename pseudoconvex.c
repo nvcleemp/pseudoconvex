@@ -104,11 +104,11 @@ void freeShell(SHELL *shell){
 
 /*========== EXPORT ===========*/
 void exportPlanarGraphCode(PATCH *patch){
-
+    exportSpiralCode_impl(patch, 0);
 }
 
 void exportPlanarGraphTable(PATCH *patch ){
-
+    exportSpiralCode_impl(patch, 1);
 }
 
 void exportInnerSpiral(PATCH *patch){

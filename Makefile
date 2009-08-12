@@ -1,7 +1,7 @@
 CFLAGS = -Wall -g
 
 TARG = cone$(SUFFIX)
-OBJS = cone.o pseudoconvex.o twopentagons.o
+OBJS = cone.o pseudoconvex.o twopentagons.o oldspiral2planar.o
 
 all: $(TARG)
 
