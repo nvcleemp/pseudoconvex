@@ -1013,7 +1013,23 @@ void fillPatch_0PentagonsLeft(int k1, int k2, int k3, int k4, int k5, int k6, PA
             sides[5]=k6;
             if(!checkShellCanonicity(patch, currentShell->prev, currentShell, 6, sides))
                 return;
-	}
+	} else {
+            //complete shell
+            //there are only hexagons remaining, so we only add one fragment containing all
+            //hexagons and create a new empty dummy shell as next shell
+            //TODO: this is not correct. Fix this.
+            HEXFRAG(current, shellCounter)
+            currentShell = addNewShell(currentShell, 0, addNewFragment(current));
+            int sides[6];
+            sides[0]=0;
+            sides[1]=0;
+            sides[2]=0;
+            sides[3]=0;
+            sides[4]=0;
+            sides[5]=0;
+            if(!checkShellCanonicity(patch, currentShell->prev, currentShell, 6, sides))
+                return;
+        }
 	
 	if(x==0 && y==0){
 		if(validateStructure(patch)){
