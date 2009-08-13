@@ -201,6 +201,10 @@ void exportShells(SHELL *shell){
 	(shell)->nrOfPentagons++;
 
 boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int nrOfBreakEdges, int* boundarySides){
+    if(shell->nonCyclicShell){
+        return 1; //TODO: implement this case!!!
+    }
+
 	int i, j; //counter variables
 	nextShell->nrOfBreakEdges = nrOfBreakEdges;
 
