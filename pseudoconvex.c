@@ -176,7 +176,8 @@ void exportShells(SHELL *shell){
             FRAGMENT *fragment = current->start;
             while(faces>0 && fragment!=NULL && (fragment->prev==NULL || !fragment->prev->isEnd)){
                     faces -= fragment->faces;
-                    fprintf(stderr, "(%d)", fragment->faces - (fragment->endsWithPentagon ? 1 : 0));
+                    if(fragment->faces - (fragment->endsWithPentagon ? 1 : 0)!=0)
+                        fprintf(stderr, "(%d)", fragment->faces - (fragment->endsWithPentagon ? 1 : 0));
                     if(fragment->endsWithPentagon) fprintf(stderr, "(P) ");
                     fragment = fragment->next;
             }
