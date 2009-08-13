@@ -695,7 +695,7 @@ void specialCase_C12H8orC14H8(PATCH *patch, FRAGMENT *current, SHELL *currentShe
 
     //First we try C12H8
     nextShell = addNewShell(currentShell, 3, current);
-    currentShell->nonCyclicShell =1;//C12H8 is noncyclic
+    nextShell->nonCyclicShell =1;//C12H8 is noncyclic
 
     int sides[4];
     sides[0]=0;
