@@ -655,20 +655,26 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
 	DEBUGDUMP(k4, "%d")
 	DEBUGMSG("=======")
 	if(k1 < 0 || k2 < 0 || k3 < 0 || k4 < 0)
-		return;
+            return;
 	if((k1 == 0 && k2==0) || (k2 == 0 && k3==0) || (k3 == 0 && k4==0) || (k4 == 0 && k1==0))
-		return;
+            return;
 		
 	//shell handling
 	if(shellCounter==0){
+            if((k1 == 0 && k3 == 0 && k2 == k4) || (k2 == 0 && k4 == 0 && k1 == k3)){
+                //the size is either k1 + 1 == k3 + 1 or k2 + 1 == k4 + 1
+		currentShell = addNewShell(currentShell, shellCounter = k1 + k2 + 1, current);
+                currentShell->nonCyclicShell = 1;
+            } else {
 		currentShell = addNewShell(currentShell, shellCounter = k1+k2+k3+k4, current);
-		int sides[4];
-		sides[0]=k1;
-		sides[1]=k2;
-		sides[2]=k3;
-		sides[3]=k4;
-		if(!checkShellCanonicity(patch, currentShell->prev, currentShell, 4, sides))
-			return;
+            }
+            int sides[4];
+            sides[0]=k1;
+            sides[1]=k2;
+            sides[2]=k3;
+            sides[3]=k4;
+            if(!checkShellCanonicity(patch, currentShell->prev, currentShell, 4, sides))
+                    return;
 	}
 	
 	INNERSPIRAL *is = patch->innerspiral;
@@ -989,54 +995,44 @@ void fillPatch_0PentagonsLeft(int k1, int k2, int k3, int k4, int k5, int k6, PA
 	int x = 2*k1 + k2 - k3 - 2*k4 - k5 + k6;
 	int y = k1 + 2*k2 + k3 - k4 - 2*k5 - k6;
 		
-	//shell handling
-	if(shellCounter==0){
-            if(!(k1 + k2 + k3 + k4 + k5 + k6 == 0) &&
-                    ((k1 == k4 && k2 + k3 + k5 + k6==0) ||
-                    (k2 == k5 && k1 + k3 + k4 + k6 == 0) ||
-                    (k3 == k6 && k1 + k2 + k4 + k5 == 0) ||
-                    (k4 == k1 && k2 + k3 + k5 + k6 == 0) ||
-                    (k5 == k2 && k1 + k3 + k4 + k6 == 0) ||
-                    (k6 == k3 && k1 + k2 + k4 + k5 == 0))){
-                //in this case the shell is no longer cyclic
-                currentShell = addNewShell(currentShell, shellCounter = (k1+k2+k3+k4+k5+k6)/2+1, current);
-                currentShell->nonCyclicShell = 1;
-            } else {
-                currentShell = addNewShell(currentShell, shellCounter = k1+k2+k3+k4+k5+k6, current);
-            }
-            int sides[6];
-            sides[0]=k1;
-            sides[1]=k2;
-            sides[2]=k3;
-            sides[3]=k4;
-            sides[4]=k5;
-            sides[5]=k6;
-            if(!checkShellCanonicity(patch, currentShell->prev, currentShell, 6, sides))
-                return;
-	} else {
-            //complete shell
-            //there are only hexagons remaining, so we only add one fragment containing all
-            //hexagons and create a new empty dummy shell as next shell
-            //TODO: this is not correct. Fix this.
-            HEXFRAG(current, shellCounter)
-            currentShell = addNewShell(currentShell, 0, addNewFragment(current));
-            int sides[6];
-            sides[0]=0;
-            sides[1]=0;
-            sides[2]=0;
-            sides[3]=0;
-            sides[4]=0;
-            sides[5]=0;
-            if(!checkShellCanonicity(patch, currentShell->prev, currentShell, 6, sides))
-                return;
-        }
-	
 	if(x==0 && y==0){
+            //shell handling
+            if(shellCounter==0){
+                if(!(k1 + k2 + k3 + k4 + k5 + k6 == 0) &&
+                        ((k1 == k4 && k2 + k3 + k5 + k6==0) ||
+                        (k2 == k5 && k1 + k3 + k4 + k6 == 0) ||
+                        (k3 == k6 && k1 + k2 + k4 + k5 == 0) ||
+                        (k4 == k1 && k2 + k3 + k5 + k6 == 0) ||
+                        (k5 == k2 && k1 + k3 + k4 + k6 == 0) ||
+                        (k6 == k3 && k1 + k2 + k4 + k5 == 0))){
+                    //in this case the shell is no longer cyclic
+                    currentShell = addNewShell(currentShell, shellCounter = (k1+k2+k3+k4+k5+k6)/2+1, current);
+                    currentShell->nonCyclicShell = 1;
+                } else {
+                    currentShell = addNewShell(currentShell, shellCounter = k1+k2+k3+k4+k5+k6, current);
+                }
+                int sides[6];
+                sides[0]=k1;
+                sides[1]=k2;
+                sides[2]=k3;
+                sides[3]=k4;
+                sides[4]=k5;
+                sides[5]=k6;
+                if(!checkShellCanonicity(patch, currentShell->prev, currentShell, 6, sides))
+                    return;
 		if(validateStructure(patch)){
 			current->prev->isEnd = 1;
 			processStructure(patch, currentShell);
 			current->prev->isEnd = 0;
-		}		
-	}
+		}
+            } else {
+                //complete shell
+                HEXFRAG(current, k1+1)
+                //no need to add something to the code: where already past the last pentagon
+		fillPatch_0PentagonsLeft(k2-1, k3, k4, k5, k6-1, k1 + 1, patch, addNewFragment(current), shellCounter-k1-1, currentShell);
+            }
+	
+        }
+
 }
 
