@@ -672,6 +672,90 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
 	}
 }
 
+void specialCase_C12H8orC14H8(PATCH *patch, FRAGMENT *current, SHELL *currentShell){
+    //This method is called when we have a shell with as boundary 0 2 0 2
+    //There are two possible fillings: one with 3 faces that is noncyclic
+    //and one with 4 faces that is cyclic.
+    //       /\               //
+    //   __ /  \ __           //
+    //  /  |    |  \          //
+    //  \__|    |__/          //
+    //      \  /              //
+    //       \/               //
+    // or
+    //       /\               //
+    //   __ /  \ __           //
+    //  /   \__/   \          //
+    //  \__ /  \ __/          //
+    //      \  /              //
+    //       \/               //
+
+    SHELL *nextShell;
+    FRAGMENT *secondFragment;
+
+    //First we try C12H8
+    nextShell = addNewShell(currentShell, 3, current);
+    currentShell->nonCyclicShell =1;//C12H8 is noncyclic
+
+    int sides[4];
+    sides[0]=0;
+    sides[1]=2;
+    sides[2]=0;
+    sides[3]=2;
+    if(!checkShellCanonicity(patch, currentShell, nextShell, 4, sides))
+        return;
+    INNERSPIRAL *is = patch->innerspiral;
+    is->position++;
+    is->code[is->position]=0;
+
+    PENTFRAG(current, 1, nextShell)
+    secondFragment = addNewFragment(current);
+    is->code[is->position]+=1;
+    is->position++;
+    is->code[is->position]=0;
+    PENTFRAG(secondFragment, 2, nextShell)
+
+    if(validateStructure(patch)){
+            secondFragment->isEnd = 1;
+            processStructure(patch, nextShell);
+            secondFragment->isEnd = 0;
+    }
+
+    nextShell->nrOfPentagons--;
+    nextShell->nrOfPentagons--;
+    is->position--;
+    is->code[is->position]-=1;
+    is->position--;
+
+    //Then we try C14H8
+    nextShell = addNewShell(currentShell, 4, current);
+    //no need to check canonicity of previous shell: this is already done in C12H8
+    is->code[is->position]+=1;
+    is->position++;
+    is->code[is->position]=0;
+    PENTFRAG(secondFragment, 2, nextShell)
+
+    secondFragment = addNewFragment(current);
+    is->code[is->position]+=1;
+    is->position++;
+    is->code[is->position]=0;
+    PENTFRAG(secondFragment, 2, nextShell)
+
+    if(validateStructure(patch)){
+            secondFragment->isEnd = 1;
+            processStructure(patch, nextShell);
+            secondFragment->isEnd = 0;
+    }
+
+    nextShell->nrOfPentagons--;
+    nextShell->nrOfPentagons--;
+    is->position--;
+    is->code[is->position]-=1;
+    is->position--;
+    is->code[is->position]-=1;
+
+}
+
 void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell){
 	DEBUGDUMP(k1, "%d")
 	DEBUGDUMP(k2, "%d")
@@ -687,7 +771,10 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
 		
 	//shell handling
 	if(shellCounter==0){
-            if((k1 == 0 && k3 == 0 && k2 == k4) || (k2 == 0 && k4 == 0 && k1 == k3)){
+            if((k1 == 0 && k3 == 0 && k2 == 2 && k4 == 2) || (k2 == 0 && k4 == 0 && k1 == 2 && k3 == 2)){
+                specialCase_C12H8orC14H8(patch, current, currentShell);
+                return;
+            } else if((k1 == 0 && k3 == 0 && k2 == k4) || (k2 == 0 && k4 == 0 && k1 == k3)){
                 //the size is either k1 + 1 == k3 + 1 or k2 + 1 == k4 + 1
 		currentShell = addNewShell(currentShell, shellCounter = k1 + k2 + 1, current);
                 currentShell->nonCyclicShell = 1;
