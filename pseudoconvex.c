@@ -733,7 +733,7 @@ void specialCase_C12H8orC14H8(PATCH *patch, FRAGMENT *current, SHELL *currentShe
     is->code[is->position]+=1;
     is->position++;
     is->code[is->position]=0;
-    PENTFRAG(secondFragment, 2, nextShell)
+    PENTFRAG(current, 2, nextShell)
 
     secondFragment = addNewFragment(current);
     is->code[is->position]+=1;
