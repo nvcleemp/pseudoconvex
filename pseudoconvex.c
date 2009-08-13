@@ -8,6 +8,7 @@
 
 #include "pseudoconvex.h"
 #include "pseudoconvexuser.h"
+#include "oldspiral2planar.h"
 
 #include <stdio.h>
 #include <stdlib.h>
