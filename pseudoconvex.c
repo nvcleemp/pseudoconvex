@@ -658,6 +658,8 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
             return;
 	if((k1 == 0 && k2==0) || (k2 == 0 && k3==0) || (k3 == 0 && k4==0) || (k4 == 0 && k1==0))
             return;
+        if((k1 == 0 && k3 == 0 && k2 != k4) || (k2 == 0 && k4 == 0 && k1 != k3))
+            return;
 		
 	//shell handling
 	if(shellCounter==0){
