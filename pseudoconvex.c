@@ -127,7 +127,7 @@ void exportInnerSpiral(PATCH *patch){
 void exportExtendedInnerSpiral_impl(FRAGMENT* xis){
     if(xis->isLayersFragment)
         fprintf(stderr, "|%d|", xis->faces - (xis->endsWithPentagon ? 1 : 0));
-    else
+    else if(xis->faces - (xis->endsWithPentagon ? 1 : 0)!=0)
         fprintf(stderr, "(%d)", xis->faces - (xis->endsWithPentagon ? 1 : 0));
     if(xis->endsWithPentagon) fprintf(stderr, "(P) ");
     if(xis->next==NULL || xis->isEnd)
@@ -159,7 +159,8 @@ void exportShells(SHELL *shell){
                     FRAGMENT *fragment = current->start;
                     while(faces>0){
                             faces -= fragment->faces;
-                            fprintf(stderr, "(%d)", fragment->faces - (fragment->endsWithPentagon ? 1 : 0));
+                            if(fragment->faces - (fragment->endsWithPentagon ? 1 : 0)!=0)
+                                fprintf(stderr, "(%d)", fragment->faces - (fragment->endsWithPentagon ? 1 : 0));
                             if(fragment->endsWithPentagon) fprintf(stderr, "(P) ");
                             fragment = fragment->next;
                     }
