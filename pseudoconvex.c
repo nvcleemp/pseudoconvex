@@ -796,8 +796,10 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
                 //in this case the shell is no longer cyclic
                 currentShell = addNewShell(currentShell, shellCounter = (k1+k2+k3+k4+k5)/2+1, current);
                 currentShell->nonCyclicShell = 1;
+            } else if (k1 + k2 + k3 + k4 + k5 == 0){
+                currentShell = addNewShell(currentShell, shellCounter = 1, current);
             } else {
-		currentShell = addNewShell(currentShell, shellCounter = k1+k2+k3+k4+k5, current);
+                currentShell = addNewShell(currentShell, shellCounter = k1+k2+k3+k4+k5, current);
             }
             int sides[5];
             sides[0]=k1;
