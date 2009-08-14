@@ -959,12 +959,7 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
                     } else {
 			is->code[is->position]+=k1;
 			PENTFRAG(current, k1+1, currentShell)
-			//TODO: make sure that shells are closed at this point
-			if(validateStructure(patch)){
-				current->isEnd = 1;
-				processStructure(patch, currentShell);
-				current->isEnd = 0;
-			}
+                        fillPatch_0PentagonsLeft(0, 0, 0, 0, 0, 0, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell);
 			currentShell->nrOfPentagons--;
 			is->code[is->position]-=k1;
                     }
