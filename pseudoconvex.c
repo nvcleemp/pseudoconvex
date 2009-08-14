@@ -972,42 +972,20 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 	} else if(k3==0 && k4==0){
 		//only one possible filling in case the following is true
 		if(k1==0 && k2==k5){
-                    if(shellCounter==1){
-			//is->code[is->position]+=0;
-                        PENTFRAG(current, 1, currentShell)
-                        fillPatch_0PentagonsLeft(k2-1, 0, 0, k2-1, 0, 0, patch, addNewFragment(current), 0, currentShell);
-                        //is->code[is->position]-=0;
-			currentShell->nrOfPentagons--;
-                    } else {
-			PENTFRAG(current, 1, currentShell)
-			//TODO: make sure that shells are closed at this point
-			if(validateStructure(patch)){
-				current->isEnd = 1;
-				processStructure(patch, currentShell);
-				current->isEnd = 0;
-			}
-			currentShell->nrOfPentagons--;
-                    }
+                    //is->code[is->position]+=0;
+                    PENTFRAG(current, 1, currentShell)
+                    fillPatch_0PentagonsLeft(k2-1, 0, 0, k2-1, 0, 0, patch, addNewFragment(current), shellCounter-1, currentShell);
+                    //is->code[is->position]-=0;
+                    currentShell->nrOfPentagons--;
 		}
 	} else if(k2==0 && k3==0){
 		//only one possible filling in case the following is true
 		if(k5==0 && k1==k4){
-                    if(k1>1 && shellCounter==1){
-			//is->code[is->position]+=0;
-                        PENTFRAG(current, 1, currentShell)
-                        fillPatch_0PentagonsLeft(k1-1, 0, 0, k1-1, 0, 0, patch, addNewFragment(current), 0, currentShell);
-                        //is->code[is->position]-=0;
-			currentShell->nrOfPentagons--;
-                    } else {
-			PENTFRAG(current, 1, currentShell)
-                        //TODO: make sure that shells are closed at this point
-			if(validateStructure(patch)){
-				current->isEnd = 1;
-				processStructure(patch, currentShell);
-				current->isEnd = 0;
-			}
-			currentShell->nrOfPentagons--;
-                    }
+                    //is->code[is->position]+=0;
+                    PENTFRAG(current, 1, currentShell)
+                    fillPatch_0PentagonsLeft(k1-1, 0, 0, k1-1, 0, 0, patch, addNewFragment(current), shellCounter-1, currentShell);
+                    //is->code[is->position]-=0;
+                    currentShell->nrOfPentagons--;
 		}
 	} else if(k2==0){
 		//add a side of hexagons
