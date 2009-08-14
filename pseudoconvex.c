@@ -384,7 +384,7 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 }
 
 boolean checkNonCyclicShellCanonicity(SHELL *shell) {
-    int i, j; //counter variables
+    int i; //counter variables
 
     //because this is a non cyclic shell there will be no next shell
 
