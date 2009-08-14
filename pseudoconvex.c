@@ -972,7 +972,7 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 	} else if(k3==0 && k4==0){
 		//only one possible filling in case the following is true
 		if(k1==0 && k2==k5){
-                    if(k2>1 && shellCounter==1){
+                    if(shellCounter==1){
 			//is->code[is->position]+=0;
                         PENTFRAG(current, 1, currentShell)
                         fillPatch_0PentagonsLeft(k2-1, 0, 0, k2-1, 0, 0, patch, addNewFragment(current), 0, currentShell);
