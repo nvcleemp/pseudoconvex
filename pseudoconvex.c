@@ -977,6 +977,7 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
                         PENTFRAG(current, 1, currentShell)
                         fillPatch_0PentagonsLeft(k2-1, 0, 0, k2-1, 0, 0, patch, addNewFragment(current), 0, currentShell);
                         //is->code[is->position]-=0;
+			currentShell->nrOfPentagons--;
                     } else {
 			PENTFRAG(current, 1, currentShell)
 			//TODO: make sure that shells are closed at this point
@@ -996,6 +997,7 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
                         PENTFRAG(current, 1, currentShell)
                         fillPatch_0PentagonsLeft(k1-1, 0, 0, k1-1, 0, 0, patch, addNewFragment(current), 0, currentShell);
                         //is->code[is->position]-=0;
+			currentShell->nrOfPentagons--;
                     } else {
 			PENTFRAG(current, 1, currentShell)
                         //TODO: make sure that shells are closed at this point
