@@ -741,9 +741,14 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
 	}
 }
 
-void specialCase_C12H8orC14H8(PATCH *patch, FRAGMENT *current, SHELL *currentShell){
-    //This method is called when we have a shell with as boundary 0 2 0 2
-    //There are two possible fillings: one with 3 faces that is noncyclic
+void specialCase0X0X(int X, PATCH *patch, FRAGMENT *current, SHELL *currentShell){
+    //This method is called when we have a shell with as boundary 0 X 0 X (X>1)
+    //This type of shell can be non cyclic in which case it is a strip of hexagons
+    //bounded by a pentagon at each side. In the other case it is a non cyclic
+    //shell that arrives from performing Endo-Krot-C2 insertion operations
+    //on the first case.
+    //As example the case 0 2 0 2 is shown below:
+    //there are two possible fillings: one with 3 faces that is noncyclic
     //and one with 4 faces that is cyclic.
     //       /\               //
     //   __ /  \ __           //
@@ -762,15 +767,18 @@ void specialCase_C12H8orC14H8(PATCH *patch, FRAGMENT *current, SHELL *currentShe
     SHELL *nextShell;
     FRAGMENT *secondFragment;
 
-    //First we try C12H8
-    nextShell = addNewShell(currentShell, 3, current);
-    nextShell->nonCyclicShell =1;//C12H8 is noncyclic
-
     int sides[4];
     sides[0]=0;
-    sides[1]=2;
+    sides[1]=X;
     sides[2]=0;
-    sides[3]=2;
+    sides[3]=X;
+
+    //This method is only called when shellCounter is 0, so we need to start a
+    //new shell. First we handle the non cyclic shell
+
+    nextShell = addNewShell(currentShell, X+1, current);
+    nextShell->nonCyclicShell =1;
+
     if(!checkShellCanonicity(patch, currentShell, nextShell, 4, sides))
         return;
     INNERSPIRAL *is = patch->innerspiral;
@@ -779,10 +787,10 @@ void specialCase_C12H8orC14H8(PATCH *patch, FRAGMENT *current, SHELL *currentShe
 
     PENTFRAG(current, 1, nextShell)
     secondFragment = addNewFragment(current);
-    is->code[is->position]+=1;
+    is->code[is->position]+=X-1;
     is->position++;
     is->code[is->position]=0;
-    PENTFRAG(secondFragment, 2, nextShell)
+    PENTFRAG(secondFragment, X, nextShell)
 
     if(validateStructure(patch)){
             secondFragment->isEnd = 1;
@@ -793,36 +801,24 @@ void specialCase_C12H8orC14H8(PATCH *patch, FRAGMENT *current, SHELL *currentShe
     nextShell->nrOfPentagons--;
     nextShell->nrOfPentagons--;
     is->position--;
-    is->code[is->position]-=1;
+    is->code[is->position]-=X-1;
     is->position--;
 
-    //Then we try C14H8
-    nextShell = addNewShell(currentShell, 4, current);
-    //no need to check canonicity of previous shell: this is already done in C12H8
+    //Then we handle the other cases
+    nextShell = addNewShell(currentShell, 2*X, current);
+
+    if(!checkShellCanonicity(patch, currentShell, nextShell, 4, sides))
+        return;
+
+    //If we start by placing a hexagon, we don't need to worry that the previous
+    //case is duplicated
+
     is->code[is->position]+=1;
-    is->position++;
-    is->code[is->position]=0;
-    PENTFRAG(current, 2, nextShell)
 
-    secondFragment = addNewFragment(current);
-    is->code[is->position]+=1;
-    is->position++;
-    is->code[is->position]=0;
-    PENTFRAG(secondFragment, 2, nextShell)
+    HEXFRAG(current, 1)
 
-    if(validateStructure(patch)){
-            secondFragment->isEnd = 1;
-            processStructure(patch, nextShell);
-            secondFragment->isEnd = 0;
-    }
-
-    nextShell->nrOfPentagons--;
-    nextShell->nrOfPentagons--;
-    is->position--;
+    fillPatch_2PentagonsLeft(X-1, 0, X-1, 1, patch, addNewFragment(current), 2*X-1, nextShell);
     is->code[is->position]-=1;
-    is->position--;
-    is->code[is->position]-=1;
-
 }
 
 void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell){
@@ -838,8 +834,8 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
 
 	//shell handling
 	if(shellCounter==0){
-            if((k1 == 0 && k3 == 0 && k2 == 2 && k4 == 2) || (k2 == 0 && k4 == 0 && k1 == 2 && k3 == 2)){
-                specialCase_C12H8orC14H8(patch, current, currentShell);
+            if((k1 == 0 && k3 == 0 && k2 == k4 && k4 > 1) || (k2 == 0 && k4 == 0 && k1 == k3 && k3 >1)){
+                specialCase0X0X(k1 + k2, patch, current, currentShell);
                 return;
             } else if((k1 == 0 && k3 == 0 && k2 == k4) || (k2 == 0 && k4 == 0 && k1 == k3)){
                 //the size is either k1 + 1 == k3 + 1 or k2 + 1 == k4 + 1
