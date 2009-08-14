@@ -213,6 +213,12 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 	for(i=1;i<nrOfBreakEdges;i++){
 		nextShell->breakEdge2FaceNumber[i] = nextShell->breakEdge2FaceNumber[i-1] + boundarySides[i-1];
 	}
+        if(nextShell->nonCyclicShell){
+            for(i=1;i<nrOfBreakEdges;i++){
+                if(nextShell->breakEdge2FaceNumber[i] > nextShell->size)
+                    nextShell->breakEdge2FaceNumber[i] = 2*nextShell->size - nextShell->breakEdge2FaceNumber[i];
+            }
+        }
 
 	//Then we handle some special cases in which we now that the shell is canonical
 	if(shell->nrOfPentagons==0){
@@ -222,20 +228,14 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 		for(i=0; i<shell->nrOfPossibleStartingPoints; i++){
 			nextShell->startingPoint2BreakEdge[i] = shell->startingPoint2BreakEdge[i];
 			DEBUGCONDITIONALMSG(nextShell->startingPoint2BreakEdge[i]>nrOfBreakEdges, "Error in checkShellCanonicity: reference to non-existing break-edge")
-			nextShell->startingPoint2FaceNumber[i] = 0;
-			for(j=0; j<nextShell->startingPoint2BreakEdge[i]; j++){
-				nextShell->startingPoint2FaceNumber[i] += boundarySides[j];
-			}
+			nextShell->startingPoint2FaceNumber[i] = nextShell->breakEdge2FaceNumber[nextShell->startingPoint2BreakEdge[i]];
 		}
 		nextShell->nrOfPossibleMirrorStartingPoints = shell->nrOfPossibleMirrorStartingPoints;
 		DEBUGCONDITIONALMSG(nextShell->nrOfPossibleMirrorStartingPoints>nrOfBreakEdges, "Error in checkShellCanonicity: more mirror starting points than break-edges")
 		for(i=0; i<shell->nrOfPossibleMirrorStartingPoints; i++){
-			nextShell->startingPoint2BreakEdge[i] = shell->startingPoint2BreakEdge[i];
-			DEBUGCONDITIONALMSG(nextShell->startingPoint2BreakEdge[i]>nrOfBreakEdges, "Error in checkShellCanonicity: reference to non-existing break-edge")
-			nextShell->startingPoint2FaceNumber[i] = 0;
-			for(j=0; j<nextShell->startingPoint2BreakEdge[i]; j++){
-				nextShell->startingPoint2FaceNumber[i] += boundarySides[j];
-			}
+			nextShell->mirrorStartingPoint2BreakEdge[i] = shell->mirrorStartingPoint2BreakEdge[i];
+			DEBUGCONDITIONALMSG(nextShell->mirrorStartingPoint2BreakEdge[i]>nrOfBreakEdges, "Error in checkShellCanonicity: reference to non-existing break-edge")
+			nextShell->mirrorStartingPoint2FaceNumber[i] = nextShell->breakEdge2FaceNumber[nextShell->mirrorStartingPoint2BreakEdge[i]];
 		}
 		return 1;
 	} else if(shell->nrOfPossibleStartingPoints + shell->nrOfPossibleMirrorStartingPoints == 0) {
