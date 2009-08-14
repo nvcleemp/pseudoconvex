@@ -331,7 +331,7 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 	}
 
 
-	//if we reach this, we didn't find a smaller code, so the shell is canonical
+        //if we reach this, we didn't find a smaller code, so the shell is canonical
 	//so set the possible starting points for the next shell and return 1.
 
 	nextShell->nrOfPossibleStartingPoints = newNrOfStartingPoints;
@@ -339,12 +339,12 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 	//we first calculate the relation between the old break-edges and the new
 	//breakedges based on the position of the pentagons in this shell and the
 	//position of the break-edges.
-	int currentPentagonPosition = code[0];
-	int currentPentagonCounter = 1;
+	int currentPentagonPosition = 0;
+	int currentPentagonCounter = 0;
 	int extraBreakEdges = 0;
 	int oldBreakEdge2NewBreakEdge[shell->nrOfBreakEdges];
 	oldBreakEdge2NewBreakEdge[0]=0;
-	for(i=1; i<shell->nrOfBreakEdges; i++){
+	for(i=0; i<shell->nrOfBreakEdges; i++){
 		while(currentPentagonPosition<shell->breakEdge2FaceNumber[i] &&
                         currentPentagonCounter<shell->nrOfPentagons){
                     extraBreakEdges++;
