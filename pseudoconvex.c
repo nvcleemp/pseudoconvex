@@ -964,7 +964,7 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 				current->isEnd = 1;
 				processStructure(patch, currentShell);
 				current->isEnd = 0;
-			}			
+			}
 			currentShell->nrOfPentagons--;
 			is->code[is->position]-=k1;
                     }
@@ -1092,7 +1092,7 @@ void fillPatch_0PentagonsLeft(int k1, int k2, int k3, int k4, int k5, int k6, PA
 	//check to see if the boundary is closed in the hexagonal lattice
 	int x = 2*k1 + k2 - k3 - 2*k4 - k5 + k6;
 	int y = k1 + 2*k2 + k3 - k4 - 2*k5 - k6;
-		
+
 	if(x==0 && y==0){
             //shell handling
             if(shellCounter==0){
@@ -1127,7 +1127,11 @@ void fillPatch_0PentagonsLeft(int k1, int k2, int k3, int k4, int k5, int k6, PA
                 //complete shell
                 HEXFRAG(current, k1+1)
                 //no need to add something to the code: where already past the last pentagon
-		fillPatch_0PentagonsLeft(k2-1, k3, k4, k5, k6-1, k1 + 1, patch, addNewFragment(current), shellCounter-k1-1, currentShell);
+                if(k1 == k4 && k2 + k3 + k5 + k6 == 0){
+                    fillPatch_0PentagonsLeft(0, 0, 0, 0, 0, 0, patch, addNewFragment(current), shellCounter-k1-1, currentShell);
+                } else {
+                    fillPatch_0PentagonsLeft(k2-1, k3, k4, k5, k6-1, k1 + 1, patch, addNewFragment(current), shellCounter-k1-1, currentShell);
+                }
             }
 	
         }
