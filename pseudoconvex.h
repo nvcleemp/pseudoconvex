@@ -109,7 +109,7 @@ void exportShells(SHELL *shell);
  * shell are set.
  */
 boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int nrOfBreakEdges, int* boundarySides);
-boolean checkNonCyclicShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int nrOfBreakEdges, int* boundarySides);
+boolean checkNonCyclicShellCanonicity(SHELL *shell);
 
 /*========== CONSTRUCTION ==========*/
 void fillPatch_5PentagonsLeft(int k, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell);
