@@ -202,7 +202,7 @@ void exportShells(SHELL *shell){
 
 boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int nrOfBreakEdges, int* boundarySides){
     if(shell->nonCyclicShell){
-        return 1; //TODO: implement this case!!!
+        return checkNonCyclicShellCanonicity(shell);
     }
 
 	int i, j; //counter variables
@@ -245,7 +245,7 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 		return 1;
 	}
 	//in all other cases we need to check if the current shell is canonical
-	
+
 	//First construct the code corresponding with the current shell
 	int code[shell->nrOfPentagons];
 	FRAGMENT *frag = shell->start;
@@ -352,7 +352,7 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 		}
 		oldBreakEdge2NewBreakEdge[i]=i+extraBreakEdges;
 	}
-	
+
 	//Next we store the new breakedges for the starting points that remain.
 	j=0;
 	for(i=0; i<shell->nrOfPossibleStartingPoints; i++){
@@ -381,6 +381,70 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
                         nextShell->breakEdge2FaceNumber[nextShell->mirrorStartingPoint2BreakEdge[i]];
 	}
 	return 1;
+}
+
+boolean checkNonCyclicShellCanonicity(SHELL *shell) {
+    int i, j; //counter variables
+
+    //because this is a non cyclic shell there will be no next shell
+
+    //Then we handle some special cases in which we now that the shell is canonical
+    if (shell->nrOfPentagons == 0 || shell->nrOfPossibleStartingPoints + shell->nrOfPossibleMirrorStartingPoints == 0) {
+        //a shell without pentagons or a shell alternate starting points is also canonical
+        return 1;
+    }
+    //in all other cases we need to check if the current shell is canonical
+
+    //First construct the code corresponding with the current shell
+    int code[shell->nrOfPentagons];
+    FRAGMENT *frag = shell->start;
+    for (i = 0; i < shell->nrOfPentagons; i++) {
+        code[i] = 0;
+        while (!frag->endsWithPentagon) {
+            code[i] += frag->faces;
+            frag = frag->next;
+        }
+        code[i] += frag->faces - 1; //-1 because we don't count the pentagon
+        frag = frag->next;
+    }
+
+    //a shell is canonical if the shell code is as large as possible
+    //larger shell code means an early pentagon
+    int shellCode[shell->size];
+
+    for (i = 0; i < shell->size; i++) {
+        shellCode[i] = 0;
+    }
+
+    int prevPentagon = 0;
+    for (i = 0; i < shell->nrOfPentagons; i++) {
+        shellCode[code[i] + prevPentagon] = 1;
+        prevPentagon += code[i] + 1; // +1 because we also count the pentagon
+    }
+
+    //A non-cyclic shell only has two possible ways of considering its code:
+    //the code itself and its reverse. We now check whether the reverse is greater.
+
+    boolean reverseIsGreater = 0;
+    i = 0;
+    while(i<shell->size && shellCode[i] == shellCode[shell->size - 1 - i]) i++;
+    reverseIsGreater = (i<shell->size && shellCode[i] < shellCode[shell->size - 1 - i]);
+
+
+    //Start with checking all alternate starting points in clockwise direction
+    for (i = 0; i < shell->nrOfPossibleStartingPoints; i++) {
+        if(reverseIsGreater && shell->startingPoint2FaceNumber[i]==shell->size)
+            return 0;
+    }
+
+    //Continue with checking all starting points in counterclockwise direction
+    for (i = 0; i < shell->nrOfPossibleMirrorStartingPoints; i++) {
+        if(reverseIsGreater && shell->mirrorStartingPoint2FaceNumber[i]==shell->size)
+            return 0;
+    }
+
+    //if we reach this, we didn't find a smaller code, so the shell is canonical
+    return 1;
 }
 
 void fillPatch_5PentagonsLeft(int k, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell){
