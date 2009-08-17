@@ -738,7 +738,7 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
 
 		PENTFRAG(current, k1+1, currentShell)
 
-		fillPatch_2PentagonsLeft(0, k2-1, k3-1, k1, patch, addNewFragment(current), shellCounter-k1-1, currentShell);
+                fillPatch_2PentagonsLeft(0, k2-1, k3-1, k1, patch, addNewFragment(current), shellCounter-k1-1, currentShell);
 		currentShell->nrOfPentagons--;
 		is->position--;
 		is->code[is->position]-=k1;
@@ -913,7 +913,7 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
 
 		PENTFRAG(current, k1+1, currentShell)
 
-		fillPatch_1PentagonLeft(0, k2-1, k3-1, k4, k1-1, patch, addNewFragment(current), shellCounter-k1-1, currentShell);
+                fillPatch_1PentagonLeft(0, k2-1, k3-1, k4, k1-1, patch, addNewFragment(current), shellCounter-k1-1, currentShell);
 		is->position--;
 		is->code[is->position]-=k1;
 	} else {
@@ -964,7 +964,7 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 	if(k1 < 0 || k2 < 0 || k3 < 0 || k4 < 0)
             return;
 		
-	//shell handling
+ 	//shell handling
 	if(shellCounter==0){
             if((k1 == k4 && k2 + k3 + k5==0) ||
                     (k2 == k5 && k1 + k3 + k4 == 0) ||
@@ -1045,6 +1045,29 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
                     fillPatch_0PentagonsLeft(k1-1, 0, 0, k1-1, 0, 0, patch, addNewFragment(current), shellCounter-1, currentShell);
                     //is->code[is->position]-=0;
                     currentShell->nrOfPentagons--;
+		}
+	} else if(k2==0 && k5==0){
+		//add a side of hexagons
+		is->code[is->position]+=k1+1;
+
+		HEXFRAG(current, k1+1)
+
+		fillPatch_1PentagonLeft(0, k3-1, k4-1, 0, k1-1, patch, addNewFragment(current), shellCounter-k1-1, currentShell);
+		is->code[is->position]-=k1+1;
+
+		//pentagon after i hexagons
+		int i;
+		for(i=0; i<k1; i++){
+			is->code[is->position]+=i;
+			is->position++;
+			is->code[is->position]=0;
+
+			PENTFRAG(current, i+1, currentShell)
+
+			fillPatch_0PentagonsLeft(k1-1-i, k2, k3, k4-1, 0, i, patch, addNewFragment(current), shellCounter-i-1, currentShell);
+			currentShell->nrOfPentagons--;
+			is->position--;
+			is->code[is->position]-=i;
 		}
 	} else if(k2==0){
 		//add a side of hexagons
