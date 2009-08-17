@@ -339,16 +339,20 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 	//we first calculate the relation between the old break-edges and the new
 	//breakedges based on the position of the pentagons in this shell and the
 	//position of the break-edges.
-	int currentPentagonPosition = 0;
-	int currentPentagonCounter = 0;
+	int currentPentagonPosition = code[0];
+	int currentPentagonCounter = 1;
 	int extraBreakEdges = 0;
 	int oldBreakEdge2NewBreakEdge[shell->nrOfBreakEdges];
 	oldBreakEdge2NewBreakEdge[0]=0;
-	for(i=0; i<shell->nrOfBreakEdges; i++){
+	for(i=1; i<shell->nrOfBreakEdges; i++){
 		while(currentPentagonPosition<shell->breakEdge2FaceNumber[i] &&
-                        currentPentagonCounter<shell->nrOfPentagons){
+                        currentPentagonCounter<=shell->nrOfPentagons){
                     extraBreakEdges++;
-                    currentPentagonPosition = code[currentPentagonCounter++];
+                    if(currentPentagonCounter<shell->nrOfPentagons)
+                        currentPentagonPosition = code[currentPentagonCounter] + 1;
+                    //+1 because the code only counts the number of hexagons in between
+                    //the pentagons
+                    currentPentagonCounter++;
 		}
 		oldBreakEdge2NewBreakEdge[i]=i+extraBreakEdges;
 	}
