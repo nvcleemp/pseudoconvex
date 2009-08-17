@@ -349,7 +349,7 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
                         currentPentagonCounter<=shell->nrOfPentagons){
                     extraBreakEdges++;
                     if(currentPentagonCounter<shell->nrOfPentagons)
-                        currentPentagonPosition = code[currentPentagonCounter] + 1;
+                        currentPentagonPosition += code[currentPentagonCounter] + 1;
                     //+1 because the code only counts the number of hexagons in between
                     //the pentagons
                     currentPentagonCounter++;
