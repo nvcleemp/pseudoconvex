@@ -947,7 +947,12 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
 
 		PENTFRAG(current, k1+1, currentShell)
 
-		fillPatch_1PentagonLeft(0, k2-1, k3, k4-1, k1, patch, addNewFragment(current), shellCounter-k1-1, currentShell);
+                if(shellCounter == k1 + 1){
+                    //TODO: there might be other cases like this
+                    fillPatch_1PentagonLeft(k2-1, k3, k4-1, k1, 0, patch, addNewFragment(current), shellCounter-k1-1, currentShell);
+                } else {
+                    fillPatch_1PentagonLeft(0, k2-1, k3, k4-1, k1, patch, addNewFragment(current), shellCounter-k1-1, currentShell);
+                }
 		currentShell->nrOfPentagons--;
 		is->position--;
 		is->code[is->position]-=k1;
