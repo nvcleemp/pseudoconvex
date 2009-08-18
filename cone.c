@@ -200,7 +200,7 @@ void start4PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror,
             shell->nrOfPentagons = 1;
 
             //shellCounter = 3*sside + 2 - sside - 1 - i-1
-            fillPatch_3PentagonsLeft(sside - 1 - i - 1, sside - 1, 1 + i, patch, addNewFragment(current), sside - i - 1, shell);
+            fillPatch_3PentagonsLeft(sside - 1 - i - 1, sside, 1 + i, patch, addNewFragment(current), sside - i - 1, shell);
             is->position--;
             is->code[is->position] -= i;
         }
