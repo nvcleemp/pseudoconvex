@@ -107,7 +107,7 @@ void start5PentagonsCone(PATCH *patch, int sside, boolean mirror, FRAGMENT *curr
 		current->endsWithPentagon = 1;
 		
 		shell->nrOfPentagons = 1;
-		
+
 		fillPatch_4PentagonsLeft(sside-2-i, 1+i, patch, addNewFragment(current), sside-i-1, shell);
 		is->position--;
 		is->code[is->position]-=i;
@@ -145,14 +145,21 @@ void start4PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror,
 	shell->nrOfBreakEdges = 2;
 	shell->breakEdge2FaceNumber[0]=0;
 	shell->breakEdge2FaceNumber[1]=sside;
-	shell->nrOfPossibleStartingPoints = 1;
-        shell->startingPoint2BreakEdge[0] = 1;
-        shell->startingPoint2FaceNumber[0] = sside;
-	shell->nrOfPossibleMirrorStartingPoints = mirror ? 0 : 2;
-	shell->mirrorStartingPoint2BreakEdge[0]=0;
-	shell->mirrorStartingPoint2FaceNumber[0]=0;
-	shell->mirrorStartingPoint2BreakEdge[1]=1;
-	shell->mirrorStartingPoint2FaceNumber[1]=sside;
+        if(symmetric){
+            shell->nrOfPossibleStartingPoints = 1;
+            shell->startingPoint2BreakEdge[0] = 1;
+            shell->startingPoint2FaceNumber[0] = sside;
+            shell->nrOfPossibleMirrorStartingPoints = mirror ? 0 : 2;
+            shell->mirrorStartingPoint2BreakEdge[0]=0;
+            shell->mirrorStartingPoint2FaceNumber[0]=0;
+            shell->mirrorStartingPoint2BreakEdge[1]=1;
+            shell->mirrorStartingPoint2FaceNumber[1]=sside;
+        } else {
+            shell->nrOfPossibleStartingPoints = 0;
+            shell->nrOfPossibleMirrorStartingPoints = mirror ? 0 : 1;
+            shell->mirrorStartingPoint2BreakEdge[0]=1;
+            shell->mirrorStartingPoint2FaceNumber[0]=sside;
+        }
 	//pentagon after i hexagons
 	int i;
 	for(i=0; i<upperbound; i++){
@@ -168,6 +175,36 @@ void start4PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror,
 		is->position--;
 		is->code[is->position]-=i;
 	}
+
+        //in the nearsymmetric case there are more possibilities
+        if(!symmetric){
+            //fill the shortest side with hexagons
+            is->code[is->position]+= sside + 1;
+            current->faces = sside + 1;
+            current->endsWithPentagon = 0;
+
+            //proceed to the next side
+            current = addNewFragment(current);
+            current->endsWithPentagon = 1;
+
+            //try a pentagon on the side next to the shortest side
+            //the pentagon may lay at farrest at the center of the longest side
+            int secondUpperbound = (sside - 1)/2;
+            for(i=0; i<=secondUpperbound; i++){
+                is->code[is->position]+=i;
+                is->position++;
+                is->code[is->position]=0;
+
+                current->faces = i+1;
+
+                shell->nrOfPentagons = 1;
+
+                //shellCounter = 3*sside + 2 - sside - 1 - i-1
+                fillPatch_3PentagonsLeft(sside-1-i-1, sside-1, 1+i, patch, addNewFragment(current), sside - i - 1, shell);
+                is->position--;
+                is->code[is->position]-=i;
+            }
+        }
 }
 
 void start3PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror, FRAGMENT *currentFragment, SHELL *currentShell){
@@ -185,18 +222,25 @@ void start3PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror,
 	shell->breakEdge2FaceNumber[0]=0;
 	shell->breakEdge2FaceNumber[1]=sside;
 	shell->breakEdge2FaceNumber[2]= 2*sside + (symmetric ? 0 : 1);
-	shell->nrOfPossibleStartingPoints = 2;
-        shell->startingPoint2BreakEdge[0] = 1;
-        shell->startingPoint2FaceNumber[0] = sside;
-        shell->startingPoint2BreakEdge[1] = 2;
-        shell->startingPoint2FaceNumber[1] = 2*sside + (symmetric ? 0 : 1);
-	shell->nrOfPossibleMirrorStartingPoints = mirror ? 0 : 3;
-	shell->mirrorStartingPoint2BreakEdge[0]=0;
-	shell->mirrorStartingPoint2FaceNumber[0]=0;
-	shell->mirrorStartingPoint2BreakEdge[1]=1;
-	shell->mirrorStartingPoint2FaceNumber[1]=sside;
-	shell->mirrorStartingPoint2BreakEdge[2]=2;
-	shell->mirrorStartingPoint2FaceNumber[2]=2*sside + (symmetric ? 0 : 1);
+        if(symmetric){
+            shell->nrOfPossibleStartingPoints = 2;
+            shell->startingPoint2BreakEdge[0] = 1;
+            shell->startingPoint2FaceNumber[0] = sside;
+            shell->startingPoint2BreakEdge[1] = 2;
+            shell->startingPoint2FaceNumber[1] = 2*sside + (symmetric ? 0 : 1);
+            shell->nrOfPossibleMirrorStartingPoints = mirror ? 0 : 3;
+            shell->mirrorStartingPoint2BreakEdge[0]=0;
+            shell->mirrorStartingPoint2FaceNumber[0]=0;
+            shell->mirrorStartingPoint2BreakEdge[1]=1;
+            shell->mirrorStartingPoint2FaceNumber[1]=sside;
+            shell->mirrorStartingPoint2BreakEdge[2]=2;
+            shell->mirrorStartingPoint2FaceNumber[2]=2*sside + (symmetric ? 0 : 1);
+        } else {
+            shell->nrOfPossibleStartingPoints = 0;
+            shell->nrOfPossibleMirrorStartingPoints = mirror ? 0 : 1;
+            shell->mirrorStartingPoint2BreakEdge[0]=1;
+            shell->mirrorStartingPoint2FaceNumber[0]=sside;
+        }
 	
 	//pentagon after i hexagons
 	int i;
@@ -214,6 +258,48 @@ void start3PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror,
 		is->position--;
 		is->code[is->position]-=i;
 	}
+
+        //in the nearsymmetric case there are more possibilities
+        if(!symmetric){
+            //fill the shortest side with hexagons
+            is->code[is->position]+= sside + 1;
+            current->faces = sside + 1;
+            current->endsWithPentagon = 0;
+
+            //proceed to the next side
+            current = addNewFragment(current);
+            current->endsWithPentagon = 1;
+
+            //try a pentagon on the side next to the shortest side
+            for(i=0; i<sside; i++){
+                is->code[is->position]+=i;
+                is->position++;
+                is->code[is->position]=0;
+
+                current->faces = i+1;
+
+                shell->nrOfPentagons = 1;
+
+                //shellCounter = 3*sside + 2 - sside - 1 - i-1
+                fillPatch_2PentagonsLeft(sside-1-i, sside, sside, 1+i, patch, addNewFragment(current), 2 * sside - i, shell);
+                is->position--;
+                is->code[is->position]-=i;
+            }
+            //try a pentagon on the side next to the shortest side
+            is->code[is->position]+=sside;
+            is->position++;
+            is->code[is->position]=0;
+
+            current->faces = sside+1;
+
+            shell->nrOfPentagons = 1;
+
+            //shellCounter = 3*sside + 2 - sside - 1 - sside-1
+            fillPatch_2PentagonsLeft(0, sside - 1, sside, sside, patch, addNewFragment(current), sside, shell);
+            is->position--;
+            is->code[is->position]-=i;
+            
+        }
 }
 
 /*
