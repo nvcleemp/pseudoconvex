@@ -108,7 +108,7 @@ void start5PentagonsCone(PATCH *patch, int sside, boolean mirror, FRAGMENT *curr
 
         shell->nrOfPentagons = 1;
 
-        fillPatch_4PentagonsLeft(sside - 2 - i, 1 + i, patch, addNewFragment(current), sside - i - 1, shell);
+        fillPatch_4PentagonsLeft(sside - 2 - i, 1 + i, patch, addNewFragment(current), sside - i - 1, shell, 1);
         is->position--;
         is->code[is->position] -= i;
     }
@@ -124,7 +124,7 @@ void start5PentagonsCone(PATCH *patch, int sside, boolean mirror, FRAGMENT *curr
 
         shell->nrOfPentagons = 1;
 
-        fillPatch_4PentagonsLeft(0, sside - 2, patch, addNewFragment(current), 0, shell);
+        fillPatch_4PentagonsLeft(0, sside - 2, patch, addNewFragment(current), 0, shell, 1);
         is->position--;
         is->code[is->position] -= sside - 1;
     }
@@ -171,7 +171,7 @@ void start4PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror,
 
         shell->nrOfPentagons = 1;
 
-        fillPatch_3PentagonsLeft(sside - 1 - i, lside - 1, 1 + i, patch, addNewFragment(current), 2 * sside + (symmetric ? 0 : 1) - i - 1, shell);
+        fillPatch_3PentagonsLeft(sside - 1 - i, lside - 1, 1 + i, patch, addNewFragment(current), 2 * sside + (symmetric ? 0 : 1) - i - 1, shell, 2);
         is->position--;
         is->code[is->position] -= i;
     }
@@ -200,7 +200,7 @@ void start4PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror,
             shell->nrOfPentagons = 1;
 
             //shellCounter = 3*sside + 2 - sside - 1 - i-1
-            fillPatch_3PentagonsLeft(sside - 1 - i - 1, sside, 1 + i, patch, addNewFragment(current), sside - i - 1, shell);
+            fillPatch_3PentagonsLeft(sside - 1 - i - 1, sside, 1 + i, patch, addNewFragment(current), sside - i - 1, shell, 1);
             is->position--;
             is->code[is->position] -= i;
         }
@@ -254,7 +254,7 @@ void start3PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror,
 
         shell->nrOfPentagons = 1;
 
-        fillPatch_2PentagonsLeft(sside - 1 - i, lside, lside - 1, 1 + i, patch, addNewFragment(current), 3 * sside + (symmetric ? 0 : 2) - i - 1, shell);
+        fillPatch_2PentagonsLeft(sside - 1 - i, lside, lside - 1, 1 + i, patch, addNewFragment(current), 3 * sside + (symmetric ? 0 : 2) - i - 1, shell, 3);
         is->position--;
         is->code[is->position] -= i;
     }
@@ -281,7 +281,7 @@ void start3PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror,
             shell->nrOfPentagons = 1;
 
             //shellCounter = 3*sside + 2 - sside - 1 - i-1
-            fillPatch_2PentagonsLeft(sside - 1 - i, sside, sside, 1 + i, patch, addNewFragment(current), 2 * sside - i, shell);
+            fillPatch_2PentagonsLeft(sside - 1 - i, sside, sside, 1 + i, patch, addNewFragment(current), 2 * sside - i, shell, 2);
             is->position--;
             is->code[is->position] -= i;
         }
@@ -295,7 +295,7 @@ void start3PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror,
         shell->nrOfPentagons = 1;
 
         //shellCounter = 3*sside + 2 - sside - 1 - sside-1
-        fillPatch_2PentagonsLeft(0, sside - 1, sside, sside, patch, addNewFragment(current), sside, shell);
+        fillPatch_2PentagonsLeft(0, sside - 1, sside, sside, patch, addNewFragment(current), sside, shell, 2);
         is->position--;
         is->code[is->position] -= i;
 

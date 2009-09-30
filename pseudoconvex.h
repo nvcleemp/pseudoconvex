@@ -112,11 +112,20 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 boolean checkNonCyclicShellCanonicity(SHELL *shell);
 
 /*========== CONSTRUCTION ==========*/
+/**
+ * Fills a patch with respectively 6-p break edges. The number of threes between each of the consequent break edges
+ * is given by the parameters k*. A reference to the complete patch is passed by the parameter patch.
+ * current contains a pointer to the new fragment of the extended spiral that needs to be determined by this method.
+ * The integer shellCounter contains the number of faces that still need to be added to complete the current shell.
+ * currentShell contains a pointer to the current shell that is being filled.
+ * The integer shellStart indicates which of the breakedges corresponds to the first break edge that was started from
+ * to start filling the current shell. (0 means the break edge before k1, ...)
+ */
 void fillPatch_5PentagonsLeft(int k, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell);
-void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell);
-void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell);
-void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell);
-void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell);
-void fillPatch_0PentagonsLeft(int k1, int k2, int k3, int k4, int k5, int k6, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell);
+void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell, int shellStart);
+void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell, int shellStart);
+void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell, int shellStart);
+void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell, int shellStart);
+void fillPatch_0PentagonsLeft(int k1, int k2, int k3, int k4, int k5, int k6, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell, int shellStart);
 
 #endif // end if not defined, and end the header file
