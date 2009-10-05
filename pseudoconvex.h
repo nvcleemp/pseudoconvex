@@ -108,7 +108,7 @@ void exportShells(SHELL *shell);
  * and 1 if it is. If the shell is canonical, the possible startpoints for the next
  * shell are set.
  */
-boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int nrOfBreakEdges, int* boundarySides);
+boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int nrOfBreakEdges, int* boundarySides, int offset);
 boolean checkNonCyclicShellCanonicity(SHELL *shell);
 
 /*========== CONSTRUCTION ==========*/

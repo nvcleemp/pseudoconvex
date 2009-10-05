@@ -200,7 +200,7 @@ void exportShells(SHELL *shell) {
 	(frag)->endsWithPentagon = 1; \
 	(shell)->nrOfPentagons++;
 
-boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int nrOfBreakEdges, int* boundarySides) {
+boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int nrOfBreakEdges, int* boundarySides, int offset) {
     if (shell->nonCyclicShell) {
         return checkNonCyclicShellCanonicity(shell);
     }
@@ -224,17 +224,21 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
     if (shell->nrOfPentagons == 0) {
         //a shell without pentagons is always canonical
         nextShell->nrOfPossibleStartingPoints = shell->nrOfPossibleStartingPoints;
-        DEBUGCONDITIONALMSG(nextShell->nrOfPossibleStartingPoints>nrOfBreakEdges, "Error in checkShellCanonicity: more starting points than break-edges")
+        DEBUGCONDITIONALMSG(nextShell->nrOfPossibleStartingPoints>nrOfBreakEdges,
+                "Error in checkShellCanonicity: more starting points than break-edges")
         for (i = 0; i < shell->nrOfPossibleStartingPoints; i++) {
-            nextShell->startingPoint2BreakEdge[i] = shell->startingPoint2BreakEdge[i];
-            DEBUGCONDITIONALMSG(nextShell->startingPoint2BreakEdge[i] > nrOfBreakEdges, "Error in checkShellCanonicity: reference to non-existing break-edge")
+            nextShell->startingPoint2BreakEdge[i] = (shell->startingPoint2BreakEdge[i] + offset)%nrOfBreakEdges;
+            DEBUGCONDITIONALMSG(nextShell->startingPoint2BreakEdge[i] > nrOfBreakEdges,
+                    "Error in checkShellCanonicity: reference to non-existing break-edge")
             nextShell->startingPoint2FaceNumber[i] = nextShell->breakEdge2FaceNumber[nextShell->startingPoint2BreakEdge[i]];
         }
         nextShell->nrOfPossibleMirrorStartingPoints = shell->nrOfPossibleMirrorStartingPoints;
-        DEBUGCONDITIONALMSG(nextShell->nrOfPossibleMirrorStartingPoints>nrOfBreakEdges, "Error in checkShellCanonicity: more mirror starting points than break-edges")
+        DEBUGCONDITIONALMSG(nextShell->nrOfPossibleMirrorStartingPoints>nrOfBreakEdges,
+                "Error in checkShellCanonicity: more mirror starting points than break-edges")
         for (i = 0; i < shell->nrOfPossibleMirrorStartingPoints; i++) {
-            nextShell->mirrorStartingPoint2BreakEdge[i] = shell->mirrorStartingPoint2BreakEdge[i];
-            DEBUGCONDITIONALMSG(nextShell->mirrorStartingPoint2BreakEdge[i] > nrOfBreakEdges, "Error in checkShellCanonicity: reference to non-existing break-edge")
+            nextShell->mirrorStartingPoint2BreakEdge[i] = (shell->mirrorStartingPoint2BreakEdge[i] + offset)%nrOfBreakEdges;
+            DEBUGCONDITIONALMSG(nextShell->mirrorStartingPoint2BreakEdge[i] > nrOfBreakEdges,
+                    "Error in checkShellCanonicity: reference to non-existing break-edge")
             nextShell->mirrorStartingPoint2FaceNumber[i] = nextShell->breakEdge2FaceNumber[nextShell->mirrorStartingPoint2BreakEdge[i]];
         }
         return 1;
@@ -343,7 +347,7 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
     int currentPentagonCounter = 1;
     int extraBreakEdges = 0;
     int oldBreakEdge2NewBreakEdge[shell->nrOfBreakEdges];
-    oldBreakEdge2NewBreakEdge[0] = 0;
+    oldBreakEdge2NewBreakEdge[0] = 0 + offset;
     for (i = 1; i < shell->nrOfBreakEdges; i++) {
         while (currentPentagonPosition < shell->breakEdge2FaceNumber[i] &&
                 currentPentagonCounter <= shell->nrOfPentagons) {
@@ -354,7 +358,7 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
             //the pentagons
             currentPentagonCounter++;
         }
-        oldBreakEdge2NewBreakEdge[i] = i + extraBreakEdges;
+        oldBreakEdge2NewBreakEdge[i] = (i + extraBreakEdges + offset)%nrOfBreakEdges;
     }
 
     //Next we store the new breakedges for the starting points that remain.
@@ -462,7 +466,7 @@ void fillPatch_5PentagonsLeft(int k, PATCH *patch, FRAGMENT *current, int shellC
         currentShell = addNewShell(currentShell, shellCounter = k, current);
         int sides[1];
         sides[0] = k;
-        if (!checkShellCanonicity(patch, currentShell->prev, currentShell, 1, sides))
+        if (!checkShellCanonicity(patch, currentShell->prev, currentShell, 1, sides, 0))
             return;
     }
 
@@ -517,7 +521,7 @@ void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, i
         int sides[2];
         sides[0] = k1;
         sides[1] = k2;
-        if (!checkShellCanonicity(patch, currentShell->prev, currentShell, 2, sides))
+        if (!checkShellCanonicity(patch, currentShell->prev, currentShell, 2, sides, shellStart))
             return;
     }
 
@@ -635,7 +639,7 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
         sides[0] = k1;
         sides[1] = k2;
         sides[2] = k3;
-        if (!checkShellCanonicity(patch, currentShell->prev, currentShell, 3, sides))
+        if (!checkShellCanonicity(patch, currentShell->prev, currentShell, 3, sides, shellStart))
             return;
     }
 
@@ -745,7 +749,7 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
     }
 }
 
-void specialCase0X0X(int X, PATCH *patch, FRAGMENT *current, SHELL *currentShell) {
+void specialCase0X0X(int X, PATCH *patch, FRAGMENT *current, SHELL *currentShell, boolean startAt0, int shellStart) {
     //This method is called when we have a shell with as boundary 0 X 0 X (X>1)
     //This type of shell can be non cyclic in which case it is a strip of hexagons
     //bounded by a pentagon at each side. In the other case it is a non cyclic
@@ -772,10 +776,17 @@ void specialCase0X0X(int X, PATCH *patch, FRAGMENT *current, SHELL *currentShell
     FRAGMENT *secondFragment;
 
     int sides[4];
-    sides[0] = 0;
-    sides[1] = X;
-    sides[2] = 0;
-    sides[3] = X;
+    if(startAt0){
+        sides[0] = 0;
+        sides[1] = X;
+        sides[2] = 0;
+        sides[3] = X;
+    } else {
+        sides[0] = X;
+        sides[1] = 0;
+        sides[2] = X;
+        sides[3] = 0;
+    }
 
     //This method is only called when shellCounter is 0, so we need to start a
     //new shell. First we handle the non cyclic shell
@@ -783,7 +794,7 @@ void specialCase0X0X(int X, PATCH *patch, FRAGMENT *current, SHELL *currentShell
     nextShell = addNewShell(currentShell, X + 1, current);
     nextShell->nonCyclicShell = 1;
 
-    if (!checkShellCanonicity(patch, currentShell, nextShell, 4, sides))
+    if (!checkShellCanonicity(patch, currentShell, nextShell, 4, sides, shellStart))
         return;
     INNERSPIRAL *is = patch->innerspiral;
     is->position++;
@@ -811,19 +822,43 @@ void specialCase0X0X(int X, PATCH *patch, FRAGMENT *current, SHELL *currentShell
     //Then we handle the other cases
     nextShell = addNewShell(currentShell, 2 * X, current);
 
-    if (!checkShellCanonicity(patch, currentShell, nextShell, 4, sides))
+    //TODO: correct offset for canonicity check
+    if (!checkShellCanonicity(patch, currentShell, nextShell, 4, sides, shellStart))
         return;
 
-    //If we start by placing a hexagon, we don't need to worry that the previous
-    //case is duplicated
+    if(startAt0){
+        is->code[is->position] += 1;
 
-    is->code[is->position] += 1;
+        HEXFRAG(current, 1)
 
-    HEXFRAG(current, 1)
+        fillPatch_2PentagonsLeft(X - 1, 0, X - 1, 1, patch, addNewFragment(current), 2 * X - 1, nextShell, 3);
+        is->code[is->position] -= 1;
+    } else {
+        //first we add a side of hexagons
+        is->code[is->position] += X+1;
 
-    //TODO: examine what the correct shell start is for this case
-    fillPatch_2PentagonsLeft(X - 1, 0, X - 1, 1, patch, addNewFragment(current), 2 * X - 1, nextShell, 1);
-    is->code[is->position] -= 1;
+        HEXFRAG(current, X+1)
+
+        fillPatch_2PentagonsLeft(0, X - 2, 0, X-1, patch, addNewFragment(current), 2 * X - 1, nextShell, 3);
+        is->code[is->position] -= X+1;
+
+        //next we add a pentagon after i hexagons with 0<i<X
+        //i can't be 0 because that would recreate the noncyclic case
+        //i can't be X because that would be an invalid structure
+        int i;
+        for (i = 1; i < X; i++) {
+            is->code[is->position] += i;
+            is->position++;
+            is->code[is->position] = 0;
+
+            PENTFRAG(current, i + 1, currentShell)
+
+            fillPatch_1PentagonLeft(X - 1 - i, 0, X - 1, 0, i, patch, addNewFragment(current), 2*X - i - 1, currentShell, 4);
+            currentShell->nrOfPentagons--;
+            is->position--;
+            is->code[is->position] -= i;
+        }
+    }
 }
 
 void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell, int shellStart) {
@@ -840,7 +875,7 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
     //shell handling
     if (shellCounter == 0) {
         if ((k1 == 0 && k3 == 0 && k2 == k4 && k4 > 1) || (k2 == 0 && k4 == 0 && k1 == k3 && k3 > 1)) {
-            specialCase0X0X(k1 + k2, patch, current, currentShell);
+            specialCase0X0X(k1 + k2, patch, current, currentShell, k1==0, shellStart);
             return;
         } else if ((k1 == 0 && k3 == 0 && k2 == k4) || (k2 == 0 && k4 == 0 && k1 == k3)) {
             //the size is either k1 + 1 == k3 + 1 or k2 + 1 == k4 + 1
@@ -854,7 +889,7 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
         sides[1] = k2;
         sides[2] = k3;
         sides[3] = k4;
-        if (!checkShellCanonicity(patch, currentShell->prev, currentShell, 4, sides))
+        if (!checkShellCanonicity(patch, currentShell->prev, currentShell, 4, sides, shellStart))
             return;
     }
 
@@ -987,7 +1022,7 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
         sides[2] = k3;
         sides[3] = k4;
         sides[4] = k5;
-        if (!checkShellCanonicity(patch, currentShell->prev, currentShell, 5, sides))
+        if (!checkShellCanonicity(patch, currentShell->prev, currentShell, 5, sides, shellStart))
             return;
     }
 
@@ -1201,7 +1236,7 @@ void fillPatch_0PentagonsLeft(int k1, int k2, int k3, int k4, int k5, int k6, PA
             sides[3] = k4;
             sides[4] = k5;
             sides[5] = k6;
-            if (!checkShellCanonicity(patch, currentShell->prev, currentShell, 6, sides))
+            if (!checkShellCanonicity(patch, currentShell->prev, currentShell, 6, sides, shellStart))
                 return;
             if (validateStructure(patch)) {
                 current->prev->isEnd = 1;
