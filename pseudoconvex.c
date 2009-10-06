@@ -468,7 +468,6 @@ void fillPatch_5PentagonsLeft(int k, PATCH *patch, FRAGMENT *current, int shellC
         sides[0] = k;
         if (!checkShellCanonicity(patch, currentShell->prev, currentShell, 1, sides, 0))
             return;
-        shellStart=0; //the new shell starts at the current position
     }
 
     INNERSPIRAL *is = patch->innerspiral;
