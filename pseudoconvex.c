@@ -998,7 +998,7 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
     DEBUGDUMP(k4, "%d")
     DEBUGDUMP(k5, "%d")
     DEBUGMSG("=======")
-    if (k1 < 0 || k2 < 0 || k3 < 0 || k4 < 0)
+    if (k1 < 0 || k2 < 0 || k3 < 0 || k4 < 0 || k5 < 0)
         return;
 
     //shell handling
