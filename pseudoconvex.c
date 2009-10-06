@@ -468,6 +468,7 @@ void fillPatch_5PentagonsLeft(int k, PATCH *patch, FRAGMENT *current, int shellC
         sides[0] = k;
         if (!checkShellCanonicity(patch, currentShell->prev, currentShell, 1, sides, 0))
             return;
+        shellStart=0; //the new shell starts at the current position
     }
 
     INNERSPIRAL *is = patch->innerspiral;
@@ -523,6 +524,7 @@ void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, i
         sides[1] = k2;
         if (!checkShellCanonicity(patch, currentShell->prev, currentShell, 2, sides, shellStart))
             return;
+        shellStart=0; //the new shell starts at the current position
     }
 
     INNERSPIRAL *is = patch->innerspiral;
@@ -641,6 +643,7 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
         sides[2] = k3;
         if (!checkShellCanonicity(patch, currentShell->prev, currentShell, 3, sides, shellStart))
             return;
+        shellStart=0; //the new shell starts at the current position
     }
 
     INNERSPIRAL *is = patch->innerspiral;
@@ -891,6 +894,7 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
         sides[3] = k4;
         if (!checkShellCanonicity(patch, currentShell->prev, currentShell, 4, sides, shellStart))
             return;
+        shellStart=0; //the new shell starts at the current position
     }
 
     INNERSPIRAL *is = patch->innerspiral;
@@ -1024,6 +1028,7 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
         sides[4] = k5;
         if (!checkShellCanonicity(patch, currentShell->prev, currentShell, 5, sides, shellStart))
             return;
+        shellStart=0; //the new shell starts at the current position
     }
 
     INNERSPIRAL *is = patch->innerspiral;
