@@ -215,8 +215,8 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
     }
     if (nextShell->nonCyclicShell) {
         for (i = 1; i < nrOfBreakEdges; i++) {
-            if (nextShell->breakEdge2FaceNumber[i] > nextShell->size)
-                nextShell->breakEdge2FaceNumber[i] = 2 * nextShell->size - nextShell->breakEdge2FaceNumber[i];
+            if (nextShell->breakEdge2FaceNumber[i] >= nextShell->size)
+                nextShell->breakEdge2FaceNumber[i] = 2 * nextShell->size - 2 - nextShell->breakEdge2FaceNumber[i];
         }
     }
 
