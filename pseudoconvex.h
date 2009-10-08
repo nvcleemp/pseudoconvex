@@ -17,6 +17,7 @@ struct _innerspiral {
 	int length;     /* the length of the code (i.e. the number of pentagons in the patch) */
 	int position;   /* the current possition in the spiral code */
 	int *code;      /* the array containing the actual code */
+                        /* this code stores the number of hexagons between the pentagons */
 
 };
 
