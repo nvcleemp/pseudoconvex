@@ -42,12 +42,24 @@ void exportSpiralCode_impl(PATCH *patch, boolean humanReadable) {
         4 entries for each vertex. At position 4*x will be the degree of the
         vertex x. And the neighbours of x will be at 4*x + i where i goes from
         1 to degree(x).
+        This method also frees the memory used by the structure of EDGEs!!!
  */
 int *EDGEsToPlanarGraph(EDGE *start, int maxVertex) {
     int* graph = malloc(sizeof (int) *4 * (maxVertex + 1));
+    if(graph==NULL){
+        fprintf(stderr, "Insufficient memory available. Aborting.\n");
+        exit(1);
+    }
     int marker[maxVertex + 1], i, j;
 
     for (i = 0; i < maxVertex + 1; i++) marker[i] = 0;
+
+    EDGE *edges[maxVertex][3];
+    for (i = 0; i < maxVertex; i++) {
+        for (j=0; j<3; j++){
+            edges[i][j]=NULL;
+        }
+    }
 
     EDGE * stack[maxVertex * 3];
     int stacksize;
@@ -66,6 +78,10 @@ int *EDGEsToPlanarGraph(EDGE *start, int maxVertex) {
         stack[stacksize++] = start->inverse->left;
     }
     graph[(start->from * 4) + 0] = j; //degree of start->from
+
+    edges[start->from][0] = start;
+    edges[start->from][1] = start->inverse->left;
+    edges[start->from][2] = start->inverse->right;
 
     while (stacksize > 0) {
         EDGE *current = stack[--stacksize];
@@ -91,8 +107,22 @@ int *EDGEsToPlanarGraph(EDGE *start, int maxVertex) {
                 }
             }
             graph[(current->to * 4) + 0] = j;
+
+            edges[current->to][0] = current->inverse;
+            edges[current->to][1] = current->left;
+            edges[current->to][2] = current->right;
         }
     }
+
+    //free the memory used by the edges
+    for (i = 0; i < maxVertex; i++) {
+        for (j=0; j<3; j++){
+            if(edges[i][j]!=NULL){
+                free(edges[i][j]);
+            }
+        }
+    }
+
 
     return graph;
 }
@@ -121,6 +151,7 @@ void computePlanarCode(unsigned char code[], int *length, EDGE *start, int maxVe
         code++;
     }
     *length = code - codeStart;
+    free(graph);
     return;
 }
 
@@ -148,6 +179,7 @@ void computePlanarCodeShort(unsigned short code[], int *length, EDGE *start, int
         code++;
     }
     *length = code - codeStart;
+    free(graph);
     return;
 }
 
@@ -202,6 +234,7 @@ void exportPlanarGraphTable_old(EDGE *start, int maxVertex) {
         }
         fprintf(stderr, "\n");
     }
+    free(graph);
 }
 
 /* EDGE *getNewEdge() */
@@ -209,6 +242,7 @@ void exportPlanarGraphTable_old(EDGE *start, int maxVertex) {
 /*
         returns a pointer to a new edge. Allocates them in blocks of 1.
  */
+/*
 EDGE *getNewEdge() {
     static EDGE *edge;
     static int available = 0;
@@ -226,6 +260,24 @@ EDGE *getNewEdge() {
     edge->mark = 0;
     //fprintf(stderr, "returning new pointer %p\n", edge);
     return edge++;
+}
+*/
+
+EDGE *getNewEdge() {
+    EDGE *edge;
+    edge = (EDGE *) malloc(sizeof (EDGE)*1);
+    if(edge == NULL){
+        fprintf(stderr, "Insufficient memory available. Aborting.\n");
+        exit(1);
+    }
+
+    edge->inverse = NULL;
+    edge->left = NULL;
+    edge->right = NULL;
+    edge->face_to_right = UNSET;
+    edge->mark = 0;
+    //fprintf(stderr, "returning new pointer %p\n", edge);
+    return edge;
 }
 
 /* EDGE *createBoundary(int sside, int symmetric, int pentagons, int *vertexCounter) */
