@@ -376,7 +376,7 @@ int getTwoPentagonsConesCount(int sside, boolean symmetric, boolean mirror) {
         if(mirror) {
             return 2*sside +1;
         } else {
-            return s + 1;
+            return sside + 1;
         }
     }
 }
