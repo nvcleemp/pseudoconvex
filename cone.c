@@ -443,11 +443,13 @@ int main(int argc, char *argv[]) {
         if (ipr) {
             if (symmetricMinimaIPR[pentagons - 1] > sside) {
                 fprintf(stderr, "There are no symmetric cones with IPR, %d pentagons and side length %d.\n", pentagons, sside);
+                fprintf(stderr, "Found 0 cones satisfying the given parameters.\n");
                 return 0;
             }
         } else {
             if (symmetricMinima[pentagons - 1] > sside) {
                 fprintf(stderr, "There are no symmetric cones with %d pentagons and side length %d.\n", pentagons, sside);
+                fprintf(stderr, "Found 0 cones satisfying the given parameters.\n");
                 return 0;
             }
         }
@@ -455,11 +457,13 @@ int main(int argc, char *argv[]) {
         if (ipr) {
             if (nearsymmetricMinimaIPR[pentagons - 2] > sside) {
                 fprintf(stderr, "There are no nearsymmetric cones with IPR, %d pentagons and shortest side length %d.\n", pentagons, sside);
+                fprintf(stderr, "Found 0 cones satisfying the given parameters.\n");
                 return 0;
             }
         } else {
             if (nearsymmetricMinima[pentagons - 2] > sside) {
                 fprintf(stderr, "There are no nearsymmetric cones with %d pentagons and shortest side length %d.\n", pentagons, sside);
+                fprintf(stderr, "Found 0 cones satisfying the given parameters.\n");
                 return 0;
             }
         }
