@@ -299,6 +299,7 @@ void start3PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror,
         is->position--;
         is->code[is->position] -= i;
 
+        //TODO: in mirror case also the third side is possible
     }
 }
 
