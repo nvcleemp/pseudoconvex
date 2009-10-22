@@ -14,6 +14,9 @@
 //define boolean
 typedef int boolean;
 
+#define TRUE 1
+#define FALSE 0
+
 //#define _DEBUG
 
 #ifdef _DEBUG
