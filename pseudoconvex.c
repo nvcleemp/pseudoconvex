@@ -191,6 +191,13 @@ void exportShells(SHELL *shell) {
 
 /*========== CONSTRUCTION ==========*/
 
+//should the ipr rule be applied
+boolean iprMode = FALSE;
+
+void setIPRMode(boolean flag){
+    iprMode = flag;
+}
+
 #define HEXFRAG(frag, size) \
 	(frag)->faces = (size); \
 	(frag)->endsWithPentagon = 0;
@@ -482,7 +489,12 @@ void fillPatch_5PentagonsLeft(int k, PATCH *patch, FRAGMENT *current, int shellC
 
     //pentagon after i hexagons
     int i;
-    for (i = 0; i < k - 1; i++) {
+    int iStart = 0;
+    if(iprMode && !p){
+        //in case of ipr we check whether a pentagon may be placed at the break-edge
+        iStart = 1;
+    }
+    for (i = iStart; i < k - 1; i++) {
         is->code[is->position] += i;
         is->position++;
         is->code[is->position] = 0;
@@ -537,6 +549,8 @@ void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, i
         fillPatch_4PentagonsLeft(k2 - 2, 1, patch, addNewFragment(current), shellCounter - 1, currentShell, (shellStart + 1)%2, 1, 1);
         is->code[is->position] -= 1;
     } else if (k2 == 0) {
+        //in this case it is not possible to have a pentagon at the break edge, so no IPR check is needed
+
         //add a side of hexagons
         is->code[is->position] += k1 + 1;
 
@@ -570,7 +584,12 @@ void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, i
 
         //pentagon after i hexagons
         int i;
-        for (i = 1; i < k1 - 1; i++) {
+        int iStart = 0;
+        if(iprMode && !p1){
+            //in case of ipr we check whether a pentagon may be placed at the break-edge
+            iStart = 1;
+        }
+        for (i = iStart; i < k1 - 1; i++) {
             is->code[is->position] += i;
             is->position++;
             is->code[is->position] = 0;
@@ -582,6 +601,8 @@ void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, i
             is->position--;
             is->code[is->position] -= i;
         }
+
+        //a pentagon after k1-1 or k1 hexagons is not possible
     } else {
         //add a side of hexagons
         is->code[is->position] += k1 + 1;
@@ -593,7 +614,12 @@ void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, i
 
         //pentagon after i hexagons
         int i;
-        for (i = 0; i < k1; i++) {
+        int iStart = 0;
+        if(iprMode && !p1){
+            //in case of ipr we check whether a pentagon may be placed at the break-edge
+            iStart = 1;
+        }
+        for (i = iStart; i < k1; i++) {
             is->code[is->position] += i;
             is->position++;
             is->code[is->position] = 0;
@@ -607,16 +633,19 @@ void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, i
         }
 
         //pentagon after k1 hexagons
-        is->code[is->position] += k1;
-        is->position++;
-        is->code[is->position] = 0;
+        if(!iprMode || p2){
+            //only placed when we are not in IPR-mode or a pentagon is allowed at the second break-edge
+            is->code[is->position] += k1;
+            is->position++;
+            is->code[is->position] = 0;
 
-        PENTFRAG(current, k1 + 1, currentShell)
+            PENTFRAG(current, k1 + 1, currentShell)
 
-        fillPatch_3PentagonsLeft(0, k2 - 2, k1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell,  shellStart==0 ? 2 : shellStart, 0, 0, 1);
-        currentShell->nrOfPentagons--;
-        is->position--;
-        is->code[is->position] -= k1;
+            fillPatch_3PentagonsLeft(0, k2 - 2, k1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell,  shellStart==0 ? 2 : shellStart, 0, 0, 1);
+            currentShell->nrOfPentagons--;
+            is->position--;
+            is->code[is->position] -= k1;
+        }
     }
 }
 
@@ -666,7 +695,12 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
 
         //pentagon after i hexagons
         int i;
-        for (i = 0; i < k1 - 1; i++) {
+        int iStart = 0;
+        if(iprMode && !p1){
+            //in case of ipr we check whether a pentagon may be placed at the break-edge
+            iStart = 1;
+        }
+        for (i = iStart; i < k1 - 1; i++) {
             is->code[is->position] += i;
             is->position++;
             is->code[is->position] = 0;
@@ -678,6 +712,9 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
             is->position--;
             is->code[is->position] -= i;
         }
+
+        //a pentagon after k1-1 hexagons will lead to a patch boundary that cannot be filled (2 consecutive sides of length 0)
+        //a pentagon after k1 hexagons is not possible
     } else if (k3 == 0) {
         //add a side of hexagons
         is->code[is->position] += k1 + 1;
@@ -688,6 +725,7 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
         is->code[is->position] -= k1 + 1;
 
         //pentagon after i hexagons
+        //in this case it is not possible to have a pentagon at the first (or last) break edge, so no IPR check is needed
         int i;
         for (i = 1; i < k1; i++) {
             is->code[is->position] += i;
@@ -703,16 +741,19 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
         }
 
         //pentagon after k1 hexagons
-        is->code[is->position] += k1;
-        is->position++;
-        is->code[is->position] = 0;
+        if(!iprMode || p2){
+            //only placed when we are not in IPR-mode or a pentagon is allowed at the second break-edge
+            is->code[is->position] += k1;
+            is->position++;
+            is->code[is->position] = 0;
 
-        PENTFRAG(current, k1 + 1, currentShell)
+            PENTFRAG(current, k1 + 1, currentShell)
 
-        fillPatch_2PentagonsLeft(0, k2 - 2, k3, k1 - 1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, shellStart==0 ? 3 : shellStart, 0, 0, 1, 1);
-        currentShell->nrOfPentagons--;
-        is->position--;
-        is->code[is->position] -= k1;
+            fillPatch_2PentagonsLeft(0, k2 - 2, k3, k1 - 1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, shellStart==0 ? 3 : shellStart, 0, 0, 1, 1);
+            currentShell->nrOfPentagons--;
+            is->position--;
+            is->code[is->position] -= k1;
+        }
     } else {
         //add a side of hexagons
         is->code[is->position] += k1 + 1;
@@ -724,7 +765,12 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
 
         //pentagon after i hexagons
         int i;
-        for (i = 0; i < k1; i++) {
+        int iStart = 0;
+        if(iprMode && !p1){
+            //in case of ipr we check whether a pentagon may be placed at the break-edge
+            iStart = 1;
+        }
+        for (i = iStart; i < k1; i++) {
             is->code[is->position] += i;
             is->position++;
             is->code[is->position] = 0;
@@ -738,16 +784,19 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
         }
 
         //pentagon after k1 hexagons
-        is->code[is->position] += k1;
-        is->position++;
-        is->code[is->position] = 0;
+        if(!iprMode || p2){
+            //only placed when we are not in IPR-mode or a pentagon is allowed at the second break-edge
+            is->code[is->position] += k1;
+            is->position++;
+            is->code[is->position] = 0;
 
-        PENTFRAG(current, k1 + 1, currentShell)
+            PENTFRAG(current, k1 + 1, currentShell)
 
-        fillPatch_2PentagonsLeft(0, k2 - 1, k3 - 1, k1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, shellStart==0 ? 3 : shellStart, 0, 0, p3, 1);
-        currentShell->nrOfPentagons--;
-        is->position--;
-        is->code[is->position] -= k1;
+            fillPatch_2PentagonsLeft(0, k2 - 1, k3 - 1, k1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, shellStart==0 ? 3 : shellStart, 0, 0, p3, 1);
+            currentShell->nrOfPentagons--;
+            is->position--;
+            is->code[is->position] -= k1;
+        }
     }
 }
 
@@ -792,36 +841,40 @@ void specialCase0X0X(int X, PATCH *patch, FRAGMENT *current, SHELL *currentShell
 
     //This method is only called when shellCounter is 0, so we need to start a
     //new shell. First we handle the non cyclic shell
-
-    nextShell = addNewShell(currentShell, X + 1, current);
-    nextShell->nonCyclicShell = 1;
-
-    if (!checkShellCanonicity(patch, currentShell, nextShell, 4, sides, shellStart))
-        return;
+    //The non cyclic shell is in IPR-mode only possible if a pentagon is allowed at each break-edge
     INNERSPIRAL *is = patch->innerspiral;
-    is->position++;
-    is->code[is->position] = 0;
 
-    PENTFRAG(current, 1, nextShell)
-    secondFragment = addNewFragment(current);
-    is->code[is->position] += X - 1;
-    is->position++;
-    is->code[is->position] = 0;
-    PENTFRAG(secondFragment, X, nextShell)
+    if(!iprMode || (p1 && p2 && p3 && p4)){
+        nextShell = addNewShell(currentShell, X + 1, current);
+        nextShell->nonCyclicShell = 1;
 
-    if (validateStructure(patch)) {
-        secondFragment->isEnd = 1;
-        processStructure(patch, nextShell);
-        secondFragment->isEnd = 0;
+        if (!checkShellCanonicity(patch, currentShell, nextShell, 4, sides, shellStart))
+            return;
+        is->position++;
+        is->code[is->position] = 0;
+
+        PENTFRAG(current, 1, nextShell)
+        secondFragment = addNewFragment(current);
+        is->code[is->position] += X - 1;
+        is->position++;
+        is->code[is->position] = 0;
+        PENTFRAG(secondFragment, X, nextShell)
+
+        if (validateStructure(patch)) {
+            secondFragment->isEnd = 1;
+            processStructure(patch, nextShell);
+            secondFragment->isEnd = 0;
+        }
+
+        nextShell->nrOfPentagons--;
+        nextShell->nrOfPentagons--;
+        is->position--;
+        is->code[is->position] -= X - 1;
+        is->position--;
     }
 
-    nextShell->nrOfPentagons--;
-    nextShell->nrOfPentagons--;
-    is->position--;
-    is->code[is->position] -= X - 1;
-    is->position--;
-
     //Then we handle the other cases
+    //This case will never place a pentagon at any of the break-edges, so no IPR check is needed.
     nextShell = addNewShell(currentShell, 2 * X, current);
 
     //TODO: correct offset for canonicity check
@@ -909,7 +962,12 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
 
         //pentagon after i hexagons
         int i;
-        for (i = 0; i < k1; i++) {
+        int iStart = 0;
+        if(iprMode && !p1){
+            //in case of ipr we check whether a pentagon may be placed at the break-edge
+            iStart = 1;
+        }
+        for (i = iStart; i < k1; i++) {
             is->code[is->position] += i;
             is->position++;
             is->code[is->position] = 0;
@@ -921,6 +979,8 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
             is->position--;
             is->code[is->position] -= i;
         }
+
+        //a pentagon after k1 hexagons is not possible
     } else if (k4 == 0) {
         //add a side of hexagons
         is->code[is->position] += k1 + 1;
@@ -932,7 +992,13 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
 
         //pentagon after i hexagons
         int i;
-        for (i = 0; i < k1; i++) {
+        int iStart = 0;
+        if(iprMode && !(p1 && p4)){
+            //in case of ipr we check whether a pentagon may be placed at the break-edge
+            //because k4 is 0 we also need to check whether the last break-edge may lie at a pentagon
+            iStart = 1;
+        }
+        for (i = iStart; i < k1; i++) {
             is->code[is->position] += i;
             is->position++;
             is->code[is->position] = 0;
@@ -946,15 +1012,18 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
         }
 
         //pentagon after k1 hexagons
-        is->code[is->position] += k1;
-        is->position++;
-        is->code[is->position] = 0;
+        if(!iprMode || p2){
+            //only placed when we are not in IPR-mode or a pentagon is allowed at the second break-edge
+            is->code[is->position] += k1;
+            is->position++;
+            is->code[is->position] = 0;
 
-        PENTFRAG(current, k1 + 1, currentShell)
+            PENTFRAG(current, k1 + 1, currentShell)
 
-        fillPatch_1PentagonLeft(0, k2 - 1, k3 - 1, k4, k1 - 1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, shellStart==0 ? 4 : shellStart, 0, 0, p3, 1, 1);
-        is->position--;
-        is->code[is->position] -= k1;
+            fillPatch_1PentagonLeft(0, k2 - 1, k3 - 1, k4, k1 - 1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, shellStart==0 ? 4 : shellStart, 0, 0, p3, 1, 1);
+            is->position--;
+            is->code[is->position] -= k1;
+        }
     } else {
         //add a side of hexagons
         is->code[is->position] += k1 + 1;
@@ -966,6 +1035,11 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
 
         //pentagon after i hexagons
         int i;
+        int iStart = 0;
+        if(iprMode && !p1){
+            //in case of ipr we check whether a pentagon may be placed at the break-edge
+            iStart = 1;
+        }
         for (i = 0; i < k1; i++) {
             is->code[is->position] += i;
             is->position++;
@@ -980,17 +1054,20 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
         }
 
         //pentagon after k1 hexagons
-        is->code[is->position] += k1;
-        is->position++;
-        is->code[is->position] = 0;
+        if(!iprMode || p2){
+            //only placed when we are not in IPR-mode or a pentagon is allowed at the second break-edge
+            is->code[is->position] += k1;
+            is->position++;
+            is->code[is->position] = 0;
 
-        PENTFRAG(current, k1 + 1, currentShell)
+            PENTFRAG(current, k1 + 1, currentShell)
 
-        fillPatch_1PentagonLeft(0, k2 - 1, k3, k4 - 1, k1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, shellStart==0 ? 4 : shellStart, 0, 0, p3, p4, 1);
+            fillPatch_1PentagonLeft(0, k2 - 1, k3, k4 - 1, k1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, shellStart==0 ? 4 : shellStart, 0, 0, p3, p4, 1);
 
-        currentShell->nrOfPentagons--;
-        is->position--;
-        is->code[is->position] -= k1;
+            currentShell->nrOfPentagons--;
+            is->position--;
+            is->code[is->position] -= k1;
+        }
     }
 }
 
@@ -1033,10 +1110,12 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
     INNERSPIRAL *is = patch->innerspiral;
 
     if (k1 == 0 && k2 == 0 && k3 == 0 && k4 == 0 && k5 == 0) {
-        PENTFRAG(current, 1, currentShell)
-        if (currentShell->size == 0) currentShell->size = 1;
-        fillPatch_0PentagonsLeft(0, 0, 0, 0, 0, 0, patch, addNewFragment(current), shellCounter - 1, currentShell, shellStart==0 ? 5 : shellStart);
-        currentShell->nrOfPentagons--;
+        if(!iprMode || (p1 && p2 && p3 && p4 && p5)){
+            PENTFRAG(current, 1, currentShell)
+            if (currentShell->size == 0) currentShell->size = 1;
+            fillPatch_0PentagonsLeft(0, 0, 0, 0, 0, 0, patch, addNewFragment(current), shellCounter - 1, currentShell, shellStart==0 ? 5 : shellStart);
+            currentShell->nrOfPentagons--;
+        }
     } else if (k1 == 0 && k2 == 0) {
         //only one possible filling in case the following is true
         if (k3 == k5 && k4 == 0) {
@@ -1061,7 +1140,8 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
                 HEXFRAG(current, 1)
                 fillPatch_1PentagonLeft(k1 - 1, 0, k1 - 1, 0, 0, patch, addNewFragment(current), 0, currentShell, (shellStart + 4)%5, p2, p3, 1, 1, 1);
                 is->code[is->position] -= 1;
-            } else {
+            } else if(!iprMode || (p2 && p3)){
+                //in case of IPR-mode a pentagon at the second and third break-edge must be allowed
                 is->code[is->position] += k1;
                 PENTFRAG(current, k1 + 1, currentShell)
                 fillPatch_0PentagonsLeft(0, 0, 0, 0, 0, 0, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, shellStart==0 ? 5 : shellStart);
@@ -1072,20 +1152,26 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
     } else if (k3 == 0 && k4 == 0) {
         //only one possible filling in case the following is true
         if (k1 == 0 && k2 == k5) {
-            //is->code[is->position]+=0;
-            PENTFRAG(current, 1, currentShell)
-            fillPatch_0PentagonsLeft(k2 - 1, 0, 0, k2 - 1, 0, 0, patch, addNewFragment(current), shellCounter - 1, currentShell, shellStart==0 ? 5 : shellStart);
-            //is->code[is->position]-=0;
-            currentShell->nrOfPentagons--;
+            if(!iprMode || (p1 && p2)){
+                //in case of IPR-mode a pentagon at the first and second break-edge must be allowed
+                //is->code[is->position]+=0;
+                PENTFRAG(current, 1, currentShell)
+                fillPatch_0PentagonsLeft(k2 - 1, 0, 0, k2 - 1, 0, 0, patch, addNewFragment(current), shellCounter - 1, currentShell, shellStart==0 ? 5 : shellStart);
+                //is->code[is->position]-=0;
+                currentShell->nrOfPentagons--;
+            }
         }
     } else if (k2 == 0 && k3 == 0) {
         //only one possible filling in case the following is true
         if (k5 == 0 && k1 == k4) {
-            //is->code[is->position]+=0;
-            PENTFRAG(current, 1, currentShell)
-            fillPatch_0PentagonsLeft(k1 - 1, 0, 0, k1 - 1, 0, 0, patch, addNewFragment(current), shellCounter - 1, currentShell, shellStart==0 ? 5 : shellStart);
-            //is->code[is->position]-=0;
-            currentShell->nrOfPentagons--;
+            if(!iprMode || (p1 && p5)){
+                //in case of IPR-mode a pentagon at the first and last break-edge must be allowed
+                //is->code[is->position]+=0;
+                PENTFRAG(current, 1, currentShell)
+                fillPatch_0PentagonsLeft(k1 - 1, 0, 0, k1 - 1, 0, 0, patch, addNewFragment(current), shellCounter - 1, currentShell, shellStart==0 ? 5 : shellStart);
+                //is->code[is->position]-=0;
+                currentShell->nrOfPentagons--;
+            }
         }
     } else if (k2 == 0 && k5 == 0) {
         //add a side of hexagons
@@ -1098,7 +1184,13 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 
         //pentagon after i hexagons
         int i;
-        for (i = 0; i < k1; i++) {
+        int iStart = 0;
+        if(iprMode && !(p1 && p5)){
+            //in case of ipr we check whether a pentagon may be placed at the break-edge
+            //because k5 is 0 we also need to check whether the last break-edge may lie at a pentagon
+            iStart = 1;
+        }
+        for (i = iStart; i < k1; i++) {
             is->code[is->position] += i;
             is->position++;
             is->code[is->position] = 0;
@@ -1122,7 +1214,12 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 
         //pentagon after i hexagons
         int i;
-        for (i = 0; i < k1; i++) {
+        int iStart = 0;
+        if(iprMode && !p1){
+            //in case of ipr we check whether a pentagon may be placed at the break-edge
+            iStart = 1;
+        }
+        for (i = iStart; i < k1; i++) {
             is->code[is->position] += i;
             is->position++;
             is->code[is->position] = 0;
@@ -1145,7 +1242,13 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 
         //pentagon after i hexagons
         int i;
-        for (i = 0; i < k1; i++) {
+        int iStart = 0;
+        if(iprMode && !(p1 && p5)){
+            //in case of ipr we check whether a pentagon may be placed at the break-edge
+            //because k5 is 0 we also need to check whether the last break-edge may lie at a pentagon
+            iStart = 1;
+        }
+        for (i = iStart; i < k1; i++) {
             is->code[is->position] += i;
             is->position++;
             is->code[is->position] = 0;
@@ -1159,14 +1262,17 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
         }
 
         //pentagon after k1 hexagons
-        is->code[is->position] += k1;
-        is->position++;
-        is->code[is->position] = 0;
-        PENTFRAG(current, k1 + 1, currentShell)
-        fillPatch_0PentagonsLeft(0, k2 - 1, k3, k4 - 1, k5, k1 - 1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, shellStart==0 ? 5 : shellStart);
-        currentShell->nrOfPentagons--;
-        is->position--;
-        is->code[is->position] -= k1;
+        if(!iprMode || p2){
+            //only placed when we are not in IPR-mode or a pentagon is allowed at the second break-edge
+            is->code[is->position] += k1;
+            is->position++;
+            is->code[is->position] = 0;
+            PENTFRAG(current, k1 + 1, currentShell)
+            fillPatch_0PentagonsLeft(0, k2 - 1, k3, k4 - 1, k5, k1 - 1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, shellStart==0 ? 5 : shellStart);
+            currentShell->nrOfPentagons--;
+            is->position--;
+            is->code[is->position] -= k1;
+        }
     } else {
         //add a side of hexagons
         is->code[is->position] += k1 + 1;
@@ -1178,7 +1284,12 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 
         //pentagon after i hexagons
         int i;
-        for (i = 0; i < k1; i++) {
+        int iStart = 0;
+        if(iprMode && !p1){
+            //in case of ipr we check whether a pentagon may be placed at the break-edge
+            iStart = 1;
+        }
+        for (i = iStart; i < k1; i++) {
             is->code[is->position] += i;
             is->position++;
             is->code[is->position] = 0;
@@ -1192,16 +1303,19 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
         }
 
         //pentagon after k1 hexagons
-        is->code[is->position] += k1;
-        is->position++;
-        is->code[is->position] = 0;
+        if(!iprMode || p2){
+            //only placed when we are not in IPR-mode or a pentagon is allowed at the second break-edge
+            is->code[is->position] += k1;
+            is->position++;
+            is->code[is->position] = 0;
 
-        PENTFRAG(current, k1 + 1, currentShell)
+            PENTFRAG(current, k1 + 1, currentShell)
 
-        fillPatch_0PentagonsLeft(0, k2 - 1, k3, k4, k5 - 1, k1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, shellStart==0 ? 5 : shellStart);
-        currentShell->nrOfPentagons--;
-        is->position--;
-        is->code[is->position] -= k1;
+            fillPatch_0PentagonsLeft(0, k2 - 1, k3, k4, k5 - 1, k1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, shellStart==0 ? 5 : shellStart);
+            currentShell->nrOfPentagons--;
+            is->position--;
+            is->code[is->position] -= k1;
+        }
     }
 }
 

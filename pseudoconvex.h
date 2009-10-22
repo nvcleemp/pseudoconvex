@@ -113,6 +113,7 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
 boolean checkNonCyclicShellCanonicity(SHELL *shell);
 
 /*========== CONSTRUCTION ==========*/
+void setIPRMode(boolean flag);
 /**
  * Fills a patch with respectively 6-p break edges. The number of threes between each of the consequent break edges
  * is given by the parameters k*. A reference to the complete patch is passed by the parameter patch.
