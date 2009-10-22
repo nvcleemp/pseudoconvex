@@ -122,7 +122,7 @@ boolean checkNonCyclicShellCanonicity(SHELL *shell);
  * The integer shellStart indicates which of the breakedges corresponds to the first break edge that was started from
  * to start filling the current shell. (0 means the break edge before k1, ...)
  *
- * The booleans p(_i) are used for IPR reasons. It indicates whether the ith break-edge already neighbours a pentagon.
+ * The booleans p(_i) are used for IPR reasons. It indicates whether a pentagon is allowed at the ith break-edge.
  * In the case of 0 pentagons left, we can't add anymore pentagons, so there is no need to keep track of this at that point.
  */
 void fillPatch_5PentagonsLeft(int k, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell, boolean p);
