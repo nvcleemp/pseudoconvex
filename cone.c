@@ -369,6 +369,7 @@ int main(int argc, char *argv[]) {
         switch (c) {
             case 'i':
                 ipr = 1;
+                setIPRMode(TRUE);
                 break;
             case 'm':
                 mirror = 1;
