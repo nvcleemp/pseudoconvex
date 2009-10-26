@@ -27,7 +27,7 @@ int mirror = 0;
 
 char outputType = 'p';
 
-int structureCounter = 0;
+long structureCounter = 0;
 
 /*
 The minimum length of the (shortest) side for which there exists a
@@ -540,7 +540,7 @@ int main(int argc, char *argv[]) {
 
     //print the results
     //fprintf(stderr, "Found %d canonical cones satisfying the given parameters.\n", structureCounter);
-    fprintf(stderr, "Found %d cones satisfying the given parameters.\n", structureCounter);
+    fprintf(stderr, "Found %ld cones satisfying the given parameters.\n", structureCounter);
 
     return 0;
 }
