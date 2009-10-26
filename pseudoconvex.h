@@ -125,12 +125,13 @@ void setIPRMode(boolean flag);
  *
  * The booleans p(_i) are used for IPR reasons. It indicates whether a pentagon is allowed at the ith break-edge.
  * In the case of 0 pentagons left, we can't add anymore pentagons, so there is no need to keep track of this at that point.
+ * The boolean lastWasPi is also used for IPR reasons. It indicates whether the previous operation was a P(i) operation.
  */
 void fillPatch_5PentagonsLeft(int k, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell, boolean p);
-void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell, int shellStart, boolean p1, boolean p2);
-void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell, int shellStart, boolean p1, boolean p2, boolean p3);
-void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell, int shellStart, boolean p1, boolean p2, boolean p3, boolean p4);
-void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell, int shellStart, boolean p1, boolean p2, boolean p3, boolean p4, boolean p5);
+void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell, int shellStart, boolean p1, boolean p2, boolean lastWasPi);
+void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell, int shellStart, boolean p1, boolean p2, boolean p3, boolean lastWasPi);
+void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell, int shellStart, boolean p1, boolean p2, boolean p3, boolean p4, boolean lastWasPi);
+void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell, int shellStart, boolean p1, boolean p2, boolean p3, boolean p4, boolean p5, boolean lastWasPi);
 void fillPatch_0PentagonsLeft(int k1, int k2, int k3, int k4, int k5, int k6, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell, int shellStart);
 
 #endif // end if not defined, and end the header file
