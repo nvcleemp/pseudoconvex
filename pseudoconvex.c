@@ -635,6 +635,9 @@ void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, i
         //pentagon after k1 hexagons
         if(!iprMode || p2){
             //only placed when we are not in IPR-mode or a pentagon is allowed at the second break-edge
+            if(iprMode && (k1==0 && !p1))
+                return;
+            //if k1 is equal to 0 then p1 also plays a role here
             is->code[is->position] += k1;
             is->position++;
             is->code[is->position] = 0;
@@ -743,6 +746,9 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
         //pentagon after k1 hexagons
         if(!iprMode || p2){
             //only placed when we are not in IPR-mode or a pentagon is allowed at the second break-edge
+            if(iprMode && (k1==0 && !p1))
+                return;
+            //if k1 is equal to 0 then p1 also plays a role here
             is->code[is->position] += k1;
             is->position++;
             is->code[is->position] = 0;
@@ -786,6 +792,9 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
         //pentagon after k1 hexagons
         if(!iprMode || p2){
             //only placed when we are not in IPR-mode or a pentagon is allowed at the second break-edge
+            if(iprMode && (k1==0 && !p1))
+                return;
+            //if k1 is equal to 0 then p1 also plays a role here
             is->code[is->position] += k1;
             is->position++;
             is->code[is->position] = 0;
@@ -1014,6 +1023,9 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
         //pentagon after k1 hexagons
         if(!iprMode || p2){
             //only placed when we are not in IPR-mode or a pentagon is allowed at the second break-edge
+            if(iprMode && (k1==0 && !p1))
+                return;
+            //if k1 is equal to 0 then p1 also plays a role here
             is->code[is->position] += k1;
             is->position++;
             is->code[is->position] = 0;
@@ -1040,7 +1052,7 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
             //in case of ipr we check whether a pentagon may be placed at the break-edge
             iStart = 1;
         }
-        for (i = 0; i < k1; i++) {
+        for (i = iStart; i < k1; i++) {
             is->code[is->position] += i;
             is->position++;
             is->code[is->position] = 0;
@@ -1056,6 +1068,9 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
         //pentagon after k1 hexagons
         if(!iprMode || p2){
             //only placed when we are not in IPR-mode or a pentagon is allowed at the second break-edge
+            if(iprMode && (k1==0 && !p1))
+                return;
+            //if k1 is equal to 0 then p1 also plays a role here
             is->code[is->position] += k1;
             is->position++;
             is->code[is->position] = 0;
@@ -1264,6 +1279,9 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
         //pentagon after k1 hexagons
         if(!iprMode || p2){
             //only placed when we are not in IPR-mode or a pentagon is allowed at the second break-edge
+            if(iprMode && (k1==0 && !p1))
+                return;
+            //if k1 is equal to 0 then p1 also plays a role here
             is->code[is->position] += k1;
             is->position++;
             is->code[is->position] = 0;
@@ -1305,6 +1323,9 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
         //pentagon after k1 hexagons
         if(!iprMode || p2){
             //only placed when we are not in IPR-mode or a pentagon is allowed at the second break-edge
+            if(iprMode && (k1==0 && !p1))
+                return;
+            //if k1 is equal to 0 then p1 also plays a role here
             is->code[is->position] += k1;
             is->position++;
             is->code[is->position] = 0;
