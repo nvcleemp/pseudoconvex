@@ -29,6 +29,10 @@ typedef struct _edge EDGE;
 #define OUTSIDE 1
 #define UNSET 0
 
+long getMaxVertices_impl();
+long getMinVertices_impl();
+void exportStatistics_impl(PATCH *patch);
+
 void exportSpiralCode_impl(PATCH *patch, boolean humanReadable);
 
 void exportPlanarGraphCode_old(EDGE *start, int maxVertex);

@@ -104,6 +104,18 @@ void freeShell(SHELL *shell) {
 }
 
 /*========== EXPORT ===========*/
+void exportStatistics(PATCH *patch) {
+    exportStatistics_impl(patch);
+}
+
+long getMaxVertices(){
+    return getMaxVertices_impl();
+}
+
+long getMinVertices(){
+    return getMinVertices_impl();
+}
+
 void exportPlanarGraphCode(PATCH *patch) {
     exportSpiralCode_impl(patch, 0);
 }

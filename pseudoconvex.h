@@ -97,6 +97,9 @@ SHELL *addNewShell(SHELL *currentShell, int size, FRAGMENT *start);
 void freeShell(SHELL *shell);
 
 /*========== EXPORT ===========*/
+void exportStatistics(PATCH *patch);
+long getMaxVertices();
+long getMinVertices();
 void exportPlanarGraphCode(PATCH *patch);
 void exportPlanarGraphTable(PATCH *patch);
 void exportInnerSpiral(PATCH *patch);

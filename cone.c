@@ -11,6 +11,7 @@
 #include "pseudoconvexuser.h"
 #include "twopentagons.h"
 #include "util.h"
+#include "oldspiral2planar.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -56,6 +57,9 @@ void processStructure(PATCH *patch, SHELL *shell) {
             break;
         case 't':
             exportPlanarGraphTable(patch);
+            break;
+        case 'S':
+            exportStatistics_impl(patch);
             break;
     }
 }
@@ -355,6 +359,13 @@ boolean validate(int pentagons, int sside, int hexagonLayers, boolean symmetric)
     return 1;
 }
 
+void printEmptyStatistics(){
+    fprintf(stderr, "Maximum number of vertices: N/A\n");
+    fprintf(stderr, "Minimum number of vertices: N/A\n");
+    fprintf(stderr, "Maximum number of hexagons: N/A\n");
+    fprintf(stderr, "Minimum number of hexagons: N/A\n");
+}
+
 int main(int argc, char *argv[]) {
 
     /*=========== commandline parsing ===========*/
@@ -385,6 +396,7 @@ int main(int argc, char *argv[]) {
                     case 's':
                     case 't':
                     case 'x':
+                    case 'S':
                         break;
                     default:
                         usage(name);
@@ -446,12 +458,14 @@ int main(int argc, char *argv[]) {
             if (symmetricMinimaIPR[pentagons - 1] > sside) {
                 fprintf(stderr, "There are no symmetric cones with IPR, %d pentagons and side length %d.\n", pentagons, sside);
                 fprintf(stderr, "Found 0 cones satisfying the given parameters.\n");
+                printEmptyStatistics();
                 return 0;
             }
         } else {
             if (symmetricMinima[pentagons - 1] > sside) {
                 fprintf(stderr, "There are no symmetric cones with %d pentagons and side length %d.\n", pentagons, sside);
                 fprintf(stderr, "Found 0 cones satisfying the given parameters.\n");
+                printEmptyStatistics();
                 return 0;
             }
         }
@@ -460,12 +474,14 @@ int main(int argc, char *argv[]) {
             if (nearsymmetricMinimaIPR[pentagons - 2] > sside) {
                 fprintf(stderr, "There are no nearsymmetric cones with IPR, %d pentagons and shortest side length %d.\n", pentagons, sside);
                 fprintf(stderr, "Found 0 cones satisfying the given parameters.\n");
+                printEmptyStatistics();
                 return 0;
             }
         } else {
             if (nearsymmetricMinima[pentagons - 2] > sside) {
                 fprintf(stderr, "There are no nearsymmetric cones with %d pentagons and shortest side length %d.\n", pentagons, sside);
                 fprintf(stderr, "Found 0 cones satisfying the given parameters.\n");
+                printEmptyStatistics();
                 return 0;
             }
         }
@@ -541,6 +557,28 @@ int main(int argc, char *argv[]) {
     //print the results
     //fprintf(stderr, "Found %d canonical cones satisfying the given parameters.\n", structureCounter);
     fprintf(stderr, "Found %ld cones satisfying the given parameters.\n", structureCounter);
+
+    if(outputType=='S' || outputType=='p' || outputType=='t'){
+        long maxHexagons;
+        long minHexagons;
+        if(symmetric){
+            maxHexagons = (getMaxVertices()-pentagons+(pentagons-6)*sside-8)/2;
+            minHexagons = (getMinVertices()-pentagons+(pentagons-6)*sside-8)/2;
+        } else {
+            maxHexagons = (getMaxVertices()+(pentagons-6)*sside-11)/2;
+            minHexagons = (getMinVertices()+(pentagons-6)*sside-11)/2;
+        }
+        if(maxHexagons<0){
+            maxHexagons=-1;
+        }
+        if(minHexagons<0){
+            minHexagons=-1;
+        }
+        fprintf(stderr, "Maximum number of vertices: %ld\n", getMaxVertices());
+        fprintf(stderr, "Minimum number of vertices: %ld\n", getMinVertices());
+        fprintf(stderr, "Maximum number of hexagons: %ld\n", maxHexagons);
+        fprintf(stderr, "Minimum number of hexagons: %ld\n", minHexagons);
+    }
 
     return 0;
 }

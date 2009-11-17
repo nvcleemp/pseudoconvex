@@ -5,6 +5,46 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+long minVertices = -1;
+long maxVertices = -1;
+
+long getMaxVertices_impl(){
+    return maxVertices;
+}
+
+long getMinVertices_impl(){
+    return minVertices;
+}
+
+void exportStatistics_impl(PATCH *patch) {
+    int pentagons = patch->numberOfPentagons;
+    boolean symmetric;
+    if (pentagons == 5) {
+        symmetric = 1;
+    } else {
+        symmetric = patch->boundary[0] - patch->boundary[1] + 1;
+    }
+    int vertexCounter = 0;
+    EDGE *start = createBoundary(patch->boundary[0] + patch->numberOfLayers, symmetric, pentagons, &vertexCounter);
+    int code[pentagons];
+    int i;
+    code[0] = patch->innerspiral->code[0] + 1;
+    for (i = 1; i < pentagons; i++) {
+        code[i] = code[i - 1] + patch->innerspiral->code[i] + 1;
+    }
+
+    if (patchFromSpiralCode(start, code, pentagons, &vertexCounter)) {
+        if(minVertices==-1 || minVertices>vertexCounter){
+            minVertices = vertexCounter;
+        }
+        if(maxVertices < vertexCounter){
+            maxVertices = vertexCounter;
+        }
+    } else {
+        fprintf(stderr, "Error during export\n");
+    }
+}
+
 void exportSpiralCode_impl(PATCH *patch, boolean humanReadable) {
     int pentagons = patch->numberOfPentagons;
     boolean symmetric;
@@ -27,6 +67,12 @@ void exportSpiralCode_impl(PATCH *patch, boolean humanReadable) {
             exportPlanarGraphTable_old(start, vertexCounter);
         } else {
             exportPlanarGraphCode_old(start, vertexCounter);
+        }
+        if(minVertices==-1 || minVertices>vertexCounter){
+            minVertices = vertexCounter;
+        }
+        if(maxVertices < vertexCounter){
+            maxVertices = vertexCounter;
         }
     } else {
         fprintf(stderr, "Error during export\n");
