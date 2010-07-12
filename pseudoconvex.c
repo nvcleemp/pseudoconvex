@@ -410,6 +410,7 @@ boolean checkShellCanonicity(PATCH *patch, SHELL *shell, SHELL *nextShell, int n
     return 1;
 }
 
+//a non cyclic shell is a shell whose inner face dual contains no cycle
 boolean checkNonCyclicShellCanonicity(SHELL *shell) {
     int i; //counter variables
 
@@ -496,7 +497,8 @@ void fillPatch_5PentagonsLeft(int k, PATCH *patch, FRAGMENT *current, int shellC
 
     HEXFRAG(current, k)
 
-    fillPatch_5PentagonsLeft(k - 1, patch, addNewFragment(current), shellCounter - k, currentShell, 1);
+    fillPatch_5PentagonsLeft(k - 1, patch, addNewFragment(current),
+            shellCounter - k, currentShell, 1);
     is->code[is->position] -= k;
 
     //pentagon after i hexagons
@@ -513,7 +515,8 @@ void fillPatch_5PentagonsLeft(int k, PATCH *patch, FRAGMENT *current, int shellC
 
         PENTFRAG(current, i + 1, currentShell)
 
-        fillPatch_4PentagonsLeft(k - 2 - i, 1 + i, patch, addNewFragment(current), shellCounter - i - 1, currentShell,1, 0, 1, TRUE);
+        fillPatch_4PentagonsLeft(k - 2 - i, 1 + i, patch, addNewFragment(current),
+                shellCounter - i - 1, currentShell,1, 0, 1, TRUE);
         currentShell->nrOfPentagons--;
         is->position--;
         is->code[is->position] -= i;
@@ -526,13 +529,15 @@ void fillPatch_5PentagonsLeft(int k, PATCH *patch, FRAGMENT *current, int shellC
 
     PENTFRAG(current, k, currentShell)
 
-    fillPatch_4PentagonsLeft(0, k - 2, patch, addNewFragment(current), shellCounter - k, currentShell,1, 0, 0, FALSE);
+    fillPatch_4PentagonsLeft(0, k - 2, patch, addNewFragment(current),
+            shellCounter - k, currentShell,1, 0, 0, FALSE);
     currentShell->nrOfPentagons--;
     is->position--;
     is->code[is->position] -= k - 1;
 }
 
-void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell, int shellStart, boolean p1, boolean p2, boolean lastWasPi) {
+void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current,
+        int shellCounter, SHELL *currentShell, int shellStart, boolean p1, boolean p2, boolean lastWasPi) {
     DEBUGDUMP(k1, "%d")
     DEBUGDUMP(k2, "%d")
     DEBUGMSG("=======")
@@ -545,7 +550,8 @@ void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, i
         int sides[2];
         sides[0] = k1;
         sides[1] = k2;
-        if (!checkShellCanonicity(patch, currentShell->prev, currentShell, 2, sides, shellStart))
+        if (!checkShellCanonicity(patch, currentShell->prev, currentShell, 2,
+                sides, shellStart))
             return;
         shellStart=0; //the new shell starts at the current position
     }
@@ -558,7 +564,9 @@ void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, i
 
         HEXFRAG(current, 1)
 
-        fillPatch_4PentagonsLeft(k2 - 2, 1, patch, addNewFragment(current), shellCounter - 1, currentShell, (shellStart + 1)%2, 1, !lastWasPi, FALSE);
+        fillPatch_4PentagonsLeft(k2 - 2, 1, patch, addNewFragment(current), 
+                shellCounter - 1, currentShell, (shellStart + 1)%2, 1,
+                !lastWasPi, FALSE);
         is->code[is->position] -= 1;
     } else if (k2 == 0) {
         //in this case it is not possible to have a pentagon at the break edge, so no IPR check is needed
@@ -568,7 +576,9 @@ void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, i
 
         HEXFRAG(current, k1 + 1)
 
-        fillPatch_4PentagonsLeft(0, k1 - 3, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, (shellStart + 1)%2, 1, !lastWasPi, FALSE);
+        fillPatch_4PentagonsLeft(0, k1 - 3, patch, addNewFragment(current),
+                shellCounter - k1 - 1, currentShell, (shellStart + 1)%2, 1,
+                !lastWasPi, FALSE);
         is->code[is->position] -= k1 + 1;
 
         //pentagon after i hexagons
@@ -580,7 +590,9 @@ void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, i
 
             PENTFRAG(current, i + 1, currentShell)
 
-            fillPatch_3PentagonsLeft(k1 - 2 - i, 0, i, patch, addNewFragment(current), shellCounter - i - 1, currentShell, shellStart==0 ? 2 : shellStart, 0, 1, !lastWasPi, TRUE);
+            fillPatch_3PentagonsLeft(k1 - 2 - i, 0, i, patch, 
+                    addNewFragment(current), shellCounter - i - 1, currentShell,
+                    shellStart==0 ? 2 : shellStart, 0, 1, !lastWasPi, TRUE);
             currentShell->nrOfPentagons--;
             is->position--;
             is->code[is->position] -= i;
@@ -591,7 +603,9 @@ void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, i
 
         HEXFRAG(current, k1 + 1)
 
-        fillPatch_4PentagonsLeft(0, k1 - 1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, (shellStart + 1)%2, 1, !lastWasPi, FALSE);
+        fillPatch_4PentagonsLeft(0, k1 - 1, patch, addNewFragment(current), 
+                shellCounter - k1 - 1, currentShell, (shellStart + 1)%2, 1,
+                !lastWasPi, FALSE);
         is->code[is->position] -= k1 + 1;
 
         //pentagon after i hexagons
@@ -608,7 +622,9 @@ void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, i
 
             PENTFRAG(current, i + 1, currentShell)
 
-            fillPatch_3PentagonsLeft(k1 - 1 - i, 0, i + 1, patch, addNewFragment(current), shellCounter - i - 1, currentShell,  shellStart==0 ? 2 : shellStart, 0, p2, !lastWasPi, TRUE);
+            fillPatch_3PentagonsLeft(k1 - 1 - i, 0, i + 1, patch, 
+                    addNewFragment(current), shellCounter - i - 1, currentShell,
+                    shellStart==0 ? 2 : shellStart, 0, p2, !lastWasPi, TRUE);
             currentShell->nrOfPentagons--;
             is->position--;
             is->code[is->position] -= i;
@@ -621,7 +637,8 @@ void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, i
 
         HEXFRAG(current, k1 + 1)
 
-        fillPatch_4PentagonsLeft(k2 - 2, k1 + 1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, (shellStart + 1)%2, 1, !lastWasPi, FALSE);
+        fillPatch_4PentagonsLeft(k2 - 2, k1 + 1, patch, addNewFragment(current),
+                shellCounter - k1 - 1, currentShell, (shellStart + 1)%2, 1, !lastWasPi, FALSE);
         is->code[is->position] -= k1 + 1;
 
         //pentagon after i hexagons
@@ -638,7 +655,9 @@ void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, i
 
             PENTFRAG(current, i + 1, currentShell)
 
-            fillPatch_3PentagonsLeft(k1 - 1 - i, k2 - 1, 1 + i, patch, addNewFragment(current), shellCounter - i - 1, currentShell,  shellStart==0 ? 2 : shellStart, 0, p2, !lastWasPi, TRUE);
+            fillPatch_3PentagonsLeft(k1 - 1 - i, k2 - 1, 1 + i, patch,
+                    addNewFragment(current), shellCounter - i - 1, currentShell,
+                    shellStart==0 ? 2 : shellStart, 0, p2, !lastWasPi, TRUE);
             currentShell->nrOfPentagons--;
             is->position--;
             is->code[is->position] -= i;
@@ -656,7 +675,9 @@ void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, i
 
             PENTFRAG(current, k1 + 1, currentShell)
 
-            fillPatch_3PentagonsLeft(0, k2 - 2, k1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell,  shellStart==0 ? 2 : shellStart, 0, 0, !lastWasPi, FALSE);
+            fillPatch_3PentagonsLeft(0, k2 - 2, k1, patch, addNewFragment(current),
+                    shellCounter - k1 - 1, currentShell,  shellStart==0 ? 2 : shellStart,
+                    0, 0, !lastWasPi, FALSE);
             currentShell->nrOfPentagons--;
             is->position--;
             is->code[is->position] -= k1;
@@ -664,7 +685,8 @@ void fillPatch_4PentagonsLeft(int k1, int k2, PATCH *patch, FRAGMENT *current, i
     }
 }
 
-void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell, int shellStart, boolean p1, boolean p2, boolean p3, boolean lastWasPi) {
+void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *current,
+        int shellCounter, SHELL *currentShell, int shellStart, boolean p1, boolean p2, boolean p3, boolean lastWasPi) {
     DEBUGDUMP(k1, "%d")
     DEBUGDUMP(k2, "%d")
     DEBUGDUMP(k3, "%d")
@@ -684,7 +706,8 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
         sides[0] = k1;
         sides[1] = k2;
         sides[2] = k3;
-        if (!checkShellCanonicity(patch, currentShell->prev, currentShell, 3, sides, shellStart))
+        if (!checkShellCanonicity(patch, currentShell->prev, currentShell, 3,
+                sides, shellStart))
             return;
         shellStart=0; //the new shell starts at the current position
     }
@@ -697,7 +720,9 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
 
         HEXFRAG(current, 1)
 
-        fillPatch_3PentagonsLeft(k2 - 1, k3 - 1, 1, patch, addNewFragment(current), shellCounter - 1, currentShell, (shellStart + 2)%3, 1, p3, !lastWasPi, FALSE);
+        fillPatch_3PentagonsLeft(k2 - 1, k3 - 1, 1, patch, addNewFragment(current),
+                shellCounter - 1, currentShell, (shellStart + 2)%3, 1, p3,
+                !lastWasPi, FALSE);
         is->code[is->position] -= 1;
     } else if (k2 == 0) {
         //add a side of hexagons
@@ -705,7 +730,9 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
 
         HEXFRAG(current, k1 + 1)
 
-        fillPatch_3PentagonsLeft(0, k3 - 2, k1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, (shellStart + 2)%3, 1, 1, !lastWasPi, FALSE);
+        fillPatch_3PentagonsLeft(0, k3 - 2, k1, patch, addNewFragment(current), 
+                shellCounter - k1 - 1, currentShell, (shellStart + 2)%3, 1, 1,
+                !lastWasPi, FALSE);
         is->code[is->position] -= k1 + 1;
 
         //pentagon after i hexagons
@@ -722,7 +749,9 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
 
             PENTFRAG(current, i + 1, currentShell)
 
-            fillPatch_2PentagonsLeft(k1 - 1 - i, k2, k3 - 1, 1 + i, patch, addNewFragment(current), shellCounter - i - 1, currentShell, shellStart==0 ? 3 : shellStart, 0, p2, p3, !lastWasPi, TRUE);
+            fillPatch_2PentagonsLeft(k1 - 1 - i, k2, k3 - 1, 1 + i, patch,
+                    addNewFragment(current), shellCounter - i - 1, currentShell,
+                    shellStart==0 ? 3 : shellStart, 0, p2, p3, !lastWasPi, TRUE);
             currentShell->nrOfPentagons--;
             is->position--;
             is->code[is->position] -= i;
@@ -736,7 +765,9 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
 
         HEXFRAG(current, k1 + 1)
 
-        fillPatch_3PentagonsLeft(k2 - 2, k3, k1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, (shellStart + 2)%3, 1, 1, !lastWasPi, FALSE);
+        fillPatch_3PentagonsLeft(k2 - 2, k3, k1, patch, addNewFragment(current),
+                shellCounter - k1 - 1, currentShell, (shellStart + 2)%3, 1, 1,
+                !lastWasPi, FALSE);
         is->code[is->position] -= k1 + 1;
 
         //pentagon after i hexagons
@@ -749,7 +780,9 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
 
             PENTFRAG(current, i + 1, currentShell)
 
-            fillPatch_2PentagonsLeft(k1 - 1 - i, k2 - 1, k3, i, patch, addNewFragment(current), shellCounter - i - 1, currentShell, shellStart==0 ? 3 : shellStart, 0, p2, 1, !lastWasPi, TRUE);
+            fillPatch_2PentagonsLeft(k1 - 1 - i, k2 - 1, k3, i, patch,
+                    addNewFragment(current), shellCounter - i - 1, currentShell,
+                    shellStart==0 ? 3 : shellStart, 0, p2, 1, !lastWasPi, TRUE);
             currentShell->nrOfPentagons--;
             is->position--;
             is->code[is->position] -= i;
@@ -767,7 +800,9 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
 
             PENTFRAG(current, k1 + 1, currentShell)
 
-            fillPatch_2PentagonsLeft(0, k2 - 2, k3, k1 - 1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, shellStart==0 ? 3 : shellStart, 0, 0, 1, !lastWasPi, FALSE);
+            fillPatch_2PentagonsLeft(0, k2 - 2, k3, k1 - 1, patch, 
+                    addNewFragment(current), shellCounter - k1 - 1, currentShell,
+                    shellStart==0 ? 3 : shellStart, 0, 0, 1, !lastWasPi, FALSE);
             currentShell->nrOfPentagons--;
             is->position--;
             is->code[is->position] -= k1;
@@ -778,7 +813,9 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
 
         HEXFRAG(current, k1 + 1)
 
-        fillPatch_3PentagonsLeft(k2 - 1, k3 - 1, k1 + 1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, (shellStart + 2)%3, 1, p3, !lastWasPi, FALSE);
+        fillPatch_3PentagonsLeft(k2 - 1, k3 - 1, k1 + 1, patch,
+                addNewFragment(current), shellCounter - k1 - 1, currentShell,
+                (shellStart + 2)%3, 1, p3, !lastWasPi, FALSE);
         is->code[is->position] -= k1 + 1;
 
         //pentagon after i hexagons
@@ -795,7 +832,9 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
 
             PENTFRAG(current, i + 1, currentShell)
 
-            fillPatch_2PentagonsLeft(k1 - 1 - i, k2, k3 - 1, 1 + i, patch, addNewFragment(current), shellCounter - i - 1, currentShell, shellStart==0 ? 3 : shellStart, 0, p2, p3, !lastWasPi, TRUE);
+            fillPatch_2PentagonsLeft(k1 - 1 - i, k2, k3 - 1, 1 + i, patch, 
+                    addNewFragment(current), shellCounter - i - 1, currentShell,
+                    shellStart==0 ? 3 : shellStart, 0, p2, p3, !lastWasPi, TRUE);
             currentShell->nrOfPentagons--;
             is->position--;
             is->code[is->position] -= i;
@@ -813,7 +852,9 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
 
             PENTFRAG(current, k1 + 1, currentShell)
 
-            fillPatch_2PentagonsLeft(0, k2 - 1, k3 - 1, k1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, shellStart==0 ? 3 : shellStart, 0, 0, p3, !lastWasPi, FALSE);
+            fillPatch_2PentagonsLeft(0, k2 - 1, k3 - 1, k1, patch, 
+                    addNewFragment(current), shellCounter - k1 - 1, currentShell,
+                    shellStart==0 ? 3 : shellStart, 0, 0, p3, !lastWasPi, FALSE);
             currentShell->nrOfPentagons--;
             is->position--;
             is->code[is->position] -= k1;
@@ -821,7 +862,8 @@ void fillPatch_3PentagonsLeft(int k1, int k2, int k3, PATCH *patch, FRAGMENT *cu
     }
 }
 
-void specialCase0X0X(int X, PATCH *patch, FRAGMENT *current, SHELL *currentShell, boolean startAt0, int shellStart, boolean p1, boolean p2, boolean p3, boolean p4) {
+void specialCase0X0X(int X, PATCH *patch, FRAGMENT *current, SHELL *currentShell,
+        boolean startAt0, int shellStart, boolean p1, boolean p2, boolean p3, boolean p4) {
     //This method is called when we have a shell with as boundary 0 X 0 X (X>1)
     //This type of shell can be non cyclic in which case it is a strip of hexagons
     //bounded by a pentagon at each side. In the other case it is a non cyclic
@@ -907,7 +949,8 @@ void specialCase0X0X(int X, PATCH *patch, FRAGMENT *current, SHELL *currentShell
 
         HEXFRAG(current, 1)
 
-        fillPatch_2PentagonsLeft(X - 1, 0, X - 1, 1, patch, addNewFragment(current), 2 * X - 1, nextShell, 3, 1, p3, p4, 1, FALSE);
+        fillPatch_2PentagonsLeft(X - 1, 0, X - 1, 1, patch, addNewFragment(current),
+                2 * X - 1, nextShell, 3, 1, p3, p4, 1, FALSE);
         is->code[is->position] -= 1;
     } else {
         //first we add a side of hexagons
@@ -915,7 +958,8 @@ void specialCase0X0X(int X, PATCH *patch, FRAGMENT *current, SHELL *currentShell
 
         HEXFRAG(current, X+1)
 
-        fillPatch_2PentagonsLeft(0, X - 2, 0, X-1, patch, addNewFragment(current), 2 * X - 1, nextShell, 3, 1, 1, 1, 1, FALSE);
+        fillPatch_2PentagonsLeft(0, X - 2, 0, X-1, patch, addNewFragment(current),
+                2 * X - 1, nextShell, 3, 1, 1, 1, 1, FALSE);
         is->code[is->position] -= X+1;
 
         //next we add a pentagon after i hexagons with 0<i<X
@@ -929,7 +973,9 @@ void specialCase0X0X(int X, PATCH *patch, FRAGMENT *current, SHELL *currentShell
 
             PENTFRAG(current, i + 1, currentShell)
 
-            fillPatch_1PentagonLeft(X - 1 - i, 0, X - 1, 0, i, patch, addNewFragment(current), 2*X - i - 1, currentShell, 4, 0, p2, p3, p4, 1, TRUE);
+            fillPatch_1PentagonLeft(X - 1 - i, 0, X - 1, 0, i, patch,
+                    addNewFragment(current), 2*X - i - 1, currentShell, 4,
+                    0, p2, p3, p4, 1, TRUE);
             currentShell->nrOfPentagons--;
             is->position--;
             is->code[is->position] -= i;
@@ -937,7 +983,9 @@ void specialCase0X0X(int X, PATCH *patch, FRAGMENT *current, SHELL *currentShell
     }
 }
 
-void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell, int shellStart, boolean p1, boolean p2, boolean p3, boolean p4, boolean lastWasPi) {
+void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, 
+        FRAGMENT *current, int shellCounter, SHELL *currentShell, int shellStart,
+        boolean p1, boolean p2, boolean p3, boolean p4, boolean lastWasPi) {
     DEBUGDUMP(k1, "%d")
     DEBUGDUMP(k2, "%d")
     DEBUGDUMP(k3, "%d")
@@ -978,7 +1026,9 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
 
         HEXFRAG(current, k1 + 1)
 
-        fillPatch_2PentagonsLeft(0, k3 - 1, k4 - 1, k1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, (shellStart + 3)%4, 1, 1, p4, !lastWasPi, FALSE);
+        fillPatch_2PentagonsLeft(0, k3 - 1, k4 - 1, k1, patch, 
+                addNewFragment(current), shellCounter - k1 - 1, currentShell,
+                (shellStart + 3)%4, 1, 1, p4, !lastWasPi, FALSE);
         is->code[is->position] -= k1 + 1;
 
         //pentagon after i hexagons
@@ -995,7 +1045,9 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
 
             PENTFRAG(current, i + 1, currentShell)
 
-            fillPatch_1PentagonLeft(k1 - 1 - i, k2, k3, k4 - 1, 1 + i, patch, addNewFragment(current), shellCounter - i - 1, currentShell, shellStart==0 ? 4 : shellStart, 0, p2, p3, p4, !lastWasPi, TRUE);
+            fillPatch_1PentagonLeft(k1 - 1 - i, k2, k3, k4 - 1, 1 + i, patch,
+                    addNewFragment(current), shellCounter - i - 1, currentShell,
+                    shellStart==0 ? 4 : shellStart, 0, p2, p3, p4, !lastWasPi, TRUE);
             currentShell->nrOfPentagons--;
             is->position--;
             is->code[is->position] -= i;
@@ -1008,7 +1060,9 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
 
         HEXFRAG(current, k1 + 1)
 
-        fillPatch_2PentagonsLeft(k2 - 1, k3 - 1, k4, k1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, (shellStart + 3)%4, 1, p3, 1, !lastWasPi, FALSE);
+        fillPatch_2PentagonsLeft(k2 - 1, k3 - 1, k4, k1, patch,
+                addNewFragment(current), shellCounter - k1 - 1, currentShell,
+                (shellStart + 3)%4, 1, p3, 1, !lastWasPi, FALSE);
         is->code[is->position] -= k1 + 1;
 
         //pentagon after i hexagons
@@ -1026,7 +1080,9 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
 
             PENTFRAG(current, i + 1, currentShell)
 
-            fillPatch_1PentagonLeft(k1 - 1 - i, k2, k3 - 1, k4, i, patch, addNewFragment(current), shellCounter - i - 1, currentShell, shellStart==0 ? 4 : shellStart, 0, p2, p3, 1, !lastWasPi, TRUE);
+            fillPatch_1PentagonLeft(k1 - 1 - i, k2, k3 - 1, k4, i, patch, 
+                    addNewFragment(current), shellCounter - i - 1, currentShell,
+                    shellStart==0 ? 4 : shellStart, 0, p2, p3, 1, !lastWasPi, TRUE);
             currentShell->nrOfPentagons--;
             is->position--;
             is->code[is->position] -= i;
@@ -1044,7 +1100,9 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
 
             PENTFRAG(current, k1 + 1, currentShell)
 
-            fillPatch_1PentagonLeft(0, k2 - 1, k3 - 1, k4, k1 - 1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, shellStart==0 ? 4 : shellStart, 0, 0, p3, 1, !lastWasPi, FALSE);
+            fillPatch_1PentagonLeft(0, k2 - 1, k3 - 1, k4, k1 - 1, patch, 
+                    addNewFragment(current), shellCounter - k1 - 1, currentShell,
+                    shellStart==0 ? 4 : shellStart, 0, 0, p3, 1, !lastWasPi, FALSE);
             is->position--;
             is->code[is->position] -= k1;
         }
@@ -1054,7 +1112,9 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
 
         HEXFRAG(current, k1 + 1)
 
-        fillPatch_2PentagonsLeft(k2 - 1, k3, k4 - 1, k1 + 1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, (shellStart + 3)%4, 1, p3, p4, !lastWasPi, FALSE);
+        fillPatch_2PentagonsLeft(k2 - 1, k3, k4 - 1, k1 + 1, patch, 
+                addNewFragment(current), shellCounter - k1 - 1, currentShell,
+                (shellStart + 3)%4, 1, p3, p4, !lastWasPi, FALSE);
         is->code[is->position] -= k1 + 1;
 
         //pentagon after i hexagons
@@ -1071,7 +1131,9 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
 
             PENTFRAG(current, i + 1, currentShell)
 
-            fillPatch_1PentagonLeft(k1 - 1 - i, k2, k3, k4 - 1, 1 + i, patch, addNewFragment(current), shellCounter - i - 1, currentShell, shellStart==0 ? 4 : shellStart, 0, p2, p3, p4, !lastWasPi, TRUE);
+            fillPatch_1PentagonLeft(k1 - 1 - i, k2, k3, k4 - 1, 1 + i, patch, 
+                    addNewFragment(current), shellCounter - i - 1, currentShell,
+                    shellStart==0 ? 4 : shellStart, 0, p2, p3, p4, !lastWasPi, TRUE);
             currentShell->nrOfPentagons--;
             is->position--;
             is->code[is->position] -= i;
@@ -1089,7 +1151,9 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
 
             PENTFRAG(current, k1 + 1, currentShell)
 
-            fillPatch_1PentagonLeft(0, k2 - 1, k3, k4 - 1, k1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, shellStart==0 ? 4 : shellStart, 0, 0, p3, p4, !lastWasPi, FALSE);
+            fillPatch_1PentagonLeft(0, k2 - 1, k3, k4 - 1, k1, patch, 
+                    addNewFragment(current), shellCounter - k1 - 1, currentShell,
+                    shellStart==0 ? 4 : shellStart, 0, 0, p3, p4, !lastWasPi, FALSE);
 
             currentShell->nrOfPentagons--;
             is->position--;
@@ -1098,7 +1162,9 @@ void fillPatch_2PentagonsLeft(int k1, int k2, int k3, int k4, PATCH *patch, FRAG
     }
 }
 
-void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell, int shellStart, boolean p1, boolean p2, boolean p3, boolean p4, boolean p5, boolean lastWasPi) {
+void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patch,
+        FRAGMENT *current, int shellCounter, SHELL *currentShell, int shellStart,
+        boolean p1, boolean p2, boolean p3, boolean p4, boolean p5, boolean lastWasPi) {
     DEBUGDUMP(k1, "%d")
     DEBUGDUMP(k2, "%d")
     DEBUGDUMP(k3, "%d")
@@ -1140,7 +1206,9 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
         if(!iprMode || (p1 && p2 && p3 && p4 && p5)){
             PENTFRAG(current, 1, currentShell)
             if (currentShell->size == 0) currentShell->size = 1;
-            fillPatch_0PentagonsLeft(0, 0, 0, 0, 0, 0, patch, addNewFragment(current), shellCounter - 1, currentShell, shellStart==0 ? 5 : shellStart);
+            fillPatch_0PentagonsLeft(0, 0, 0, 0, 0, 0, patch,
+                    addNewFragment(current), shellCounter - 1, currentShell,
+                    shellStart==0 ? 5 : shellStart);
             currentShell->nrOfPentagons--;
         }
     } else if (k1 == 0 && k2 == 0) {
@@ -1148,7 +1216,9 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
         if (k3 == k5 && k4 == 0) {
             is->code[is->position] += 1;
             HEXFRAG(current, 1)
-            fillPatch_1PentagonLeft(0, k3 - 1, 0, k5 - 1, 0, patch, addNewFragment(current), shellCounter - 1, currentShell, (shellStart + 4)%5, 1, 1, p4, p5, !lastWasPi, FALSE);
+            fillPatch_1PentagonLeft(0, k3 - 1, 0, k5 - 1, 0, patch, 
+                    addNewFragment(current), shellCounter - 1, currentShell,
+                    (shellStart + 4)%5, 1, 1, p4, p5, !lastWasPi, FALSE);
             is->code[is->position] -= 1;
         }
     } else if (k1 == 0 && k5 == 0) {
@@ -1156,7 +1226,9 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
         if (k2 == k4 && k3 == 0) {
             is->code[is->position] += 1;
             HEXFRAG(current, 1)
-            fillPatch_1PentagonLeft(k2 - 1, 0, k4 - 1, 0, 0, patch, addNewFragment(current), shellCounter - 1, currentShell, (shellStart + 4)%5, 1, p3, p4, 1, !lastWasPi, FALSE);
+            fillPatch_1PentagonLeft(k2 - 1, 0, k4 - 1, 0, 0, patch, 
+                    addNewFragment(current), shellCounter - 1, currentShell,
+                    (shellStart + 4)%5, 1, p3, p4, 1, !lastWasPi, FALSE);
             is->code[is->position] -= 1;
         }
     } else if (k4 == 0 && k5 == 0) {
@@ -1165,13 +1237,17 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
             if (k1 > 1 && shellCounter == 1) {
                 is->code[is->position] += 1;
                 HEXFRAG(current, 1)
-                fillPatch_1PentagonLeft(k1 - 1, 0, k1 - 1, 0, 0, patch, addNewFragment(current), 0, currentShell, (shellStart + 4)%5, p2, p3, 1, 1, !lastWasPi, FALSE);
+                fillPatch_1PentagonLeft(k1 - 1, 0, k1 - 1, 0, 0, patch,
+                        addNewFragment(current), 0, currentShell, (shellStart + 4)%5,
+                        p2, p3, 1, 1, !lastWasPi, FALSE);
                 is->code[is->position] -= 1;
             } else if(!iprMode || (p2 && p3)){
                 //in case of IPR-mode a pentagon at the second and third break-edge must be allowed
                 is->code[is->position] += k1;
                 PENTFRAG(current, k1 + 1, currentShell)
-                fillPatch_0PentagonsLeft(0, 0, 0, 0, 0, 0, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, shellStart==0 ? 5 : shellStart);
+                fillPatch_0PentagonsLeft(0, 0, 0, 0, 0, 0, patch, 
+                        addNewFragment(current), shellCounter - k1 - 1, currentShell,
+                        shellStart==0 ? 5 : shellStart);
                 currentShell->nrOfPentagons--;
                 is->code[is->position] -= k1;
             }
@@ -1183,7 +1259,9 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
                 //in case of IPR-mode a pentagon at the first and second break-edge must be allowed
                 //is->code[is->position]+=0;
                 PENTFRAG(current, 1, currentShell)
-                fillPatch_0PentagonsLeft(k2 - 1, 0, 0, k2 - 1, 0, 0, patch, addNewFragment(current), shellCounter - 1, currentShell, shellStart==0 ? 5 : shellStart);
+                fillPatch_0PentagonsLeft(k2 - 1, 0, 0, k2 - 1, 0, 0, patch, 
+                        addNewFragment(current), shellCounter - 1, currentShell,
+                        shellStart==0 ? 5 : shellStart);
                 //is->code[is->position]-=0;
                 currentShell->nrOfPentagons--;
             }
@@ -1195,7 +1273,9 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
                 //in case of IPR-mode a pentagon at the first and last break-edge must be allowed
                 //is->code[is->position]+=0;
                 PENTFRAG(current, 1, currentShell)
-                fillPatch_0PentagonsLeft(k1 - 1, 0, 0, k1 - 1, 0, 0, patch, addNewFragment(current), shellCounter - 1, currentShell, shellStart==0 ? 5 : shellStart);
+                fillPatch_0PentagonsLeft(k1 - 1, 0, 0, k1 - 1, 0, 0, patch,
+                        addNewFragment(current), shellCounter - 1, currentShell,
+                        shellStart==0 ? 5 : shellStart);
                 //is->code[is->position]-=0;
                 currentShell->nrOfPentagons--;
             }
@@ -1206,7 +1286,9 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 
         HEXFRAG(current, k1 + 1)
 
-        fillPatch_1PentagonLeft(0, k3 - 1, k4 - 1, 0, k1 - 1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, (shellStart + 4)%5, 1, 1, p4, 1, !lastWasPi, FALSE);
+        fillPatch_1PentagonLeft(0, k3 - 1, k4 - 1, 0, k1 - 1, patch, 
+                addNewFragment(current), shellCounter - k1 - 1, currentShell,
+                (shellStart + 4)%5, 1, 1, p4, 1, !lastWasPi, FALSE);
         is->code[is->position] -= k1 + 1;
 
         //pentagon after i hexagons
@@ -1224,7 +1306,9 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 
             PENTFRAG(current, i + 1, currentShell)
 
-            fillPatch_0PentagonsLeft(k1 - 1 - i, k2, k3, k4 - 1, 0, i, patch, addNewFragment(current), shellCounter - i - 1, currentShell, shellStart==0 ? 5 : shellStart);
+            fillPatch_0PentagonsLeft(k1 - 1 - i, k2, k3, k4 - 1, 0, i, patch, 
+                    addNewFragment(current), shellCounter - i - 1, currentShell,
+                    shellStart==0 ? 5 : shellStart);
             currentShell->nrOfPentagons--;
             is->position--;
             is->code[is->position] -= i;
@@ -1236,7 +1320,9 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
         HEXFRAG(current, k1 + 1)
 
 
-        fillPatch_1PentagonLeft(0, k3 - 1, k4, k5 - 1, k1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, (shellStart + 4)%5, 1, 1, p4, p5, !lastWasPi, FALSE);
+        fillPatch_1PentagonLeft(0, k3 - 1, k4, k5 - 1, k1, patch, 
+                addNewFragment(current), shellCounter - k1 - 1, currentShell,
+                (shellStart + 4)%5, 1, 1, p4, p5, !lastWasPi, FALSE);
         is->code[is->position] -= k1 + 1;
 
         //pentagon after i hexagons
@@ -1253,7 +1339,9 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 
             PENTFRAG(current, i + 1, currentShell)
 
-            fillPatch_0PentagonsLeft(k1 - 1 - i, k2, k3, k4, k5 - 1, 1 + i, patch, addNewFragment(current), shellCounter - i - 1, currentShell, shellStart==0 ? 5 : shellStart);
+            fillPatch_0PentagonsLeft(k1 - 1 - i, k2, k3, k4, k5 - 1, 1 + i, patch, 
+                    addNewFragment(current), shellCounter - i - 1, currentShell,
+                    shellStart==0 ? 5 : shellStart);
             currentShell->nrOfPentagons--;
             is->position--;
             is->code[is->position] -= i;
@@ -1264,7 +1352,9 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 
         HEXFRAG(current, k1 + 1)
 
-        fillPatch_1PentagonLeft(k2 - 1, k3, k4 - 1, k5, k1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, (shellStart + 4)%5, 1, p3, p4, 1, !lastWasPi, FALSE);
+        fillPatch_1PentagonLeft(k2 - 1, k3, k4 - 1, k5, k1, patch, 
+                addNewFragment(current), shellCounter - k1 - 1, currentShell,
+                (shellStart + 4)%5, 1, p3, p4, 1, !lastWasPi, FALSE);
         is->code[is->position] -= k1 + 1;
 
         //pentagon after i hexagons
@@ -1282,7 +1372,9 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 
             PENTFRAG(current, i + 1, currentShell)
 
-            fillPatch_0PentagonsLeft(k1 - 1 - i, k2, k3, k4 - 1, k5, i, patch, addNewFragment(current), shellCounter - i - 1, currentShell, shellStart==0 ? 5 : shellStart);
+            fillPatch_0PentagonsLeft(k1 - 1 - i, k2, k3, k4 - 1, k5, i, patch, 
+                    addNewFragment(current), shellCounter - i - 1, currentShell,
+                    shellStart==0 ? 5 : shellStart);
             currentShell->nrOfPentagons--;
             is->position--;
             is->code[is->position] -= i;
@@ -1298,7 +1390,9 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
             is->position++;
             is->code[is->position] = 0;
             PENTFRAG(current, k1 + 1, currentShell)
-            fillPatch_0PentagonsLeft(0, k2 - 1, k3, k4 - 1, k5, k1 - 1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, shellStart==0 ? 5 : shellStart);
+            fillPatch_0PentagonsLeft(0, k2 - 1, k3, k4 - 1, k5, k1 - 1, patch,
+                    addNewFragment(current), shellCounter - k1 - 1, currentShell,
+                    shellStart==0 ? 5 : shellStart);
             currentShell->nrOfPentagons--;
             is->position--;
             is->code[is->position] -= k1;
@@ -1309,7 +1403,9 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 
         HEXFRAG(current, k1 + 1)
 
-        fillPatch_1PentagonLeft(k2 - 1, k3, k4, k5 - 1, k1 + 1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, (shellStart + 4)%5, 1, p3, p4, p5, !lastWasPi, FALSE);
+        fillPatch_1PentagonLeft(k2 - 1, k3, k4, k5 - 1, k1 + 1, patch, 
+                addNewFragment(current), shellCounter - k1 - 1, currentShell,
+                (shellStart + 4)%5, 1, p3, p4, p5, !lastWasPi, FALSE);
         is->code[is->position] -= k1 + 1;
 
         //pentagon after i hexagons
@@ -1326,7 +1422,9 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 
             PENTFRAG(current, i + 1, currentShell)
 
-            fillPatch_0PentagonsLeft(k1 - 1 - i, k2, k3, k4, k5 - 1, 1 + i, patch, addNewFragment(current), shellCounter - i - 1, currentShell, shellStart==0 ? 5 : shellStart);
+            fillPatch_0PentagonsLeft(k1 - 1 - i, k2, k3, k4, k5 - 1, 1 + i, patch, 
+                    addNewFragment(current), shellCounter - i - 1, currentShell,
+                    shellStart==0 ? 5 : shellStart);
             currentShell->nrOfPentagons--;
             is->position--;
             is->code[is->position] -= i;
@@ -1344,7 +1442,9 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
 
             PENTFRAG(current, k1 + 1, currentShell)
 
-            fillPatch_0PentagonsLeft(0, k2 - 1, k3, k4, k5 - 1, k1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, shellStart==0 ? 5 : shellStart);
+            fillPatch_0PentagonsLeft(0, k2 - 1, k3, k4, k5 - 1, k1, patch, 
+                    addNewFragment(current), shellCounter - k1 - 1, currentShell,
+                    shellStart==0 ? 5 : shellStart);
             currentShell->nrOfPentagons--;
             is->position--;
             is->code[is->position] -= k1;
@@ -1352,7 +1452,8 @@ void fillPatch_1PentagonLeft(int k1, int k2, int k3, int k4, int k5, PATCH *patc
     }
 }
 
-void fillPatch_0PentagonsLeft(int k1, int k2, int k3, int k4, int k5, int k6, PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell, int shellStart) {
+void fillPatch_0PentagonsLeft(int k1, int k2, int k3, int k4, int k5, int k6,
+        PATCH *patch, FRAGMENT *current, int shellCounter, SHELL *currentShell, int shellStart) {
     DEBUGDUMP(k1, "%d")
     DEBUGDUMP(k2, "%d")
     DEBUGDUMP(k3, "%d")
@@ -1399,9 +1500,13 @@ void fillPatch_0PentagonsLeft(int k1, int k2, int k3, int k4, int k5, int k6, PA
             HEXFRAG(current, k1 + 1)
                     //no need to add something to the code: where already past the last pentagon
             if (k1 == k4 && k2 + k3 + k5 + k6 == 0) {
-                fillPatch_0PentagonsLeft(0, 0, 0, 0, 0, 0, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, (shellStart + 5)%6);
+                fillPatch_0PentagonsLeft(0, 0, 0, 0, 0, 0, patch,
+                        addNewFragment(current), shellCounter - k1 - 1, currentShell,
+                        (shellStart + 5)%6);
             } else {
-                fillPatch_0PentagonsLeft(k2 - 1, k3, k4, k5, k6 - 1, k1 + 1, patch, addNewFragment(current), shellCounter - k1 - 1, currentShell, (shellStart + 5)%6);
+                fillPatch_0PentagonsLeft(k2 - 1, k3, k4, k5, k6 - 1, k1 + 1, patch,
+                        addNewFragment(current), shellCounter - k1 - 1, currentShell,
+                        (shellStart + 5)%6);
             }
         }
 
