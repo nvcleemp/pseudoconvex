@@ -239,11 +239,11 @@ void exportPlanarGraphCode_old(EDGE *start, int maxVertex) {
     //TODO: better size for arrays?
     unsigned char code[maxVertex * 4 + 1];
     unsigned short codeShort[maxVertex * 4 + 1];
-    static int first = 1;
+    static boolean first = TRUE;
 
     if (first) {
         fprintf(stdout, ">>planar_code<<");
-        first = 0;
+        first = FALSE;
     }
 
     if (maxVertex + 1 <= 255) {
