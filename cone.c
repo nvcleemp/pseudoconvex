@@ -18,17 +18,17 @@
 #include <unistd.h>
 
 //set to 1 when only the number of structures needs to be counted
-int onlyCount = 0;
+boolean onlyCount = FALSE;
 
 //should ipr be used?
-int ipr = 0;
+boolean ipr = FALSE;
 
 //
-int mirror = 0;
+boolean mirror = FALSE;
 
 char outputType = 'p';
 
-long structureCounter = 0;
+unsigned long structureCounter = 0;
 
 /*
 The minimum length of the (shortest) side for which there exists a
@@ -393,14 +393,14 @@ int main(int argc, char *argv[]) {
     while ((c = getopt(argc, argv, "imche:")) != -1) {
         switch (c) {
             case 'i':
-                ipr = 1;
+                ipr = TRUE;
                 setIPRMode(TRUE);
                 break;
             case 'm':
-                mirror = 1;
+                mirror = TRUE;
                 break;
             case 'c':
-                onlyCount = 1;
+                onlyCount = TRUE;
                 break;
             case 'e':
                 outputType = optarg[0];
