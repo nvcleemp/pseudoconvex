@@ -252,13 +252,16 @@ void exportPlanarGraphCode_old(EDGE *start, int maxVertex) {
             fprintf(stderr, "fwrite() failed -- exiting!\n");
             exit(-1);
         }
-    } else {
+    } else if (maxVertex + 1 <= 65535){
         computePlanarCodeShort(codeShort, &length, start, maxVertex);
         putc(0, stdout);
         if (fwrite(codeShort, sizeof (unsigned short), length, stdout) != length) {
             fprintf(stderr, "fwrite() failed -- exiting!\n");
             exit(-1);
         }
+    } else {
+        fprintf(stderr, "Graph too large for planarcode -- exiting!\n");
+        exit(-1);
     }
 }
 
