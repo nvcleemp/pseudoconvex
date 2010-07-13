@@ -79,11 +79,13 @@ boolean validateStructure(PATCH *patch) {
     } else if (!mirror) {
         //only one other spiral needs to be investigated
 
-    } //there are no ther cases: a nearsymmetric patch is always canonical if mirror images are considered nonisomorphic
+    } //there are no ther cases: a nearsymmetric patch is always canonical
+      //if mirror images are considered nonisomorphic
     return 1;
 }
 
-void start5PentagonsCone(PATCH *patch, int sside, boolean mirror, FRAGMENT *currentFragment, SHELL *currentShell) {
+void start5PentagonsCone(PATCH *patch, int sside, boolean mirror,
+        FRAGMENT *currentFragment, SHELL *currentShell) {
     FRAGMENT *current = addNewFragment(currentFragment);
     SHELL *shell = addNewShell(currentShell, sside, current);
     if (patch->firstFragment == NULL) {
@@ -112,7 +114,8 @@ void start5PentagonsCone(PATCH *patch, int sside, boolean mirror, FRAGMENT *curr
 
         shell->nrOfPentagons = 1;
 
-        fillPatch_4PentagonsLeft(sside - 2 - i, 1 + i, patch, addNewFragment(current), sside - i - 1, shell, 1, 0, 1, TRUE);
+        fillPatch_4PentagonsLeft(sside - 2 - i, 1 + i, patch, addNewFragment(current),
+                sside - i - 1, shell, 1, 0, 1, TRUE);
         is->position--;
         is->code[is->position] -= i;
     }
@@ -128,13 +131,15 @@ void start5PentagonsCone(PATCH *patch, int sside, boolean mirror, FRAGMENT *curr
 
         shell->nrOfPentagons = 1;
 
-        fillPatch_4PentagonsLeft(0, sside - 2, patch, addNewFragment(current), 0, shell, 1, 0, 0, FALSE);
+        fillPatch_4PentagonsLeft(0, sside - 2, patch, addNewFragment(current), 0,
+                shell, 1, 0, 0, FALSE);
         is->position--;
         is->code[is->position] -= sside - 1;
     }
 }
 
-void start4PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror, FRAGMENT *currentFragment, SHELL *currentShell) {
+void start4PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror,
+        FRAGMENT *currentFragment, SHELL *currentShell) {
     FRAGMENT *current = addNewFragment(currentFragment);
     current->endsWithPentagon = 1;
     SHELL *shell = addNewShell(currentShell, 2 * sside + (symmetric ? 0 : 1), current);
@@ -175,7 +180,9 @@ void start4PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror,
 
         shell->nrOfPentagons = 1;
 
-        fillPatch_3PentagonsLeft(sside - 1 - i, lside - 1, 1 + i, patch, addNewFragment(current), 2 * sside + (symmetric ? 0 : 1) - i - 1, shell, 2, 0, !mirror && (i!=upperbound-1), 1, TRUE);
+        fillPatch_3PentagonsLeft(sside - 1 - i, lside - 1, 1 + i, patch, 
+                addNewFragment(current), 2 * sside + (symmetric ? 0 : 1) - i - 1,
+                shell, 2, 0, !mirror && (i!=upperbound-1), 1, TRUE);
         is->position--;
         is->code[is->position] -= i;
     }
@@ -204,14 +211,17 @@ void start4PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror,
             shell->nrOfPentagons = 1;
 
             //shellCounter = 3*sside + 2 - sside - 1 - i-1
-            fillPatch_3PentagonsLeft(sside - 1 - i - 1, sside, 1 + i, patch, addNewFragment(current), sside - i - 1, shell, 1, 0, !mirror && (i!=secondUpperbound), 1, TRUE);
+            fillPatch_3PentagonsLeft(sside - 1 - i - 1, sside, 1 + i, patch, 
+                    addNewFragment(current), sside - i - 1, shell, 1, 0,
+                    !mirror && (i!=secondUpperbound), 1, TRUE);
             is->position--;
             is->code[is->position] -= i;
         }
     }
 }
 
-void start3PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror, FRAGMENT *currentFragment, SHELL *currentShell) {
+void start3PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror,
+        FRAGMENT *currentFragment, SHELL *currentShell) {
     FRAGMENT *current = addNewFragment(currentFragment);
     SHELL *shell = addNewShell(currentShell, 3 * sside + (symmetric ? 0 : 2), current);
     if (patch->firstFragment == NULL) {
@@ -258,7 +268,9 @@ void start3PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror,
 
         shell->nrOfPentagons = 1;
 
-        fillPatch_2PentagonsLeft(sside - 1 - i, lside, lside - 1, 1 + i, patch, addNewFragment(current), 3 * sside + (symmetric ? 0 : 2) - i - 1, shell, 3, 0, !mirror && (i!=upperbound), 1, 1, TRUE);
+        fillPatch_2PentagonsLeft(sside - 1 - i, lside, lside - 1, 1 + i, patch, 
+                addNewFragment(current), 3 * sside + (symmetric ? 0 : 2) - i - 1,
+                shell, 3, 0, !mirror && (i!=upperbound), 1, 1, TRUE);
         is->position--;
         is->code[is->position] -= i;
     }
@@ -285,7 +297,8 @@ void start3PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror,
             shell->nrOfPentagons = 1;
 
             //shellCounter = 3*sside + 2 - sside - 1 - i-1
-            fillPatch_2PentagonsLeft(sside - 1 - i, sside, sside, 1 + i, patch, addNewFragment(current), 2 * sside - i, shell, 2, 0, 1, 1, 1, TRUE);
+            fillPatch_2PentagonsLeft(sside - 1 - i, sside, sside, 1 + i, patch,
+                    addNewFragment(current), 2 * sside - i, shell, 2, 0, 1, 1, 1, TRUE);
             is->position--;
             is->code[is->position] -= i;
         }
@@ -299,7 +312,8 @@ void start3PentagonsCone(PATCH *patch, int sside, int symmetric, boolean mirror,
         shell->nrOfPentagons = 1;
 
         //shellCounter = 3*sside + 2 - sside - 1 - sside-1
-        fillPatch_2PentagonsLeft(0, sside - 1, sside, sside, patch, addNewFragment(current), sside, shell, 2, 0, 0, 1, 1, FALSE);
+        fillPatch_2PentagonsLeft(0, sside - 1, sside, sside, patch,
+                addNewFragment(current), sside, shell, 2, 0, 0, 1, 1, FALSE);
         is->position--;
         is->code[is->position] -= i;
 
@@ -456,14 +470,16 @@ int main(int argc, char *argv[]) {
     if (symmetric) {
         if (ipr) {
             if (symmetricMinimaIPR[pentagons - 1] > sside) {
-                fprintf(stderr, "There are no symmetric cones with IPR, %d pentagons and side length %d.\n", pentagons, sside);
+                fprintf(stderr, "There are no symmetric cones with IPR, %d pentagons and side length %d.\n",
+                        pentagons, sside);
                 fprintf(stderr, "Found 0 cones satisfying the given parameters.\n");
                 printEmptyStatistics();
                 return 0;
             }
         } else {
             if (symmetricMinima[pentagons - 1] > sside) {
-                fprintf(stderr, "There are no symmetric cones with %d pentagons and side length %d.\n", pentagons, sside);
+                fprintf(stderr, "There are no symmetric cones with %d pentagons and side length %d.\n",
+                        pentagons, sside);
                 fprintf(stderr, "Found 0 cones satisfying the given parameters.\n");
                 printEmptyStatistics();
                 return 0;
@@ -472,14 +488,16 @@ int main(int argc, char *argv[]) {
     } else {
         if (ipr) {
             if (nearsymmetricMinimaIPR[pentagons - 2] > sside) {
-                fprintf(stderr, "There are no nearsymmetric cones with IPR, %d pentagons and shortest side length %d.\n", pentagons, sside);
+                fprintf(stderr, "There are no nearsymmetric cones with IPR, %d pentagons and shortest side length %d.\n",
+                        pentagons, sside);
                 fprintf(stderr, "Found 0 cones satisfying the given parameters.\n");
                 printEmptyStatistics();
                 return 0;
             }
         } else {
             if (nearsymmetricMinima[pentagons - 2] > sside) {
-                fprintf(stderr, "There are no nearsymmetric cones with %d pentagons and shortest side length %d.\n", pentagons, sside);
+                fprintf(stderr, "There are no nearsymmetric cones with %d pentagons and shortest side length %d.\n",
+                        pentagons, sside);
                 fprintf(stderr, "Found 0 cones satisfying the given parameters.\n");
                 printEmptyStatistics();
                 return 0;
@@ -487,10 +505,15 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    if (symmetric)
-        fprintf(stderr, "Generating all symmetric cones with side length %d and %d pentagons and surrounding the patches with %d hexagon layers.\n", sside, pentagons, hexagonLayers);
-    else
-        fprintf(stderr, "Generating all nearsymmetric cones with side length %d and %d pentagons and surrounding the patches with %d hexagon layers.\n", sside, pentagons, hexagonLayers);
+    if (symmetric){
+        fprintf(stderr, "Generating all symmetric cones with side length %d and ", sside);
+        fprintf(stderr, "%d pentagons and surrounding the patches with %d hexagon layers.\n",
+                pentagons, hexagonLayers);
+    } else {
+        fprintf(stderr, "Generating all nearsymmetric cones with side length %d ", sside);
+        fprintf(stderr, "and %d pentagons and surrounding the patches with %d hexagon layers.\n",
+                pentagons, hexagonLayers);
+    }
 
     //create the data structure for the pseudoconvex patch
     PATCH *patch = (PATCH *) malloc(sizeof (PATCH));
@@ -514,12 +537,14 @@ int main(int argc, char *argv[]) {
         for (i = 0; i < hexagonLayers; i++) {
             hexagonsToAdd += (sside + 1 - symmetric + hexagonLayers - i)*(6 - pentagons) - (1 - symmetric);
             if (i == 0) {
-                patch->firstFragment = createLayersFragment(NULL, (sside + 1 - symmetric + hexagonLayers - i)*(6 - pentagons) - (1 - symmetric));
+                patch->firstFragment = createLayersFragment(NULL,
+                        (sside + 1 - symmetric + hexagonLayers - i)*(6 - pentagons) - (1 - symmetric));
                 currentFragment = patch->firstFragment;
                 patch->outershell = addNewShell(NULL, currentFragment->faces, currentFragment);
                 currentShell = patch->outershell;
             } else {
-                currentFragment = createLayersFragment(currentFragment, (sside + 1 - symmetric + hexagonLayers - i)*(6 - pentagons) - (1 - symmetric));
+                currentFragment = createLayersFragment(currentFragment,
+                        (sside + 1 - symmetric + hexagonLayers - i)*(6 - pentagons) - (1 - symmetric));
                 currentShell = addNewShell(currentShell, currentFragment->faces, currentFragment);
             }
         }
