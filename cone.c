@@ -587,11 +587,11 @@ int main(int argc, char *argv[]) {
         long maxHexagons;
         long minHexagons;
         if(symmetric){
-            maxHexagons = (getMaxVertices()-pentagons+(pentagons-6)*sside-8)/2;
-            minHexagons = (getMinVertices()-pentagons+(pentagons-6)*sside-8)/2;
+            maxHexagons = (getMaxVertices()-pentagons+(pentagons-6)*sside-4)/2;
+            minHexagons = (getMinVertices()-pentagons+(pentagons-6)*sside-4)/2;
         } else {
-            maxHexagons = (getMaxVertices()+(pentagons-6)*sside-11)/2;
-            minHexagons = (getMinVertices()+(pentagons-6)*sside-11)/2;
+            maxHexagons = (getMaxVertices()+(pentagons-6)*sside-9)/2;
+            minHexagons = (getMinVertices()+(pentagons-6)*sside-9)/2;
         }
         if(maxHexagons<0){
             maxHexagons=-1;
