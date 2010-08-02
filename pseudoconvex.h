@@ -100,7 +100,7 @@ void freeShell(SHELL *shell);
 void exportStatistics(PATCH *patch);
 long getMaxVertices();
 long getMinVertices();
-void exportPlanarGraphCode(PATCH *patch);
+void exportPlanarGraphCode(PATCH *patch, boolean includeHeader);
 void exportPlanarGraphTable(PATCH *patch);
 void exportInnerSpiral(PATCH *patch);
 void exportExtendedInnerSpiral(PATCH *patch);

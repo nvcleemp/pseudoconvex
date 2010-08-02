@@ -45,7 +45,7 @@ void exportStatistics_impl(PATCH *patch) {
     }
 }
 
-void exportSpiralCode_impl(PATCH *patch, boolean humanReadable) {
+void exportSpiralCode_impl(PATCH *patch, boolean humanReadable, boolean header) {
     int pentagons = patch->numberOfPentagons;
     boolean symmetric;
     if (pentagons == 5) {
@@ -66,7 +66,7 @@ void exportSpiralCode_impl(PATCH *patch, boolean humanReadable) {
         if (humanReadable) {
             exportPlanarGraphTable_old(start, vertexCounter);
         } else {
-            exportPlanarGraphCode_old(start, vertexCounter);
+            exportPlanarGraphCode_old(start, vertexCounter, header);
         }
         if(minVertices==-1 || minVertices>vertexCounter){
             minVertices = vertexCounter;
@@ -225,14 +225,14 @@ void computePlanarCodeShort(unsigned short code[], int *length, EDGE *start, int
 /*
         exports the given structure as planarcode on stdout.
  */
-void exportPlanarGraphCode_old(EDGE *start, int maxVertex) {
+void exportPlanarGraphCode_old(EDGE *start, int maxVertex, boolean header) {
     int length;
     //TODO: better size for arrays?
     unsigned char code[maxVertex * 4 + 1];
     unsigned short codeShort[maxVertex * 4 + 1];
     static boolean first = TRUE;
 
-    if (first) {
+    if (first && header) {
         fprintf(stdout, ">>planar_code<<");
         first = FALSE;
     }

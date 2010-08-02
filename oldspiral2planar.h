@@ -37,9 +37,9 @@ long getMaxVertices_impl();
 long getMinVertices_impl();
 void exportStatistics_impl(PATCH *patch);
 
-void exportSpiralCode_impl(PATCH *patch, boolean humanReadable);
+void exportSpiralCode_impl(PATCH *patch, boolean humanReadable, boolean header);
 
-void exportPlanarGraphCode_old(EDGE *start, int maxVertex);
+void exportPlanarGraphCode_old(EDGE *start, int maxVertex, boolean header);
 void exportPlanarGraphTable_old(EDGE *start, int maxVertex);
 
 EDGE *getNewEdge();

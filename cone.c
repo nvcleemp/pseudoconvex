@@ -26,6 +26,9 @@ boolean ipr = FALSE;
 //
 boolean mirror = FALSE;
 
+//
+boolean includeHeader = TRUE;
+
 char outputType = 'p';
 
 unsigned long structureCounter = 0;
@@ -53,7 +56,7 @@ void processStructure(PATCH *patch, SHELL *shell) {
             exportShells(shell);
             break;
         case 'p':
-            exportPlanarGraphCode(patch);
+            exportPlanarGraphCode(patch, includeHeader);
             break;
         case 't':
             exportPlanarGraphTable(patch);
@@ -344,6 +347,7 @@ void help(char *name) {
     fprintf(stderr, "                p    planar code (default)\n");
     fprintf(stderr, "                t    adjacency lists in tabular format\n");
     fprintf(stderr, "                i    inner spirals\n");
+    fprintf(stderr, "  -x          : Don't include a header in case the export format is planar code.\n");
 }
 
 /**
@@ -390,7 +394,7 @@ int main(int argc, char *argv[]) {
     int pentagons, sside, hexagonLayers;
     boolean symmetric;
 
-    while ((c = getopt(argc, argv, "imche:")) != -1) {
+    while ((c = getopt(argc, argv, "imche:x")) != -1) {
         switch (c) {
             case 'i':
                 ipr = TRUE;
@@ -416,6 +420,9 @@ int main(int argc, char *argv[]) {
                         usage(name);
                         return 1;
                 }
+                break;
+            case 'x':
+                includeHeader = FALSE;
                 break;
             case 'h':
                 help(name);

@@ -116,12 +116,12 @@ long getMinVertices(){
     return getMinVertices_impl();
 }
 
-void exportPlanarGraphCode(PATCH *patch) {
-    exportSpiralCode_impl(patch, 0);
+void exportPlanarGraphCode(PATCH *patch, boolean includeHeader) {
+    exportSpiralCode_impl(patch, 0, includeHeader);
 }
 
 void exportPlanarGraphTable(PATCH *patch) {
-    exportSpiralCode_impl(patch, 1);
+    exportSpiralCode_impl(patch, 1, FALSE);
 }
 
 void exportInnerSpiral(PATCH *patch) {
