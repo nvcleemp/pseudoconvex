@@ -77,6 +77,7 @@ void exportSpiralCode_impl(PATCH *patch, boolean humanReadable) {
     } else {
         fprintf(stderr, "Error during export\n");
     }
+    freeAllEdges();
 }
 
 
@@ -159,16 +160,6 @@ int *EDGEsToPlanarGraph(EDGE *start, int maxVertex) {
             edges[current->to][2] = current->right;
         }
     }
-
-    //free the memory used by the edges
-    for (i = 0; i < maxVertex; i++) {
-        for (j=0; j<3; j++){
-            if(edges[i][j]!=NULL){
-                free(edges[i][j]);
-            }
-        }
-    }
-
 
     return graph;
 }
@@ -313,20 +304,24 @@ EDGE *getNewEdge() {
 */
 
 EDGE *getNewEdge() {
-    EDGE *edge;
-    edge = (EDGE *) malloc(sizeof (EDGE)*1);
-    if(edge == NULL){
-        fprintf(stderr, "Insufficient memory available. Aborting.\n");
+    if(currentFreeEdge < edgesArraySize){
+        EDGE *edge = edgesArray + currentFreeEdge;
+        currentFreeEdge++;
+        edge->inverse = NULL;
+        edge->left = NULL;
+        edge->right = NULL;
+        edge->face_to_right = UNSET;
+        edge->mark = 0;
+        return edge;
+    } else {
+        fprintf(stderr, "Insufficient memory reserved for this amount of edges. Aborting.\n");
+        fprintf(stderr, "Reserved number of edges: %d.\n", edgesArraySize);
         exit(1);
     }
+}
 
-    edge->inverse = NULL;
-    edge->left = NULL;
-    edge->right = NULL;
-    edge->face_to_right = UNSET;
-    edge->mark = 0;
-    //fprintf(stderr, "returning new pointer %p\n", edge);
-    return edge;
+void freeAllEdges() {
+    currentFreeEdge = 0;
 }
 
 /* EDGE *createBoundary(int sside, int symmetric, int pentagons, int *vertexCounter) */
@@ -730,4 +725,69 @@ int patchFromSpiralCode(EDGE *boundaryStart, int *code, int pentagons, int *vert
         }
     }
     return 1;
+}
+
+/**
+ * Reserves the memory for the maximum possible number of needed edges
+ */
+void initEdges(int sside, boolean symmetric, int pentagons, int hexagonLayers){
+    int i;
+    //calculate the number of hexagons and the length of the boundary
+    int hexagons, boundary;
+    if(symmetric) {
+        switch (pentagons) {
+            case 1:
+                hexagons = 0;
+                break;
+            case 2:
+                hexagons = (5*sside*sside+8*sside-4)/4;
+                break;
+            case 3:
+                hexagons = (9*sside*sside+12*sside-20)/8;
+                break;
+            case 4:
+                hexagons = (2*sside*sside+3*sside-12)/3;
+                break;
+            case 5:
+                hexagons = (sside*sside+2*sside-28)/4;
+                break;
+            default:
+                fprintf(stderr, "Illegal number of pentagons. Exiting\n");
+                exit(-1);
+        }
+        //also add hexagons in extra layers
+        for(i=sside+1; i<sside+1+hexagonLayers; i++){
+            hexagons+=(6-pentagons)*i;
+        }
+        boundary = (6-pentagons)*(2*sside+1);
+    } else {
+        switch (pentagons) {
+            case 2:
+                hexagons = (5*sside*sside+16*sside+4)/4;
+                break;
+            case 3:
+                hexagons = (9*sside*sside+24*sside-8)/8;
+                break;
+            case 4:
+                hexagons = (2*sside*sside+5*sside-10)/3;
+                break;
+            default:
+                fprintf(stderr, "Illegal number of pentagons. Exiting.\n");
+                exit(-1);
+        }
+        //also add hexagons in extra layers
+        for(i=sside+1; i<sside+1+hexagonLayers; i++){
+            hexagons+=(6-pentagons)*(i+1)-1;
+        }
+        boundary = (6-pentagons)*(2*sside+3) - 2;
+    }
+    //calculate the number of directed edges, i.e. twice the number of edges
+    int maxNumberOfEdges = 6*hexagons + 5*pentagons + boundary;
+    edgesArray = (EDGE *) malloc(sizeof (EDGE)*maxNumberOfEdges);
+    if(edgesArray == NULL){
+        fprintf(stderr, "Insufficient memory available. Aborting.\n");
+        exit(1);
+    }
+    currentFreeEdge = 0;
+    edgesArraySize = maxNumberOfEdges;
 }

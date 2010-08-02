@@ -557,6 +557,11 @@ int main(int argc, char *argv[]) {
     is->code[0] = hexagonsToAdd;
     patch->innerspiral = is;
 
+    //allocate memory for the graph in case this is needed
+    if(outputType=='S' || outputType=='p' || outputType=='t'){
+        initEdges(sside, symmetric, pentagons, hexagonLayers);
+    }
+
     //start the algorithm
     if (pentagons == 1) {
         if (sside == 0) {

@@ -26,6 +26,10 @@ struct _edge {
 
 typedef struct _edge EDGE;
 
+EDGE *edgesArray;
+int currentFreeEdge;
+int edgesArraySize;
+
 #define OUTSIDE 1
 #define UNSET 0
 
@@ -39,6 +43,7 @@ void exportPlanarGraphCode_old(EDGE *start, int maxVertex);
 void exportPlanarGraphTable_old(EDGE *start, int maxVertex);
 
 EDGE *getNewEdge();
+void freeAllEdges();
 
 EDGE *createBoundary(int sside, boolean symmetric, int pentagons, int *vertexCounter);
 EDGE *getStraightPath(EDGE **start, int length, int *vertexCounter, int rightFace, int leftFace);
@@ -46,6 +51,8 @@ int constructFaceToRight(int size, EDGE *start, int *vertexCounter, EDGE **lastA
 int constructFaceToRightNeighbourRestricted(int size, EDGE *start, int *vertexCounter, EDGE **lastAdded, int illegalNeighbour);
 void setFaceSizeToRight(int size, EDGE *start);
 boolean patchFromSpiralCode(EDGE *boundaryStart, int *code, int pentagons, int *vertexCounter);
+
+void initEdges(int sside, boolean symmetric, int pentagons, int hexagonLayers);
 
 #endif	/* _OLDSPIRAL2PLANAR_H */
 
