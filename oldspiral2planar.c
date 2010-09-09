@@ -764,7 +764,7 @@ void initEdges(int sside, boolean symmetric, int pentagons, int hexagonLayers){
     } else {
         switch (pentagons) {
             case 2:
-                hexagons = (5*sside*sside+16*sside+4)/4;
+                hexagons = (5*sside*sside+18*sside+5)/4;
                 break;
             case 3:
                 hexagons = (9*sside*sside+24*sside-8)/8;
