@@ -43,6 +43,7 @@ void exportStatistics_impl(PATCH *patch) {
     } else {
         fprintf(stderr, "Error during export\n");
     }
+    freeAllEdges();
 }
 
 void exportSpiralCode_impl(PATCH *patch, boolean humanReadable, boolean header) {
