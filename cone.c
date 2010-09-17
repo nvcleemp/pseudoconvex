@@ -347,6 +347,9 @@ void help(char *name) {
     fprintf(stderr, "                p    planar code (default)\n");
     fprintf(stderr, "                t    adjacency lists in tabular format\n");
     fprintf(stderr, "                i    inner spirals\n");
+    fprintf(stderr, "                x    extended inner spirals\n");
+    fprintf(stderr, "                s    shells\n");
+    fprintf(stderr, "                S    statistics only\n");
     fprintf(stderr, "  -x          : Don't include a header in case the export format is planar code.\n");
 }
 
