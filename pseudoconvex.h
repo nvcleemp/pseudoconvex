@@ -102,8 +102,8 @@ long getMaxVertices();
 long getMinVertices();
 void exportPlanarGraphCode(PATCH *patch, boolean includeHeader);
 void exportPlanarGraphTable(PATCH *patch);
-void exportInnerSpiral(PATCH *patch);
-void exportExtendedInnerSpiral(PATCH *patch);
+void exportOuterSpiral(PATCH *patch);
+void exportExtendedOuterSpiral(PATCH *patch);
 void exportShells(SHELL *shell);
 
 /*========== CANONICITY ============*/

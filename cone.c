@@ -46,11 +46,11 @@ void processStructure(PATCH *patch, SHELL *shell) {
     structureCounter++;
     if (onlyCount) return;
     switch (outputType) {
-        case 'i':
-            exportInnerSpiral(patch);
+        case 'o':
+            exportOuterSpiral(patch);
             break;
         case 'x':
-            exportExtendedInnerSpiral(patch);
+            exportExtendedOuterSpiral(patch);
             break;
         case 's':
             exportShells(shell);
@@ -61,7 +61,7 @@ void processStructure(PATCH *patch, SHELL *shell) {
         case 't':
             exportPlanarGraphTable(patch);
             break;
-        case 'S':
+        case 'i':
             exportStatistics_impl(patch);
             break;
     }
@@ -346,10 +346,10 @@ void help(char *name) {
     fprintf(stderr, "  -e c        : Specifies the export format where c is one of\n");
     fprintf(stderr, "                p    planar code (default)\n");
     fprintf(stderr, "                t    adjacency lists in tabular format\n");
-    fprintf(stderr, "                i    inner spirals\n");
-    fprintf(stderr, "                x    extended inner spirals\n");
+    fprintf(stderr, "                o    outer spirals\n");
+    fprintf(stderr, "                x    extended outer spirals\n");
     fprintf(stderr, "                s    shells\n");
-    fprintf(stderr, "                S    statistics only\n");
+    fprintf(stderr, "                i    statistics only\n");
     fprintf(stderr, "  -x          : Don't include a header in case the export format is planar code.\n");
 }
 
@@ -412,12 +412,12 @@ int main(int argc, char *argv[]) {
             case 'e':
                 outputType = optarg[0];
                 switch (outputType) {
-                    case 'i':
+                    case 'o':
                     case 'p':
                     case 's':
                     case 't':
                     case 'x':
-                    case 'S':
+                    case 'i':
                         break;
                     default:
                         usage(name);
