@@ -598,7 +598,7 @@ int main(int argc, char *argv[]) {
     //fprintf(stderr, "Found %d canonical cones satisfying the given parameters.\n", structureCounter);
     fprintf(stderr, "Found %ld cones satisfying the given parameters.\n", structureCounter);
 
-    if(outputType=='S' || outputType=='p' || outputType=='t'){
+    if(outputType=='i' || outputType=='p' || outputType=='t'){
         long maxHexagons;
         long minHexagons;
         if(symmetric){
