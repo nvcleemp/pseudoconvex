@@ -568,7 +568,7 @@ int main(int argc, char *argv[]) {
     patch->innerspiral = is;
 
     //allocate memory for the graph in case this is needed
-    if(outputType=='S' || outputType=='p' || outputType=='t'){
+    if(outputType=='i' || outputType=='p' || outputType=='t'){
         initEdges(sside, symmetric, pentagons, hexagonLayers);
     }
 
