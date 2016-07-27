@@ -69,7 +69,7 @@ void processStructure(PATCH *patch, SHELL *shell) {
 
 boolean validateStructure(PATCH *patch) {
     int i;
-    int symmetric;
+    int symmetric = TRUE;
     if (symmetric) {
         //first check all other break-edges in clockwise direction
         for (i = 1; i < 6 - patch->numberOfPentagons; i++) {
