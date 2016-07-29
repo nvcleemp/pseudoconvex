@@ -85,6 +85,7 @@ struct _patch {
 	FRAGMENT *firstFragment;
 	SHELL *outershell;
         int numberOfLayers;
+        boolean moreSymmetric; //TODO:quite hackish solution for passing this on
 };
 
 typedef struct _patch PATCH;
